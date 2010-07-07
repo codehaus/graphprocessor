@@ -9,6 +9,6 @@ public interface BidiGraphConfig extends GraphConfig
 
 	public BidiNodeConfig getNodeConfig(final Class node);
 
-	public BidiNodeConfig findNodeConfig(Class node);
+	public BidiNodeConfig getAssignableNodeConfig(Class node);
 
 }

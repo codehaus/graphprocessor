@@ -39,7 +39,7 @@ public class DefaultGraphConfig extends AbstractGraphConfig
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodeProcessor(java.lang.Class)
 	 */
 	@Override
-	public NodeProcessor getNodeProcessor(Class nodeType) {
+	public NodeProcessor getDefaultNodeProcessor(Class nodeType) {
 		return nodeProcessorMap.get(nodeType);
 	}
 
@@ -48,7 +48,7 @@ public class DefaultGraphConfig extends AbstractGraphConfig
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
-	public PropertyProcessor getPropertyProcessor(Class propertyType) {
+	public PropertyProcessor getDefaultPropertyProcessor(Class propertyType) {
 		return propertyProcessorMap.get(propertyType);
 	}
 	

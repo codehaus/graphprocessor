@@ -15,7 +15,7 @@ import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 
 
 
-public abstract class AbstractGraphConfig implements GraphConfig, ContextCreatedListener
+public abstract class AbstractGraphConfig implements GraphConfig, Initializable, ContextCreatedListener
 {
 	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
 
@@ -29,7 +29,6 @@ public abstract class AbstractGraphConfig implements GraphConfig, ContextCreated
 	public AbstractGraphConfig()
 	{
 		this.listener = this;
-		// this.nodesMap = new HashMap<Class, NodeConfig>();
 		this.nodeLookupMap = new CachedClassLookupMap<NodeConfig>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
 	}
@@ -44,9 +43,10 @@ public abstract class AbstractGraphConfig implements GraphConfig, ContextCreated
 		this._isInitialized = isInitialized;
 	}
 
-	public void initialize()
+	public boolean initialize(int complianceLevel)
 	{
 		this.initializeAllNodes();
+		return true;
 	}
 
 	public void initializeAllNodes()
@@ -85,7 +85,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, ContextCreated
 	}
 
 	@Override
-	public NodeConfig findNodeConfig(Class nodeType)
+	public NodeConfig getAssignableNodeConfig(Class nodeType)
 	{
 		return this.nodeLookupMap.get(nodeType);
 	}
@@ -256,7 +256,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, ContextCreated
 	}
 
 	@Override
-	public void performNodeCreated(NodeContext nodeContext, Object node)
+	public void nodeCreated(NodeContext nodeContext, Object node)
 	{
 		// TODO Auto-generated method stub
 

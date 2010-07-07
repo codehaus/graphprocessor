@@ -1,10 +1,11 @@
 package org.codehaus.graphprocessor.impl;
 
-import org.codehaus.graphprocessor.AbstractGraphConfig;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
+import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProcessor;
+import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 
@@ -30,9 +31,14 @@ public class BidiGraphProcessor implements GraphProcessor
 	public <T> T process(final GraphContextImpl graphCtx, final Object source, final T target)
 	{
 		// TODO: typecheck?
-		if (!graphCtx.getGraphConfig().isInitialized())
+		GraphConfig graphCfg = graphCtx.getGraphConfig();
+		if (graphCfg instanceof Initializable)
 		{
-			((AbstractGraphConfig)graphCtx.getGraphConfig()).initialize();
+			Initializable init = (Initializable) graphCfg;
+			if (!init.isInitialized())
+			{
+				init.initialize(0);
+			}
 		}
 
 		if (graphCtx.isReleased())
@@ -50,7 +56,7 @@ public class BidiGraphProcessor implements GraphProcessor
 			throw new GraphException("Can't find a " + NodeConfig.class.getSimpleName() + " for " + source.getClass());
 		}
 
-		// create nodeLookup used for root nodes childs 
+		// create nodeLookup used for root nodes childs
 		final NodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractNodeConfig) nodeMapping, source);
 
 		final T result = nodeMapping.getProcessor().process(nodeCtx, source, target);

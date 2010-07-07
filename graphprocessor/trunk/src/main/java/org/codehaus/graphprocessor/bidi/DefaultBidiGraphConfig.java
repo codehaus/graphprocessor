@@ -42,9 +42,9 @@ public class DefaultBidiGraphConfig extends DefaultGraphConfig implements BidiGr
 	}
 
 	@Override
-	public BidiNodeConfig findNodeConfig(Class nodeType)
+	public BidiNodeConfig getAssignableNodeConfig(Class nodeType)
 	{
-		return (BidiNodeConfig) super.findNodeConfig(nodeType);
+		return (BidiNodeConfig) super.getAssignableNodeConfig(nodeType);
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class DefaultBidiGraphConfig extends DefaultGraphConfig implements BidiGr
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.impl.DefaultGraphConfig#initialize()
 	 */
 	@Override
-	public void initialize()
+	public boolean initialize(int complianceLevel)
 	{
 		boolean isInitialized = true;
 
@@ -106,5 +106,6 @@ public class DefaultBidiGraphConfig extends DefaultGraphConfig implements BidiGr
 			}
 		}
 		setInitialized(isInitialized);
+		return true;
 	}
 }

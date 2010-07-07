@@ -132,7 +132,7 @@ public class CollectionNodeProcessor extends AbstractNodeProcessor
 		if (targetClass != null)
 		{
 			result = (T) this.createNode(targetClass);
-			((AbstractGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).performNodeCreated(nodeCtx, result);
+			((AbstractGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).nodeCreated(nodeCtx, result);
 		}
 
 		return result;

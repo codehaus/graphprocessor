@@ -1,11 +1,12 @@
 package org.codehaus.graphprocessor.transform;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractGraphConfig;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
+import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProcessor;
+import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
@@ -30,7 +31,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 	public BidiGraphTransformer(Class rootNode)
 	{
 		super(rootNode);
-		initialize();
+		initialize(0);
 	}
 
 	/*
@@ -38,13 +39,13 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.bidi.BidiGraphConfig#initialize()
 	 */
 	@Override
-	public void initialize()
+	public boolean initialize(int complianceLevel)
 	{
 		// add custom nodes
 		addNode(new BidiCollectionNodeConfig(this));
 
 		// initialize nodes
-		super.initialize();
+		return super.initialize(complianceLevel);
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 		if (!this.isInitialized())
 		{
-			this.initialize();
+			this.initialize(0);
 		}
 
 		// if no context is passed, a default one gets created
@@ -123,10 +124,15 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 	public <T> T process(final GraphContextImpl graphCtx, final Object source, final T target)
 	{
-		// TODO: typecheck?
-		if (!graphCtx.getGraphConfig().isInitialized())
+		GraphConfig graphConfig = graphCtx.getGraphConfig();
+		if (graphConfig instanceof Initializable)
 		{
-			((AbstractGraphConfig) graphCtx.getGraphConfig()).initialize();
+			Initializable init = (Initializable) graphConfig;
+			if (!init.isInitialized())
+			{
+				init.initialize(0);
+			}
+
 		}
 
 		if (graphCtx.isReleased())
@@ -144,7 +150,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 			throw new GraphException("Can't find a " + NodeConfig.class.getSimpleName() + " for " + source.getClass());
 		}
 
-		// create nodeLookup used for root nodes childs 
+		// create nodeLookup used for root nodes childs
 		final NodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractNodeConfig) nodeConfig, source);
 
 		NodeProcessor nodeProcessor = nodeConfig.getProcessor();
@@ -170,10 +176,10 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 		if (!this.isInitialized())
 		{
-			this.initialize();
+			this.initialize(0);
 		}
 
-		NodeConfig nodeConfig = findNodeConfig(node);
+		NodeConfig nodeConfig = getAssignableNodeConfig(node);
 
 		if (nodeConfig != null)
 		{
@@ -181,7 +187,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 		}
 		else
 		{
-			if (getTargetConfig().findNodeConfig(node) != null)
+			if (getTargetConfig().getAssignableNodeConfig(node) != null)
 			{
 				result = this.createTargetContext();
 			}

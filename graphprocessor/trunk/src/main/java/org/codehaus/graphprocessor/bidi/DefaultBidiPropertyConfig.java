@@ -108,7 +108,7 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 				this._isTypeCheckEnabled = this.isReadTypeCheckEnabled() && this.targetProperty.isWriteTypeCheckEnabled();
 
 				// ... having a NodeConfig for read-method return type: success
-				final BidiNodeConfig nodeCfg = getNodeConfig().getGraphConfig().findNodeConfig(getReadType());
+				final BidiNodeConfig nodeCfg = getNodeConfig().getGraphConfig().getAssignableNodeConfig(getReadType());
 				if (nodeCfg != null)
 				{
 					// XXX: special handling for collections

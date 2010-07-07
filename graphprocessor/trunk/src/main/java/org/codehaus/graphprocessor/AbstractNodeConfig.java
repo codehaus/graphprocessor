@@ -260,7 +260,7 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	@Override
 	public PropertyProcessor getPropertyProcessor(Class propertyType)
 	{
-		return getGraphConfig().getPropertyProcessor(propertyType);
+		return getGraphConfig().getDefaultPropertyProcessor(propertyType);
 	}
 
 

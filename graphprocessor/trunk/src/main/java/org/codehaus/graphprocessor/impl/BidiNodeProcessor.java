@@ -198,7 +198,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 			{
 				final Class<?> nodeType = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig().getType();
 				result = this.createNode(nodeType);
-				nodeCtx.getGraphContext().getGraphConfig().getContextListener().performNodeCreated(nodeCtx, result);
+				nodeCtx.getGraphContext().getGraphConfig().getContextListener().nodeCreated(nodeCtx, result);
 
 			}
 			ctx.getProcessedNodesId().put(srcNodeUid, result);
