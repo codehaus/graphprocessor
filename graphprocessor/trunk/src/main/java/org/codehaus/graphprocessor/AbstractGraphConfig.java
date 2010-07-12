@@ -11,26 +11,57 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
+import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
 
 
 
-public abstract class AbstractGraphConfig implements GraphConfig, Initializable, ContextCreatedListener
+public abstract class AbstractGraphConfig<T extends NodeConfig> implements GraphConfig<T>, Initializable, ContextCreatedListener
 {
 	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
 
 	private boolean _isInitialized = false;
 	private ContextCreatedListener listener = null;
 
-	protected final CachedClassLookupMap<NodeConfig> nodeLookupMap;
-	private final Map<Class<?>, NodeConfig> inmutableNodeLookup;
+	protected final CachedClassLookupMap<T> nodeLookupMap;
+	private final Map<Class<?>, T> inmutableNodeLookup;
+
+	protected final CachedClassLookupMap<NodeProcessor> nodeProcessorMap;
+	protected final CachedClassLookupMap<PropertyProcessor> propertyProcessorMap;
 
 
 	public AbstractGraphConfig()
 	{
 		this.listener = this;
-		this.nodeLookupMap = new CachedClassLookupMap<NodeConfig>();
+		this.nodeLookupMap = new CachedClassLookupMap<T>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
+
+		this.nodeProcessorMap = new CachedClassLookupMap<NodeProcessor>();
+		this.propertyProcessorMap = new CachedClassLookupMap<PropertyProcessor>();
+
+		nodeProcessorMap.put(Collection.class, new CollectionNodeProcessor());
+		nodeProcessorMap.put(Object.class, null);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodeProcessor(java.lang.Class)
+	 */
+	@Override
+	public NodeProcessor getDefaultNodeProcessor(Class nodeType)
+	{
+		return nodeProcessorMap.get(nodeType);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getPropertyProcessor(java.lang.Class)
+	 */
+	@Override
+	public PropertyProcessor getDefaultPropertyProcessor(Class propertyType)
+	{
+		return propertyProcessorMap.get(propertyType);
 	}
 
 	public boolean isInitialized()
@@ -72,32 +103,32 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodes()
 	 */
 	@Override
-	public Map<Class<?>, NodeConfig> getNodes()
+	public Map<Class<?>, T> getNodes()
 	{
 		// return (Map) this.nodeLookupMap.getStaticMap();
 		return this.inmutableNodeLookup;
 	}
 
 	@Override
-	public NodeConfig getNodeConfig(final Class node)
+	public T getNodeConfig(final Class node)
 	{
 		return getNodes().get(node);
 	}
 
 	@Override
-	public NodeConfig getAssignableNodeConfig(Class nodeType)
+	public T getAssignableNodeConfig(Class nodeType)
 	{
 		return this.nodeLookupMap.get(nodeType);
 	}
 
-	public void addNode(final NodeConfig nodeConfig)
+	public void addNode(final T nodeConfig)
 	{
 		this.nodeLookupMap.put(nodeConfig.getType(), nodeConfig);
 	}
 
-	public NodeConfig addNode(final Class node)
+	public T addNode(final Class node)
 	{
-		final NodeConfig result = this.createNodeConfig(node);
+		final T result = this.createNodeConfig(node);
 		this.addNode(result);
 		return result;
 	}
@@ -262,7 +293,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 
 	}
 
-	protected abstract NodeConfig createNodeConfig(Class node);
+	protected abstract T createNodeConfig(Class node);
 
 
 }

@@ -31,7 +31,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.basic.NullPropertyFilter;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.samples.misc.TxCollectionDTO;
@@ -197,7 +196,7 @@ public class GraphGeneralTest
 		final Collection<TpMediaModel> result = graph.transform(medias);
 
 		// assert
-		//  - target collection type doesn't equals source collection type (not instantiable)
+		// - target collection type doesn't equals source collection type (not instantiable)
 		Assert.assertFalse(medias.getClass().equals(result.getClass()));
 		int i = 0;
 		for (final TpMediaModel mediaModel : result)
@@ -217,7 +216,7 @@ public class GraphGeneralTest
 	public void convertCollection2()
 	{
 		// create mapping...
-		// .. .for one basic type 
+		// .. .for one basic type
 		final BidiGraphTransformer graph = new BidiGraphTransformer();
 		graph.addNode(new DefaultBidiNodeConfig(graph, Tp2SimpleProductDTO.class, Tp2ProductModel.class));
 
@@ -233,9 +232,9 @@ public class GraphGeneralTest
 		List<Tp2ProductModel> result = graph.transform(list);
 
 		// assert (1)
-		// - target collection contains all source elements as transformed ProductModel's 
-		// - objectgraph's source mapping doesn't contain 'manufacturerName' so that member is ignored 
-		//   although the target object defines that member
+		// - target collection contains all source elements as transformed ProductModel's
+		// - objectgraph's source mapping doesn't contain 'manufacturerName' so that member is ignored
+		// although the target object defines that member
 		assertEquals(2, result.size());
 		Tp2ProductModel model1 = result.get(0);
 		Tp2ProductModel model2 = result.get(1);
@@ -243,7 +242,8 @@ public class GraphGeneralTest
 		assertEquals(null, model2.getManufacturerName());
 
 		// modify mapping; add mapping for extended type (with 'manufacturerName')
-		final NodeConfig nodeConfig = new DefaultBidiNodeConfig(graph, Tp2ExtendedProductDTO.class, Tp2ProductModel.class);
+		final DefaultBidiNodeConfig nodeConfig = new DefaultBidiNodeConfig(graph, Tp2ExtendedProductDTO.class,
+				Tp2ProductModel.class);
 		graph.addNode(nodeConfig);
 
 		// transform again
@@ -281,7 +281,7 @@ public class GraphGeneralTest
 		// TEST 1
 		// test general conversion capabilities
 
-		// List->Set  		
+		// List->Set
 		assertEquals(HashSet.class, model.getUsers1().getClass());
 		assertTrue(model.getUsers1().containsAll(dto.getUsers1()));
 
@@ -332,12 +332,12 @@ public class GraphGeneralTest
 		final TuAddressDTO adr = new TuAddressDTO(null, "lastname");
 		user.setMainAddress(adr);
 
-		//model: user with address, address has 'firstname' set
+		// model: user with address, address has 'firstname' set
 		final TuUserModel tUser = new TuUserModel("user");
 		final TuAddressModel tAdr = new TuAddressModel("firstname");
 		tUser.setMainAddress(tAdr);
 
-		//graph: dto graph with enabled NullPropertyFilter
+		// graph: dto graph with enabled NullPropertyFilter
 		// without 'null' filter each model property gets overwritten
 		// note: NullFilter should be obsolete when ModifiedProperties are enabled
 		final BidiGraphTransformer graph = new BidiGraphTransformer(TuUserDTO.class);
@@ -380,11 +380,11 @@ public class GraphGeneralTest
 	public static void main(final String[] argc)
 	{
 		Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%-5p [%c{1}] %m%n")));
-		//		Logger log = Logger.getLogger(ObjTree.class);
-		//		log.setLevel(Level.DEBUG);
+		// Logger log = Logger.getLogger(ObjTree.class);
+		// log.setLevel(Level.DEBUG);
 		//
-		//		log = Logger.getLogger(DefaultObjTreeNodeCopier.class);
-		//		log.setLevel(Level.DEBUG);
+		// log = Logger.getLogger(DefaultObjTreeNodeCopier.class);
+		// log.setLevel(Level.DEBUG);
 
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		final GraphGeneralTest test = new GraphGeneralTest();

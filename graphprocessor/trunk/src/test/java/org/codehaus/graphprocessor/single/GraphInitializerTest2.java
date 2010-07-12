@@ -12,7 +12,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.GraphNode;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiPropertyConfig;
@@ -51,7 +50,8 @@ public class GraphInitializerTest2
 		}
 
 		/**
-		 * @param prop1 the prop1 to set
+		 * @param prop1
+		 *           the prop1 to set
 		 */
 		public void setProp1(final List<TuCountryDTO> prop1)
 		{
@@ -67,7 +67,8 @@ public class GraphInitializerTest2
 		}
 
 		/**
-		 * @param prop2 the prop2 to set
+		 * @param prop2
+		 *           the prop2 to set
 		 */
 		public void setProp2(final List prop2)
 		{
@@ -83,7 +84,8 @@ public class GraphInitializerTest2
 		}
 
 		/**
-		 * @param prop3 the prop3 to set
+		 * @param prop3
+		 *           the prop3 to set
 		 */
 		public void setProp3(final Collection<TuMediaDTO> prop3)
 		{
@@ -99,7 +101,8 @@ public class GraphInitializerTest2
 		}
 
 		/**
-		 * @param prop4 the prop4 to set
+		 * @param prop4
+		 *           the prop4 to set
 		 */
 		public void setProp4(final Collection<Object> prop4)
 		{
@@ -115,7 +118,8 @@ public class GraphInitializerTest2
 		}
 
 		/**
-		 * @param prop5 the prop5 to set
+		 * @param prop5
+		 *           the prop5 to set
 		 */
 		public void setProp5(final Collection<? extends TuUnitDTO> prop5)
 		{
@@ -128,7 +132,7 @@ public class GraphInitializerTest2
 	{
 		final BidiGraphTransformer graph = new BidiGraphTransformer();
 
-		final NodeConfig cfg = new DefaultBidiNodeConfig(graph, TuUserDTO.class, TuUserDTO.class);
+		final DefaultBidiNodeConfig cfg = new DefaultBidiNodeConfig(graph, TuUserDTO.class, TuUserDTO.class);
 		graph.addNode(cfg);
 
 		final BidiNodeConfig cfg2 = graph.getNodeConfig(TuUserDTO.class);
@@ -152,15 +156,15 @@ public class GraphInitializerTest2
 		Assert.assertTrue(node.isInitialized());
 		Assert.assertTrue(prop.isInitialized());
 
-		// modify one of this nodes child properties  
+		// modify one of this nodes child properties
 		prop = new DefaultBidiPropertyConfig(node, "country");
-		//node.putPropertyMapping(prop);
+		// node.putPropertyMapping(prop);
 		node.addPropertyConfig(prop);
 
 		// that property was not initialized yet...
 		Assert.assertFalse(node.isInitialized());
 		Assert.assertFalse(prop.isInitialized());
-		//... but types are already known (detected during construction)
+		// ... but types are already known (detected during construction)
 		Assert.assertEquals(TuCountryDTO.class, prop.getReadType());
 		Assert.assertEquals(TuCountryModel.class, prop.getTargetProperty().getWriteType());
 

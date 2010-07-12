@@ -28,11 +28,11 @@ import org.codehaus.graphprocessor.transform.GraphTransformer;
  * standard a {@link PropertyConfig} this implementation allows various "incompatible" settings and additionally provides
  * {@link GraphTransformer} specific information like available {@link PropertyInterceptor}.
  */
-public interface PropertyConfig
+public interface PropertyConfig<T extends NodeConfig>
 {
-	NodeConfig getNodeConfig();
+	T getNodeConfig();
 
-	List<NodeConfig> getNewNodeConfigs();
+	List<T> getNewNodeConfigs();
 
 	List<PropertyFilter> getPropertyFilters();
 
@@ -42,36 +42,42 @@ public interface PropertyConfig
 	 * Returns an ID which is unique for the Node which this property belongs too.
 	 * <p/>
 	 * In general this is the property name but this is not guaranteed.
+	 * 
 	 * @return property id
 	 */
 	String getId();
 
 	/**
 	 * Returns the name of this property.
+	 * 
 	 * @return property name
 	 */
 	String getName();
 
 	/**
 	 * Returns the read method for that property.
+	 * 
 	 * @return read method
 	 */
 	Method getReadMethod();
 
 	/**
 	 * Returns the write method for that property.
+	 * 
 	 * @return write method
 	 */
 	Method getWriteMethod();
 
 	/**
 	 * Returns a {@link PropertyInterceptor} which gets applied for the read value of this property.
+	 * 
 	 * @return {@link PropertyInterceptor}
 	 */
 	PropertyInterceptor<Object, Object> getReadInterceptor();
 
 	/**
 	 * Returns a {@link PropertyInterceptor} which gets applied for the write value of this property.
+	 * 
 	 * @return {@link PropertyInterceptor}
 	 */
 	PropertyInterceptor<Object, Object> getWriteInterceptor();
@@ -81,6 +87,7 @@ public interface PropertyConfig
 	 * <p/>
 	 * Type is either return type of read-method or if an interceptor is assigned the return type of
 	 * {@link PropertyInterceptor#intercept(PropertyContext, Object)}
+	 * 
 	 * @return read-value type
 	 */
 	Class<?> getReadType();
@@ -90,6 +97,7 @@ public interface PropertyConfig
 	 * <p/>
 	 * Type is either return type of write-method or if an interceptor is assigned the return type of
 	 * {@link PropertyInterceptor#intercept(PropertyContext, Object)}
+	 * 
 	 * @return write-value type
 	 */
 	Class<?> getWriteType();
@@ -101,12 +109,14 @@ public interface PropertyConfig
 	 * <p/>
 	 * Example: read-type: NUMBER; target write-type INTEGER:<br/>
 	 * With enabled type check (default) this property will skipped and not processed during graph processing.
+	 * 
 	 * @return true (default) for enabled type check
 	 */
 	boolean isReadTypeCheckEnabled();
 
 	/**
 	 * True (default) when checking whether write-type is assignable from a source read-type.
+	 * 
 	 * @return true (default) for enabled type check
 	 */
 	boolean isWriteTypeCheckEnabled();
@@ -115,7 +125,7 @@ public interface PropertyConfig
 
 	boolean isVirtualWrite();
 
-	//boolean isNode();
+	// boolean isNode();
 
 
 }

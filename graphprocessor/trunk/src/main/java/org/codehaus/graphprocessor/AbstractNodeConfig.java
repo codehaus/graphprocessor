@@ -79,6 +79,7 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	 * If {@link PropertyConfig} is already initialized, it gets skipped.<br/>
 	 * If {@link PropertyConfig} is not initialized, their initializer method gets called. If initialization fails, property gets
 	 * removed from that node.
+	 * 
 	 * @return true when initialization succeeds
 	 */
 	protected boolean initializeProperties()

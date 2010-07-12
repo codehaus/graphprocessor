@@ -1,13 +1,13 @@
 package org.codehaus.graphprocessor.bidi;
 
+import org.codehaus.graphprocessor.AbstractGraphConfig;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
-import org.codehaus.graphprocessor.single.DefaultGraphConfig;
 
 
-public class DefaultBidiGraphConfig extends DefaultGraphConfig implements BidiGraphConfig
+public class DefaultBidiGraphConfig extends AbstractGraphConfig<BidiNodeConfig> implements BidiGraphConfig
 {
 	private DefaultBidiGraphConfig targetGraphCfg = null;
 
@@ -38,13 +38,13 @@ public class DefaultBidiGraphConfig extends DefaultGraphConfig implements BidiGr
 	@Override
 	public BidiNodeConfig getNodeConfig(final Class node)
 	{
-		return (BidiNodeConfig) super.getNodeConfig(node);
+		return super.getNodeConfig(node);
 	}
 
 	@Override
 	public BidiNodeConfig getAssignableNodeConfig(Class nodeType)
 	{
-		return (BidiNodeConfig) super.getAssignableNodeConfig(nodeType);
+		return super.getAssignableNodeConfig(nodeType);
 	}
 
 	/*
@@ -53,12 +53,12 @@ public class DefaultBidiGraphConfig extends DefaultGraphConfig implements BidiGr
 	 * webservices.util.objectgraphtransformer.NodeConfig)
 	 */
 	@Override
-	public void addNode(final NodeConfig nodeConfig)
+	public void addNode(final BidiNodeConfig nodeConfig)
 	{
 		if (nodeConfig instanceof BidiNodeConfig)
 		{
 			super.addNode(nodeConfig);
-			final BidiNodeConfig targetNode = ((BidiNodeConfig) nodeConfig).getTargetNodeConfig();
+			final BidiNodeConfig targetNode = (nodeConfig).getTargetNodeConfig();
 
 			// this.targetGraphCfg.nodesMap.put(targetNode.getType(), targetNode);
 			// need direct access to member to prevent an infinite cycle
