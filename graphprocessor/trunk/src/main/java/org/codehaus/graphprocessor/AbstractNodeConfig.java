@@ -1,6 +1,9 @@
 package org.codehaus.graphprocessor;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -8,30 +11,8 @@ import java.util.Map;
 /**
  * Abstract base implementation for {@link NodeConfig}
  */
-public abstract class AbstractNodeConfig implements NodeConfig, Initializable
+public abstract class AbstractNodeConfig<T extends PropertyConfig> implements NodeConfig<T>, Initializable
 {
-	// // PropertyConfig creation
-	// // - uses a global (static) lookup cache (yes, static is intended here)
-	// // - does a factory bring advantages?
-	// // (there were several issues with PropertyDescriptor read/write method detection so maybe that algorithm should be
-	// replaceable)
-	// private static Map<Class, Map<String, PropertyConfig>> propConfigMap = new HashMap<Class, Map<String, PropertyConfig>>();
-	//
-	// protected Map<String, PropertyConfig> getPropertiesFor(final Class<?> type)
-	// {
-	// Map<String, PropertyConfig> result = propConfigMap.get(type);
-	// if (result == null)
-	// {
-	// result = createPropertiesFor(type);
-	// propConfigMap.put(type, result);
-	// }
-	// return result;
-	// }
-	//
-	//
-	// private static Pattern BEAN_GETTER = Pattern.compile("get(.*)");
-	// private static Pattern BEAN_BOOLEAN_GETTER = Pattern.compile("is(.*)");
-	// private static Pattern BEAN_SETTER = Pattern.compile("set(.*)");
 
 	protected boolean isNodeInitialized = false;
 	protected boolean isPropertiesInitialized = false;
@@ -39,9 +20,21 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	private GraphConfig graphConfig = null;
 	private NodeProcessor nodeProcessor = null;
 
+	private Class<?> type = null;
+	private String[] uidPropnames = null;
+	private T[] uidProperties = null;
+	private Map<String, T> properties = null;
+	private boolean isVirtualNode = false;
+
 	public AbstractNodeConfig(final GraphConfig graphConfig)
 	{
 		this.graphConfig = graphConfig;
+	}
+
+	public AbstractNodeConfig(final GraphConfig graphConfig, final Class<?> type)
+	{
+		this.graphConfig = graphConfig;
+		this.type = type;
 	}
 
 	@Override
@@ -85,10 +78,10 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	protected boolean initializeProperties()
 	{
 		// initialize/refresh properties (when not already done)
-		final Map<String, PropertyConfig> properties = this.getProperties();
-		for (final Iterator<PropertyConfig> iter = properties.values().iterator(); iter.hasNext();)
+		final Map<String, T> properties = this.getProperties();
+		for (final Iterator<T> iter = properties.values().iterator(); iter.hasNext();)
 		{
-			final PropertyConfig pCfg = iter.next();
+			final T pCfg = iter.next();
 			if (pCfg instanceof AbstractPropertyConfig)
 			{
 				final AbstractPropertyConfig aPropCfg = (AbstractPropertyConfig) pCfg;
@@ -121,122 +114,6 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	}
 
 
-
-	// /**
-	// * Creates a lookup map containing all properties of passed type.
-	// * <p/>
-	// * Result maps a property name to a {@link PropertyConfig}.
-	// * </p>
-	// * Any property which keeps java bean standard is found and used for {@link PropertyConfig} creation. For finding all
-	// * properties {@link Introspector} is used which returns general {@link PropertyDescriptor}. But read- and write
-	// * methods provided by {@link PropertyDescriptor} are only used as "suggestion" here and are getting post-processed
-	// * to assure following criteria:
-	// * <p/>
-	// * - no bridge or synthetic methods are allowed <br/>
-	// * - co-variant return types are handled correctly <br/>
-	// *
-	// * @param type
-	// * @return
-	// */
-	// private Map<String, PropertyConfig> createPropertiesFor(Class<?> type)
-	// {
-	// final Map<String, PropertyConfig> result = new TreeMap<String, PropertyConfig>();
-	// final Set<String> done = new HashSet<String>();
-	// while (type != null)
-	// {
-	// // we are only interested in declared methods (no bridge/synthetic ones)
-	// final Method[] methods = type.getDeclaredMethods();
-	// for (final Method method : methods)
-	// {
-	// // only public, non-bridged methods are of interest
-	// if (!method.isBridge() && Modifier.isPublic(method.getModifiers()))
-	// {
-	// // potential bean-getter property?
-	// if (method.getParameterTypes().length == 0 && method.getReturnType() != void.class)
-	// {
-	// // not processed yet?
-	// final String methodName = method.getName();
-	// if (!done.contains(methodName))
-	// {
-	// done.add(methodName);
-	//
-	// final Matcher m = BEAN_GETTER.matcher(methodName);
-	// String propertyName = null;
-	// if (m.matches())
-	// {
-	// propertyName = m.group(1);
-	// }
-	// else
-	// {
-	// if (method.getReturnType().equals(boolean.class))
-	// {
-	// final Matcher m2 = BEAN_BOOLEAN_GETTER.matcher(methodName);
-	// if (m2.matches())
-	// {
-	// propertyName = m2.group(1);
-	// }
-	// }
-	// }
-	//
-	// if (propertyName != null)
-	// {
-	// propertyName = Character.toLowerCase(propertyName.charAt(0)) + propertyName.substring(1);
-	//
-	// // get or create a PropertyConfig
-	// DefaultPropertyConfig pCfg = (DefaultPropertyConfig) result.get(propertyName);
-	// if (pCfg == null)
-	// {
-	// pCfg = this.createPropertyConfig(propertyName);
-	// result.put(propertyName, pCfg);
-	// }
-	// pCfg.setReadMethod(method);
-	// }
-	// }
-	// }
-	//
-	// // potential bean-setter property?
-	// if (method.getParameterTypes().length == 1 && method.getReturnType() == void.class)
-	// {
-	// // not processed yet?
-	// final String methodName = method.getName();
-	// if (!done.contains(methodName))
-	// {
-	// done.add(methodName);
-	// final Matcher setter = BEAN_SETTER.matcher(methodName);
-	// if (setter.matches())
-	// {
-	// String propertyName = setter.group(1);
-	// propertyName = Character.toLowerCase(propertyName.charAt(0)) + propertyName.substring(1);
-	//
-	// // get or create a PropertyConfig
-	// DefaultPropertyConfig pCfg = (DefaultPropertyConfig) result.get(propertyName);
-	// if (pCfg == null)
-	// {
-	// pCfg = this.createPropertyConfig(propertyName);
-	// result.put(propertyName, pCfg);
-	// }
-	// pCfg.setWriteMethod(method);
-	// }
-	// }
-	// }
-	// }
-	//
-	// }
-	// type = type.getSuperclass();
-	// }
-	// return result;
-	// }
-	//
-	// protected DefaultPropertyConfig createPropertyConfig(final String propertyName)
-	// {
-	// return new DefaultPropertyConfig(this, propertyName);
-	// }
-
-	public boolean isDebugEnabled()
-	{
-		return true;
-	}
-
 	/**
 	 * @return the nodeProcessor
 	 */
@@ -266,5 +143,147 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 
 
 
+
+	public boolean isVirtual()
+	{
+		return this.isVirtualNode;
+	}
+
+	public void setVirtual(final boolean virtual)
+	{
+		this.isVirtualNode = virtual;
+	}
+
+
+
+	@Override
+	public Class getType()
+	{
+		return this.type;
+	}
+
+	protected void setType(final Class<?> type)
+	{
+		this.type = type;
+	}
+
+
+	public void setUidPropertyNames(final String propNames)
+	{
+		this.uidPropnames = null;
+		this.uidProperties = null;
+
+		// split and remove whitespaces
+		if (propNames != null && propNames.trim().length() > 0)
+		{
+			this.uidPropnames = propNames.split("\\s*,\\s*");
+		}
+	}
+
+	public String[] getUidPropertyNames()
+	{
+		return this.uidPropnames;
+	}
+
+
+	/**
+	 * @param uidProperties
+	 *           the uidProperties to set
+	 */
+	public void setUidProperties(final T[] uidProperties)
+	{
+		this.uidProperties = uidProperties;
+	}
+
+
+	@Override
+	public T[] getUidProperties()
+	{
+		if (this.uidProperties == null && uidPropnames != null && uidPropnames.length > 0)
+		{
+			this.uidProperties = (T[]) new Object[uidPropnames.length];
+			// this.uidProperties = new PropertyConfig[uidPropnames.length];
+			// final Map<String, PropertyConfig> cfgMap = this.getProperties();
+			for (int i = 0; i < uidPropnames.length; i++)
+			{
+				// uidProperties[i] = cfgMap.get(uidPropnames[i]);
+				uidProperties[i] = this.getPropertyConfigByName(uidPropnames[i]);
+			}
+		}
+		return this.uidProperties;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getProperties()
+	 */
+	@Override
+	public Map<String, T> getProperties()
+	{
+		return this.properties;
+	}
+
+	@Override
+	public T getPropertyConfigByName(String propertyName)
+	{
+		return this.properties.get(propertyName);
+	}
+
+	public void addPropertyConfig(T propCfg)
+	{
+		getProperties().put(propCfg.getId(), propCfg);
+		this.isPropertiesInitialized = false;
+	}
+
+	@Override
+	public T removePropertyConfigByName(String propertyId)
+	{
+		// TODO: reseting is initialized is not enough when removing a property includes removing a node
+		return getProperties().remove(propertyId);
+	}
+
+	@Override
+	public Map<String, T> removeAllProperties()
+	{
+		Map<String, T> result = new HashMap<String, T>(this.properties);
+		this.properties.clear();
+		return result;
+	}
+
+
+	protected void setDefaults()
+	{
+		// default propertyconfig lookup
+		this.properties = this.createDefaultProperties();
+
+		// default UID property lookup
+		if (type.isAnnotationPresent(GraphNode.class))
+		{
+			final GraphNode cfg = type.getAnnotation(GraphNode.class);
+			if (cfg.uidProperties().trim().length() > 0)
+			{
+				setUidPropertyNames(cfg.uidProperties());
+			}
+		}
+
+	}
+
+	private Map<String, T> createDefaultProperties()
+	{
+		final Map<String, T> result = new LinkedHashMap<String, T>();
+		final Map<String, Method[]> props = AbstractPropertyConfig.getPropertiesFor(getType());
+		for (final String propertyName : props.keySet())
+		{
+			final T propCfg = this.createPropertyConfig(propertyName);
+			if (propCfg.getReadMethod() != null || propCfg.getWriteMethod() != null)
+			{
+				result.put(propCfg.getId(), propCfg);
+			}
+		}
+		return result;
+	}
+
+
+	protected abstract T createPropertyConfig(final String propertyName);
 
 }

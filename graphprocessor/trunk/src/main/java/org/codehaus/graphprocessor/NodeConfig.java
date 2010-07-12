@@ -2,11 +2,13 @@ package org.codehaus.graphprocessor;
 
 import java.util.Map;
 
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+
 
 /**
  * Describes a single node from a graph.
  */
-public interface NodeConfig<T extends PropertyConfig, G extends GraphConfig>
+public interface NodeConfig<T extends PropertyConfig>
 {
 
 	/**
@@ -25,6 +27,13 @@ public interface NodeConfig<T extends PropertyConfig, G extends GraphConfig>
 	 */
 	T[] getUidProperties();
 
+	/**
+	 * Returns a {@link PropertyConfig} for a mapping whose source and target property name are matching passed name.
+	 * 
+	 * @param propertyName
+	 *           name of source and target property
+	 * @return {@link BidiPropertyConfig}
+	 */
 	T getPropertyConfigByName(String propertyName);
 
 	T removePropertyConfigByName(String propertyName);
@@ -38,7 +47,7 @@ public interface NodeConfig<T extends PropertyConfig, G extends GraphConfig>
 	 */
 	Map<String, T> getProperties();
 
-	G getGraphConfig();
+	GraphConfig getGraphConfig();
 
 	boolean isVirtual();
 

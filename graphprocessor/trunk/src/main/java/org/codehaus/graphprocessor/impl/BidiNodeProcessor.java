@@ -75,7 +75,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 			nodeCtx.setTargetNodeValue(target);
 
 
-			// second: create a new instance for 'target' 
+			// second: create a new instance for 'target'
 			if (target == null)
 			{
 				// target lookup strategy 2:
@@ -119,9 +119,13 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 
 	/**
 	 * Processes all properties of current Node.
-	 * @param nodeCtx {@link NodeContextImpl} current node context
-	 * @param source source node value
-	 * @param target target node value (never null)
+	 * 
+	 * @param nodeCtx
+	 *           {@link NodeContextImpl} current node context
+	 * @param source
+	 *           source node value
+	 * @param target
+	 *           target node value (never null)
 	 */
 	protected void processProperties(final NodeContextImpl nodeCtx, final Object source, final Object target)
 	{
@@ -134,11 +138,11 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 			property.getProcessor().process(propCtx, source, target);
 		}
 
-		// NEW: process virtual write properties from target node 
-		Map<String, PropertyConfig> props = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig().getProperties();
-		for (Map.Entry<String, PropertyConfig> entry : props.entrySet())
+		// NEW: process virtual write properties from target node
+		Map<String, BidiPropertyConfig> props = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig().getProperties();
+		for (Map.Entry<String, BidiPropertyConfig> entry : props.entrySet())
 		{
-			BidiPropertyConfig property = (BidiPropertyConfig) entry.getValue();
+			BidiPropertyConfig property = entry.getValue();
 			if (property.isVirtualWrite())
 			{
 				PropertyConfig sourcePropertyConfig = new VirtualPropertyConfig(property);
@@ -181,7 +185,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 		}
 		else
 		{
-			//XXX: this one triggers the Getter (lazy-loading) of an optional available parent model
+			// XXX: this one triggers the Getter (lazy-loading) of an optional available parent model
 			result = this.getValueFromParentNode(nodeCtx);
 
 			// strategy 1: ask nodefactory
@@ -207,27 +211,27 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 		return (T) result;
 	}
 
-	//	/**
-	//	 * Get UID (if any) for passed node value.
-	//	 * 
-	//	 * @param nodeCtx
-	//	 * @param srcNodeValue
-	//	 * @return
-	//	 */
-	//	private Object getValueId(final NodeContext nodeCtx, final Object srcNodeValue)
-	//	{
-	//		Object result = this.getNodeValueUID(nodeCtx, srcNodeValue);
-	//		if (result == null)
-	//		{
-	//			result = Integer.valueOf(srcNodeValue.hashCode());
-	//		}
-	//		return result;
-	//	}
+	// /**
+	// * Get UID (if any) for passed node value.
+	// *
+	// * @param nodeCtx
+	// * @param srcNodeValue
+	// * @return
+	// */
+	// private Object getValueId(final NodeContext nodeCtx, final Object srcNodeValue)
+	// {
+	// Object result = this.getNodeValueUID(nodeCtx, srcNodeValue);
+	// if (result == null)
+	// {
+	// result = Integer.valueOf(srcNodeValue.hashCode());
+	// }
+	// return result;
+	// }
 
 	// getValueUID
 	private Object getValueId(final NodeContext nodeCtx, final Object srcNodeValue)
 	{
-		// take all properties which are configured to be taken for creation of a 'uid' 
+		// take all properties which are configured to be taken for creation of a 'uid'
 		final PropertyConfig[] uidProps = nodeCtx.getNodeConfig().getUidProperties();
 		Object result = null;
 		if (uidProps != null && uidProps.length > 0)
@@ -290,6 +294,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 
 	/**
 	 * Get node value from parent node value. Used to enable "merging" with already existing properties at target node
+	 * 
 	 * @param nodeCtx
 	 * @return Object
 	 */
@@ -300,7 +305,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 		// take parent context
 		final PropertyContextImpl parentPropCtx = nodeCtx.getParentContext();
 
-		// root nodes have no parent 
+		// root nodes have no parent
 		// child nodes have at least two parents (the property and the node which this property belongs too))
 		if (parentPropCtx != null && !parentPropCtx.getParentContext().getNodeConfig().isVirtual())
 		{

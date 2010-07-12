@@ -4,15 +4,15 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.AbstractPropertyConfig;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.impl.BidiPropertyProcessor;
-import org.codehaus.graphprocessor.single.DefaultPropertyConfig;
 
 
 
-public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements BidiPropertyConfig
+public class DefaultBidiPropertyConfig extends AbstractPropertyConfig<BidiNodeConfig> implements BidiPropertyConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiPropertyConfig.class);
 
@@ -60,7 +60,7 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 	@Override
 	public BidiNodeConfig getNodeConfig()
 	{
-		return (BidiNodeConfig) super.getNodeConfig();
+		return super.getNodeConfig();
 	}
 
 
@@ -72,32 +72,34 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 
 	/**
 	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed graph.
-	 * @param complianceLevel various levels for error handling
+	 * 
+	 * @param complianceLevel
+	 *           various levels for error handling
 	 * @return true when compiling was successful
 	 */
 	@Override
 	public boolean initialize(final int complianceLevel)
 	{
-		//		// read-write PropertyConfig must be compiled in case this PropertyMapping was created with
-		//		// read/write property names (and no concrete read/write methods)
-		//		if (!this.isPropertyCfgInitialized)
-		//		{
-		//			final PropertyConfig pRead = nodeMapping.getSourceConfig().getProperties().get(this.readPropertyConfig.getName());
-		//			final PropertyConfig pWrite = nodeMapping.getTargetConfig().getProperties().get(this.writePropertyConfig.getName());
-		//			this.readPropertyConfig.mergeWith(pRead);
-		//			this.writePropertyConfig.mergeWith(pWrite);
-		//			this.isPropertyCfgInitialized = true;
-		//		}
+		// // read-write PropertyConfig must be compiled in case this PropertyMapping was created with
+		// // read/write property names (and no concrete read/write methods)
+		// if (!this.isPropertyCfgInitialized)
+		// {
+		// final PropertyConfig pRead = nodeMapping.getSourceConfig().getProperties().get(this.readPropertyConfig.getName());
+		// final PropertyConfig pWrite = nodeMapping.getTargetConfig().getProperties().get(this.writePropertyConfig.getName());
+		// this.readPropertyConfig.mergeWith(pRead);
+		// this.writePropertyConfig.mergeWith(pWrite);
+		// this.isPropertyCfgInitialized = true;
+		// }
 		//
-		//		final Method writeMethod = getWriteMethod();
+		// final Method writeMethod = getWriteMethod();
 
 		this.isInitialized = this.isVirtualRead() || this.isVirtualWrite();
 		boolean hasTarget = this.targetProperty != null && this.targetProperty.getWriteMethod() != null;
 
 		if (hasTarget)
 		{
-			//			this.readAnnotationConfiguration();
-			//			isInitialized = this.isVirtual();
+			// this.readAnnotationConfiguration();
+			// isInitialized = this.isVirtual();
 
 			// read-property of source node type must provide read-method access
 			// write-property of target node type must provide write-method access
@@ -112,7 +114,8 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 				if (nodeCfg != null)
 				{
 					// XXX: special handling for collections
-					// no type check here because it's valid to have mismatches like List<->Set (CollectionNodeProcessor converts automatically)
+					// no type check here because it's valid to have mismatches like List<->Set (CollectionNodeProcessor converts
+					// automatically)
 					if (Collection.class.isAssignableFrom(targetProperty.getWriteType()))
 					{
 						this._isNode = true;
@@ -124,7 +127,7 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 						final Class writeType = targetProperty.getWriteType();
 
 						// compiled successfully if read and write type are compatible
-						// (including possible  read/write interceptors)
+						// (including possible read/write interceptors)
 						this.isInitialized = writeType.isAssignableFrom(readType);
 
 						if (!this.isInitialized && !this._isTypeCheckEnabled)
@@ -140,7 +143,7 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 					final Class writeType = targetProperty.getWriteType();
 
 					// compiled successfully if read and write type are compatible
-					// (including possible  read/write interceptors)
+					// (including possible read/write interceptors)
 					this.isInitialized = writeType.isAssignableFrom(readType);
 
 					if (!this.isInitialized && !this._isTypeCheckEnabled)
@@ -177,18 +180,19 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 		return isInitialized;
 	}
 
-	//	private void readAnnotationConfiguration()
-	//	{
-	//		final Method write = this.targetProperty.getWriteMethod();
-	//		if (write != null && write.isAnnotationPresent(GraphProperty.class))
-	//		{
-	//			final GraphProperty writeAnno = write.getAnnotation(GraphProperty.class);
-	//			this._isVirtual = writeAnno.virtual();
-	//		}
-	//	}
+	// private void readAnnotationConfiguration()
+	// {
+	// final Method write = this.targetProperty.getWriteMethod();
+	// if (write != null && write.isAnnotationPresent(GraphProperty.class))
+	// {
+	// final GraphProperty writeAnno = write.getAnnotation(GraphProperty.class);
+	// this._isVirtual = writeAnno.virtual();
+	// }
+	// }
 
 	/**
 	 * Enhanced toString representation. Use carefully as this method has an performance impact.
+	 * 
 	 * @return String representation
 	 */
 	@Override
@@ -272,7 +276,7 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 		}
 
 
-		// add conflicts 
+		// add conflicts
 		String conflicts = "";
 		if (!isInitialized())
 		{
@@ -303,7 +307,7 @@ public class DefaultBidiPropertyConfig extends DefaultPropertyConfig implements 
 			}
 		}
 
-		// start creating final log message 
+		// start creating final log message
 		final String logMsg = read + transformed + write + flags + conflicts;
 
 

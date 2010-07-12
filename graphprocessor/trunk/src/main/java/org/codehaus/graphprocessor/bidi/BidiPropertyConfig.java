@@ -3,11 +3,11 @@ package org.codehaus.graphprocessor.bidi;
 import org.codehaus.graphprocessor.PropertyConfig;
 
 
-public interface BidiPropertyConfig extends PropertyConfig
+public interface BidiPropertyConfig extends PropertyConfig<BidiNodeConfig>
 {
 	BidiPropertyConfig getTargetProperty();
 
-	BidiNodeConfig getNodeConfig();
+	// BidiNodeConfig getNodeConfig();
 
 	boolean isNode();
 

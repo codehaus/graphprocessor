@@ -34,6 +34,7 @@ import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyProcessor;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.single.DefaultPropertyConfig;
 
 
@@ -67,8 +68,8 @@ public class BidiPropertyProcessor implements PropertyProcessor
 
 
 		// DEBUG output
-		//if (log.isDebugEnabled() && ((AbstractNodeMapping) pCtxImpl.getPropertyConfig().getParentMapping()).isDebugEnabled())
-		if (log.isDebugEnabled() && ((AbstractNodeConfig) pCtxImpl.getPropertyConfig().getNodeConfig()).isDebugEnabled())
+		// if (log.isDebugEnabled() && ((AbstractNodeMapping) pCtxImpl.getPropertyConfig().getParentMapping()).isDebugEnabled())
+		if (log.isDebugEnabled() && ((DefaultBidiNodeConfig) pCtxImpl.getPropertyConfig().getNodeConfig()).isDebugEnabled())
 		{
 			final String logMsg = propertyConfig.toExtString();
 			final String pre = "[" + pCtx.getParentContext().getRealDistance() + ":" + propertyConfig.getName() + "] config: ";
@@ -153,7 +154,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 		if (!isFiltered)
 		{
 			// target value is 'null' when any read-error occurs or conversion has failed
-			// in any other case it's a converted source value or source value itself 
+			// in any other case it's a converted source value or source value itself
 			this.writeValueToTarget(pCtxImpl, target, value);
 		}
 
@@ -191,8 +192,11 @@ public class BidiPropertyProcessor implements PropertyProcessor
 
 	/**
 	 * Reads a property value from source node.
-	 * @param pCtx {@link PropertyContext}
-	 * @param source source node
+	 * 
+	 * @param pCtx
+	 *           {@link PropertyContext}
+	 * @param source
+	 *           source node
 	 * @return value
 	 */
 	private Object readValueFromSource(final PropertyContextImpl pCtx, final Object source)
@@ -226,66 +230,66 @@ public class BidiPropertyProcessor implements PropertyProcessor
 	}
 
 
-	//	private void writeValueToTarget(final PropertyContextImpl pCtx, final Object target, Object value)
-	//	{
-	//		final PropertyConfig pMap = pCtx.getPropertyConfig();
+	// private void writeValueToTarget(final PropertyContextImpl pCtx, final Object target, Object value)
+	// {
+	// final PropertyConfig pMap = pCtx.getPropertyConfig();
 	//
-	//		final Method writeMethod = pMap.getTargetConfig().getWriteMethod();
+	// final Method writeMethod = pMap.getTargetConfig().getWriteMethod();
 	//
-	//		// write target value
-	//		// target value is 'null' when any read-error occurs or conversion has failed
-	//		// in any other case it's a converted source value or source value itself
+	// // write target value
+	// // target value is 'null' when any read-error occurs or conversion has failed
+	// // in any other case it's a converted source value or source value itself
 	//
-	//		// invoke interceptor (if available) 
-	//		if (pMap.getTargetConfig().getWriteInterceptor() != null)
-	//		{
-	//			try
-	//			{
-	//				// when propertymapping is of type 'node' we have to do an additional compatibility check here because
-	//				// it may be, that a node was converted into an another type
-	//				//				if (pCtx.getPropertyMapping().isNode())
-	//				//				{
-	//				//					final PropertyMapping propMap = pCtx.getPropertyMapping();
-	//				//					final Class writeType = propMap.getTargetPropertyConfig().getWriteType();
-	//				//					if (!writeType.isAssignableFrom(value.getClass()))
-	//				//					{
-	//				//						throw new GraphException("Property '" + propMap.getId() + "' was processed as node and transformed into "
-	//				//								+ value.getClass().getSimpleName() + " but interceptor needs " + writeType.getSimpleName());
-	//				//					}
-	//				//
-	//				//				}
-	//				value = pMap.getTargetConfig().getWriteInterceptor().intercept(pCtx, value);
-	//			}
-	//			// any kind of exception gets caught, useful log output gets produced
-	//			// property setter gets not invoked (method is left)
-	//			catch (final Exception e)
-	//			{
-	//				final String name = pMap.getTargetConfig().getWriteInterceptor().getClass().getSimpleName();
-	//				log.error("Error while processing write property interceptor '" + name + "' at property "
-	//						+ pCtx.createTargetPathString(), e);
-	//				return;
-	//			}
-	//		}
+	// // invoke interceptor (if available)
+	// if (pMap.getTargetConfig().getWriteInterceptor() != null)
+	// {
+	// try
+	// {
+	// // when propertymapping is of type 'node' we have to do an additional compatibility check here because
+	// // it may be, that a node was converted into an another type
+	// // if (pCtx.getPropertyMapping().isNode())
+	// // {
+	// // final PropertyMapping propMap = pCtx.getPropertyMapping();
+	// // final Class writeType = propMap.getTargetPropertyConfig().getWriteType();
+	// // if (!writeType.isAssignableFrom(value.getClass()))
+	// // {
+	// // throw new GraphException("Property '" + propMap.getId() + "' was processed as node and transformed into "
+	// // + value.getClass().getSimpleName() + " but interceptor needs " + writeType.getSimpleName());
+	// // }
+	// //
+	// // }
+	// value = pMap.getTargetConfig().getWriteInterceptor().intercept(pCtx, value);
+	// }
+	// // any kind of exception gets caught, useful log output gets produced
+	// // property setter gets not invoked (method is left)
+	// catch (final Exception e)
+	// {
+	// final String name = pMap.getTargetConfig().getWriteInterceptor().getClass().getSimpleName();
+	// log.error("Error while processing write property interceptor '" + name + "' at property "
+	// + pCtx.createTargetPathString(), e);
+	// return;
+	// }
+	// }
 	//
-	//		try
-	//		{
-	//			writeMethod.invoke(target, value);
-	//		}
-	//		catch (final Exception e)
-	//		{
-	//			log.error("Error writing " + pCtx.createTargetPathString());
-	//			if (writeMethod.getDeclaringClass().isAssignableFrom(target.getClass()))
-	//			{
-	//				final String actualType = (value != null) ? value.getClass().getName() : "null";
-	//				final String expectedType = writeMethod.getParameterTypes()[0].getName();
-	//				log.error("Error invoking method (used type '" + actualType + "' as parameter for '" + expectedType + "')", e);
-	//			}
-	//			else
-	//			{
-	//				log.error("Error invoking method '" + writeMethod.toString() + "' at class " + target.getClass().getSimpleName(), e);
-	//			}
-	//		}
-	//	}
+	// try
+	// {
+	// writeMethod.invoke(target, value);
+	// }
+	// catch (final Exception e)
+	// {
+	// log.error("Error writing " + pCtx.createTargetPathString());
+	// if (writeMethod.getDeclaringClass().isAssignableFrom(target.getClass()))
+	// {
+	// final String actualType = (value != null) ? value.getClass().getName() : "null";
+	// final String expectedType = writeMethod.getParameterTypes()[0].getName();
+	// log.error("Error invoking method (used type '" + actualType + "' as parameter for '" + expectedType + "')", e);
+	// }
+	// else
+	// {
+	// log.error("Error invoking method '" + writeMethod.toString() + "' at class " + target.getClass().getSimpleName(), e);
+	// }
+	// }
+	// }
 
 	private void writeValueToTarget(final PropertyContextImpl pCtx, final Object target, Object value)
 	{
@@ -297,24 +301,24 @@ public class BidiPropertyProcessor implements PropertyProcessor
 		// target value is 'null' when any read-error occurs or conversion has failed
 		// in any other case it's a converted source value or source value itself
 
-		// invoke interceptor (if available) 
+		// invoke interceptor (if available)
 		if (pMap.getTargetProperty().getWriteInterceptor() != null)
 		{
 			try
 			{
 				// when propertymapping is of type 'node' we have to do an additional compatibility check here because
 				// it may be, that a node was converted into an another type
-				//				if (pCtx.getPropertyMapping().isNode())
-				//				{
-				//					final PropertyMapping propMap = pCtx.getPropertyMapping();
-				//					final Class writeType = propMap.getTargetPropertyConfig().getWriteType();
-				//					if (!writeType.isAssignableFrom(value.getClass()))
-				//					{
-				//						throw new GraphException("Property '" + propMap.getId() + "' was processed as node and transformed into "
-				//								+ value.getClass().getSimpleName() + " but interceptor needs " + writeType.getSimpleName());
-				//					}
+				// if (pCtx.getPropertyMapping().isNode())
+				// {
+				// final PropertyMapping propMap = pCtx.getPropertyMapping();
+				// final Class writeType = propMap.getTargetPropertyConfig().getWriteType();
+				// if (!writeType.isAssignableFrom(value.getClass()))
+				// {
+				// throw new GraphException("Property '" + propMap.getId() + "' was processed as node and transformed into "
+				// + value.getClass().getSimpleName() + " but interceptor needs " + writeType.getSimpleName());
+				// }
 				//
-				//				}
+				// }
 				value = pMap.getTargetProperty().getWriteInterceptor().intercept(pCtx, value);
 			}
 			// any kind of exception gets caught, useful log output gets produced
@@ -322,8 +326,9 @@ public class BidiPropertyProcessor implements PropertyProcessor
 			catch (final Exception e)
 			{
 				final String name = pMap.getTargetProperty().getWriteInterceptor().getClass().getSimpleName();
-				log.error("Error while processing write property interceptor '" + name + "' at property "
-						+ pCtx.createTargetPathString(), e);
+				log.error(
+						"Error while processing write property interceptor '" + name + "' at property " + pCtx.createTargetPathString(),
+						e);
 				return;
 			}
 		}

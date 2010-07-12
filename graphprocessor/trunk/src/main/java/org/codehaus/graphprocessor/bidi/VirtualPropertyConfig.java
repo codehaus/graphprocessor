@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.PropertyProcessor;
@@ -35,7 +34,7 @@ public class VirtualPropertyConfig implements BidiPropertyConfig
 	}
 
 	@Override
-	public List<NodeConfig> getNewNodeConfigs()
+	public List<BidiNodeConfig> getNewNodeConfigs()
 	{
 		return Collections.EMPTY_LIST;
 	}

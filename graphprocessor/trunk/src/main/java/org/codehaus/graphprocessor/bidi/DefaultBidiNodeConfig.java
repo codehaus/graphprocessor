@@ -3,16 +3,15 @@ package org.codehaus.graphprocessor.bidi;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.AbstractNodeConfig;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeFactory;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
-import org.codehaus.graphprocessor.single.DefaultNodeConfig;
-import org.codehaus.graphprocessor.single.DefaultPropertyConfig;
 
 
 
-public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNodeConfig
+public class DefaultBidiNodeConfig extends AbstractNodeConfig<BidiPropertyConfig> implements BidiNodeConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiNodeConfig.class);
 
@@ -23,6 +22,7 @@ public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNode
 	/**
 	 * Create a bidirectional {@link NodeConfig} which is bound to a {@link BidiGraphConfig} and a node type which is taken as
 	 * source node.
+	 * 
 	 * @param graphConfig
 	 * @param type
 	 */
@@ -90,6 +90,7 @@ public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNode
 	 * Private Constructor.
 	 * <p/>
 	 * Used to create a circular reference between two NodeConfig instances.
+	 * 
 	 * @param graphConfig
 	 * @param type
 	 * @param target
@@ -130,6 +131,13 @@ public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNode
 		return this.targetNode;
 	}
 
+	@Override
+	protected boolean initializeNode()
+	{
+		return true;
+	}
+
+
 
 	@Override
 	public BidiGraphConfig getGraphConfig()
@@ -143,7 +151,7 @@ public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNode
 	 * .String)
 	 */
 	@Override
-	protected DefaultPropertyConfig createPropertyConfig(final String id)
+	protected BidiPropertyConfig createPropertyConfig(final String id)
 	{
 		final DefaultBidiPropertyConfig result = new DefaultBidiPropertyConfig(this, id);
 		if (result.getTargetProperty().getReadMethod() == null && result.getTargetProperty().getWriteMethod() == null)
@@ -197,7 +205,7 @@ public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNode
 	@Override
 	public BidiPropertyConfig getPropertyConfigByName(String source, String target)
 	{
-		return (BidiPropertyConfig) getProperties().get(source + "-" + target);
+		return getProperties().get(source + "-" + target);
 	}
 
 	@Override
@@ -209,7 +217,7 @@ public class DefaultBidiNodeConfig extends DefaultNodeConfig implements BidiNode
 	@Override
 	public BidiPropertyConfig removePropertyConfigByName(String propertyName, String targetPropName)
 	{
-		return (BidiPropertyConfig) super.removePropertyConfigByName(propertyName + "-" + targetPropName);
+		return super.removePropertyConfigByName(propertyName + "-" + targetPropName);
 	}
 
 	private void initMetaData(Class type)
