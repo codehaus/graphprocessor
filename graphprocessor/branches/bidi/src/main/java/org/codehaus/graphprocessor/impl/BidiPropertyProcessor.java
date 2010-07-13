@@ -24,18 +24,17 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
+import org.codehaus.graphprocessor.AbstractPropertyConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyProcessor;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
-import org.codehaus.graphprocessor.single.DefaultPropertyConfig;
 
 
 
@@ -49,7 +48,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 	{
 		// TODO: type safety?
 		final PropertyContextImpl pCtxImpl = (PropertyContextImpl) pCtx;
-		final BidiPropertyConfig propertyConfig = (BidiPropertyConfig) pCtx.getPropertyConfig();
+		final BidiPropertyConfig propertyConfig = pCtx.getPropertyConfig();
 
 
 		final GraphContext graphCtx = pCtx.getGraphContext();
@@ -61,7 +60,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 			// lazy compile when necessary
 			if (!init.isInitialized())
 			{
-				init.initialize(DefaultPropertyConfig.COMPLIANCE_LEVEL_HIGH);
+				init.initialize(AbstractPropertyConfig.COMPLIANCE_LEVEL_HIGH);
 			}
 
 		}
@@ -201,7 +200,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 	 */
 	private Object readValueFromSource(final PropertyContextImpl pCtx, final Object source)
 	{
-		final PropertyConfig pMap = pCtx.getPropertyConfig();
+		final BidiPropertyConfig pMap = pCtx.getPropertyConfig();
 
 		Object value = null;
 		// read and optionally convert value from source graph
@@ -293,7 +292,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 
 	private void writeValueToTarget(final PropertyContextImpl pCtx, final Object target, Object value)
 	{
-		final BidiPropertyConfig pMap = (BidiPropertyConfig) pCtx.getPropertyConfig();
+		final BidiPropertyConfig pMap = pCtx.getPropertyConfig();
 
 		final Method writeMethod = pMap.getTargetProperty().getWriteMethod();
 

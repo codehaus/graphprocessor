@@ -1,13 +1,13 @@
 package org.codehaus.graphprocessor.impl;
 
 import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProcessor;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 
 
 public class BidiGraphProcessor implements GraphProcessor
@@ -31,7 +31,7 @@ public class BidiGraphProcessor implements GraphProcessor
 	public <T> T process(final GraphContextImpl graphCtx, final Object source, final T target)
 	{
 		// TODO: typecheck?
-		GraphConfig graphCfg = graphCtx.getGraphConfig();
+		BidiGraphConfig graphCfg = graphCtx.getGraphConfig();
 		if (graphCfg instanceof Initializable)
 		{
 			Initializable init = (Initializable) graphCfg;
@@ -47,13 +47,13 @@ public class BidiGraphProcessor implements GraphProcessor
 		}
 
 		// create nodeLookup to lookup root node
-		final CachedClassLookupMap<NodeConfig> nodeLookup = ((GraphConfigurationImpl) graphCtx.getConfiguration())
+		final CachedClassLookupMap<BidiNodeConfig> nodeLookup = ((GraphConfigurationImpl) graphCtx.getConfiguration())
 				.getAllNodeConfigs(0);
-		final NodeConfig nodeMapping = nodeLookup.get(source.getClass());
+		final BidiNodeConfig nodeMapping = nodeLookup.get(source.getClass());
 
 		if (nodeMapping == null)
 		{
-			throw new GraphException("Can't find a " + NodeConfig.class.getSimpleName() + " for " + source.getClass());
+			throw new GraphException("Can't find a " + BidiNodeConfig.class.getSimpleName() + " for " + source.getClass());
 		}
 
 		// create nodeLookup used for root nodes childs

@@ -22,12 +22,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphConfiguration;
 import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.PropertyFilter;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 
 
 
@@ -45,9 +45,9 @@ public class GraphContextImpl implements GraphContext
 
 	protected GraphConfigurationImpl graphConfigImpl = null;
 
-	private GraphConfig graphConfig = null;
+	private BidiGraphConfig graphConfig = null;
 
-	//TODO; currently used as unsafe node cache in (ID->node)
+	// TODO; currently used as unsafe node cache in (ID->node)
 	protected Map attributes = null;
 
 	protected Map srcNodeValueMap = null;
@@ -61,9 +61,11 @@ public class GraphContextImpl implements GraphContext
 
 	/**
 	 * Constructor.
-	 * @param objGraph {@link GraphConfig}
+	 * 
+	 * @param objGraph
+	 *           {@link BidiGraphConfig}
 	 */
-	public GraphContextImpl(final GraphConfig objGraph)
+	public GraphContextImpl(final BidiGraphConfig objGraph)
 	{
 
 		this.graphConfig = objGraph;
@@ -74,7 +76,7 @@ public class GraphContextImpl implements GraphContext
 		this.srcNodeValueMap = new HashMap();
 		this.srcNodeIdMap = new HashMap();
 		this.attributes = new HashMap();
-		//this.graphConfigImpl = new GraphConfigurationImpl(graphTransformer.getNodeMappingsMap());
+		// this.graphConfigImpl = new GraphConfigurationImpl(graphTransformer.getNodeMappingsMap());
 		this.graphConfigImpl = new GraphConfigurationImpl(graphConfig.getNodes());
 
 	}
@@ -129,6 +131,7 @@ public class GraphContextImpl implements GraphContext
 	/**
 	 * Returns the most far away distance which was detected from start node. If graph processing is finished, it is the highest
 	 * distance for that graph at all.
+	 * 
 	 * @return highest distance (snapshot)
 	 */
 	public int getMaxDistance()
@@ -144,10 +147,11 @@ public class GraphContextImpl implements GraphContext
 
 
 	/**
-	 * Returns the {@link GraphConfig} which this context belongs to.
-	 * @return {@link GraphConfig}
+	 * Returns the {@link BidiGraphConfig} which this context belongs to.
+	 * 
+	 * @return {@link BidiGraphConfig}
 	 */
-	public GraphConfig getGraphConfig()
+	public BidiGraphConfig getGraphConfig()
 	{
 		return this.graphConfig;
 	}
@@ -156,6 +160,7 @@ public class GraphContextImpl implements GraphContext
 
 	/**
 	 * Returns a Map of already processed nodes.
+	 * 
 	 * @return Map
 	 */
 	public Map<Object, Object> getProcessedNodes()
@@ -171,22 +176,23 @@ public class GraphContextImpl implements GraphContext
 
 	/**
 	 * Creates an initial {@link NodeContext} (root node context)
+	 * 
 	 * @param rootNodeLookup
 	 * @param nodeMapping
 	 * @param source
 	 * @return {@link NodeContext}
 	 */
-	public NodeContext createRootNodeContext(final CachedClassLookupMap<NodeConfig> rootNodeLookup,
+	public NodeContext createRootNodeContext(final CachedClassLookupMap<BidiNodeConfig> rootNodeLookup,
 			final AbstractNodeConfig nodeMapping, final Object source)
 	{
 		NodeContext result = null;
 
 		// configured nodeLookup for distance 1
-		//final CachedClassLookupMap<NodeMapping> add = this.graphConfigImpl.getAllNodeMappings(1);
-		final CachedClassLookupMap<NodeConfig> add = this.graphConfigImpl.getAllNodeConfigs(1);
+		// final CachedClassLookupMap<NodeMapping> add = this.graphConfigImpl.getAllNodeMappings(1);
+		final CachedClassLookupMap<BidiNodeConfig> add = this.graphConfigImpl.getAllNodeConfigs(1);
 
-		// child nodes lookup is a merged result of current used node lookup and configured node lookup for next processing distance 
-		final CachedClassLookupMap<NodeConfig> childNodesLookup = this.buildChildNodeLookup(rootNodeLookup, add);
+		// child nodes lookup is a merged result of current used node lookup and configured node lookup for next processing distance
+		final CachedClassLookupMap<BidiNodeConfig> childNodesLookup = this.buildChildNodeLookup(rootNodeLookup, add);
 
 		this.setRuntimeNodeMappings(0, rootNodeLookup);
 		this.setRuntimeNodeMappings(1, childNodesLookup);
@@ -208,19 +214,20 @@ public class GraphContextImpl implements GraphContext
 
 
 
-	private final Map<Integer, CachedClassLookupMap<NodeConfig>> runtimeNodeMappings = new HashMap<Integer, CachedClassLookupMap<NodeConfig>>();
+	private final Map<Integer, CachedClassLookupMap<BidiNodeConfig>> runtimeNodeMappings = new HashMap<Integer, CachedClassLookupMap<BidiNodeConfig>>();
 
 	/**
 	 * Returns an already calculated {@link CachedClassLookupMap}.
+	 * 
 	 * @param distance
 	 * @return {@link CachedClassLookupMap}
 	 */
-	protected CachedClassLookupMap<NodeConfig> getRuntimeNodeMappings(final int distance)
+	protected CachedClassLookupMap<BidiNodeConfig> getRuntimeNodeMappings(final int distance)
 	{
 		return this.runtimeNodeMappings.get(Integer.valueOf(distance));
 	}
 
-	protected void setRuntimeNodeMappings(final int distance, final CachedClassLookupMap<NodeConfig> nodeLookup)
+	protected void setRuntimeNodeMappings(final int distance, final CachedClassLookupMap<BidiNodeConfig> nodeLookup)
 	{
 		this.runtimeNodeMappings.put(Integer.valueOf(distance), nodeLookup);
 	}
@@ -228,17 +235,17 @@ public class GraphContextImpl implements GraphContext
 
 
 
-	protected CachedClassLookupMap<NodeConfig> buildChildNodeLookup(final CachedClassLookupMap<NodeConfig> base,
-			final CachedClassLookupMap<NodeConfig> add)
+	protected CachedClassLookupMap<BidiNodeConfig> buildChildNodeLookup(final CachedClassLookupMap<BidiNodeConfig> base,
+			final CachedClassLookupMap<BidiNodeConfig> add)
 	{
 		// by default result is same instance as base
-		CachedClassLookupMap<NodeConfig> result = base;
+		CachedClassLookupMap<BidiNodeConfig> result = base;
 
-		// merge only when 'add' is not same as 'base'  
+		// merge only when 'add' is not same as 'base'
 		if (base != add)
 		{
-			// take static configuration 
-			final Collection<NodeConfig> _add = add.getStaticMap().values();
+			// take static configuration
+			final Collection<BidiNodeConfig> _add = add.getStaticMap().values();
 			// and merge with 'base'
 			result = buildChildNodeLookup(base, _add);
 		}
@@ -247,21 +254,21 @@ public class GraphContextImpl implements GraphContext
 
 
 
-	protected CachedClassLookupMap<NodeConfig> buildChildNodeLookup(final CachedClassLookupMap<NodeConfig> base,
-			final Collection<NodeConfig> add)
+	protected CachedClassLookupMap<BidiNodeConfig> buildChildNodeLookup(final CachedClassLookupMap<BidiNodeConfig> base,
+			final Collection<BidiNodeConfig> add)
 	{
 		// by default result is same instance as base
-		CachedClassLookupMap<NodeConfig> result = base;
+		CachedClassLookupMap<BidiNodeConfig> result = base;
 
-		// merge only when collection is not empty... 
+		// merge only when collection is not empty...
 		if (add != null && !add.isEmpty())
 		{
-			// ... create a new result instance 
-			result = new CachedClassLookupMap<NodeConfig>();
-			// ... all static elements (no elements which were dynamically found) of base  
+			// ... create a new result instance
+			result = new CachedClassLookupMap<BidiNodeConfig>();
+			// ... all static elements (no elements which were dynamically found) of base
 			result.putAll(base.getStaticMap());
-			// ... all passed NodeConfig elements 
-			for (final NodeConfig nodeCfg : add)
+			// ... all passed NodeConfig elements
+			for (final BidiNodeConfig nodeCfg : add)
 			{
 				result.put(nodeCfg.getType(), nodeCfg);
 			}

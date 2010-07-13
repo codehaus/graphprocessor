@@ -15,9 +15,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.GraphConfig;
-import org.codehaus.graphprocessor.NodeConfig;
-import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
@@ -86,8 +83,8 @@ public class ConfigObjectsTest
 		assertSame(srcGraph, dstGraph.getTargetConfig());
 
 		// assert circular nodeconfig
-		final NodeConfig srcNodeCfg = srcGraph.getNodeConfig(TuUserDTO.class);
-		final NodeConfig dstNodeCfg = dstGraph.getNodeConfig(TuUserModel.class);
+		final BidiNodeConfig srcNodeCfg = srcGraph.getNodeConfig(TuUserDTO.class);
+		final BidiNodeConfig dstNodeCfg = dstGraph.getNodeConfig(TuUserModel.class);
 
 		// we must have source and target NodeConfig
 		assertNotNull(srcNodeCfg);
@@ -97,8 +94,8 @@ public class ConfigObjectsTest
 		assertSame(dstGraph, dstNodeCfg.getGraphConfig());
 
 
-		PropertyConfig srcPropCfg = srcNodeCfg.getPropertyConfigByName("mainAddress");
-		PropertyConfig dstPropCfg = dstNodeCfg.getPropertyConfigByName("mainAddress");
+		BidiPropertyConfig srcPropCfg = srcNodeCfg.getPropertyConfigByName("mainAddress");
+		BidiPropertyConfig dstPropCfg = dstNodeCfg.getPropertyConfigByName("mainAddress");
 
 		// we must have source and target NodeConfig
 		assertNotNull(srcPropCfg);
@@ -117,7 +114,7 @@ public class ConfigObjectsTest
 		log.debug(dstPropCfg);
 	}
 
-	private void assertDtoGraphConfig(final GraphConfig graphCfg)
+	private void assertDtoGraphConfig(final BidiGraphConfig graphCfg)
 	{
 		// assert GraphConfig properties
 		List expected = Arrays.asList(TuUserDTO.class, TuCountryDTO.class, TuAddressDTO.class);
@@ -125,20 +122,20 @@ public class ConfigObjectsTest
 		assertTrue(graphCfg.getNodes().keySet().containsAll(expected));
 
 		// get NodeConfig for TuUserDTO
-		final NodeConfig nodeCfg = graphCfg.getNodeConfig(TuUserDTO.class);
+		final BidiNodeConfig nodeCfg = graphCfg.getNodeConfig(TuUserDTO.class);
 
 		// assert TuUserDTO NodeConfig properties
 		assertSame(graphCfg, nodeCfg.getGraphConfig());
 		assertEquals(TuUserDTO.class, nodeCfg.getType());
 
-		final Map<String, PropertyConfig> propertiesCfg = nodeCfg.getProperties();
+		final Map<String, BidiPropertyConfig> propertiesCfg = nodeCfg.getProperties();
 		expected = Arrays.asList("addresses-addresses", "class-class", "login-login", "mainAddress-mainAddress",
 				"password-password", "secondAddress-secondAddress", "uid-uid");
 		assertEquals(7, propertiesCfg.keySet().size());
 		assertTrue(propertiesCfg.keySet().containsAll(expected));
 	}
 
-	private void assertModelGraphConfig(final GraphConfig graphCfg)
+	private void assertModelGraphConfig(final BidiGraphConfig graphCfg)
 	{
 		// assert GraphConfig properties
 		List expected = Arrays.asList(TuUserModel.class, TuCountryModel.class, TuAddressModel.class);
@@ -146,13 +143,13 @@ public class ConfigObjectsTest
 		assertTrue(graphCfg.getNodes().keySet().containsAll(expected));
 
 		// get NodeConfig for TuUserDTO
-		final NodeConfig nodeCfg = graphCfg.getNodeConfig(TuUserModel.class);
+		final BidiNodeConfig nodeCfg = graphCfg.getNodeConfig(TuUserModel.class);
 
 		// assert TuUserDTO NodeConfig properties
 		assertSame(graphCfg, nodeCfg.getGraphConfig());
 		assertEquals(TuUserModel.class, nodeCfg.getType());
 
-		final Map<String, PropertyConfig> propertiesCfg = nodeCfg.getProperties();
+		final Map<String, BidiPropertyConfig> propertiesCfg = nodeCfg.getProperties();
 		expected = Arrays.asList("addresses-addresses", "class-class", "login-login", "mainAddress-mainAddress",
 				"password-password", "secondAddress-secondAddress", "uid-uid", "owner-owner");
 

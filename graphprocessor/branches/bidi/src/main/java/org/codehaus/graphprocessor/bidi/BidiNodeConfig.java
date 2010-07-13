@@ -1,10 +1,14 @@
 package org.codehaus.graphprocessor.bidi;
 
-import org.codehaus.graphprocessor.NodeConfig;
+import java.util.Map;
+
+import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.NodeFactory;
+import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.PropertyProcessor;
 
 
-public interface BidiNodeConfig extends NodeConfig
+public interface BidiNodeConfig
 {
 
 	BidiNodeConfig getTargetNodeConfig();
@@ -37,7 +41,6 @@ public interface BidiNodeConfig extends NodeConfig
 	BidiPropertyConfig removePropertyConfigByName(String propertyName, String targetPropName);
 
 
-	@Override
 	BidiGraphConfig getGraphConfig();
 
 	/**
@@ -46,5 +49,45 @@ public interface BidiNodeConfig extends NodeConfig
 	NodeFactory getNodeFactory();
 
 	boolean isDebugEnabled();
+
+
+
+
+
+	/**
+	 * Returns the type of this node.
+	 * 
+	 * @return type of node
+	 */
+	Class<?> getType();
+
+	/**
+	 * Returns all Properties which are marked 'unique'.
+	 * <p/>
+	 * For more information see {@link GraphNode#uidProperties()}
+	 * 
+	 * @return List of {@link BidiPropertyConfig}
+	 */
+	BidiPropertyConfig[] getUidProperties();
+
+	Map<String, BidiPropertyConfig> removeAllProperties();
+
+	/**
+	 * Returns a mapping of all {@link BidiPropertyConfig} for this node.
+	 * 
+	 * @return {@link BidiPropertyConfig} mapping
+	 */
+	Map<String, BidiPropertyConfig> getProperties();
+
+	boolean isVirtual();
+
+	/**
+	 * Returns the {@link NodeProcessor} which is used for processing this node.
+	 * 
+	 * @return {@link NodeProcessor}
+	 */
+	NodeProcessor getProcessor();
+
+	PropertyProcessor getPropertyProcessor(Class propertyType);
 
 }

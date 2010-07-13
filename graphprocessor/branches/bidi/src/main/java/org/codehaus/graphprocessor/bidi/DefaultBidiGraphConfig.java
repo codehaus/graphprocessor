@@ -3,7 +3,6 @@ package org.codehaus.graphprocessor.bidi;
 import org.codehaus.graphprocessor.AbstractGraphConfig;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
 
 
@@ -38,13 +37,13 @@ public class DefaultBidiGraphConfig extends AbstractGraphConfig implements BidiG
 	@Override
 	public BidiNodeConfig getNodeConfig(final Class node)
 	{
-		return (BidiNodeConfig) super.getNodeConfig(node);
+		return super.getNodeConfig(node);
 	}
 
 	@Override
 	public BidiNodeConfig getAssignableNodeConfig(Class nodeType)
 	{
-		return (BidiNodeConfig) super.getAssignableNodeConfig(nodeType);
+		return super.getAssignableNodeConfig(nodeType);
 	}
 
 	/*
@@ -53,12 +52,12 @@ public class DefaultBidiGraphConfig extends AbstractGraphConfig implements BidiG
 	 * webservices.util.objectgraphtransformer.NodeConfig)
 	 */
 	@Override
-	public void addNode(final NodeConfig nodeConfig)
+	public void addNode(final BidiNodeConfig nodeConfig)
 	{
 		if (nodeConfig instanceof BidiNodeConfig)
 		{
 			super.addNode(nodeConfig);
-			final BidiNodeConfig targetNode = ((BidiNodeConfig) nodeConfig).getTargetNodeConfig();
+			final BidiNodeConfig targetNode = (nodeConfig).getTargetNodeConfig();
 
 			// this.targetGraphCfg.nodesMap.put(targetNode.getType(), targetNode);
 			// need direct access to member to prevent an infinite cycle
@@ -90,7 +89,7 @@ public class DefaultBidiGraphConfig extends AbstractGraphConfig implements BidiG
 	{
 		boolean isInitialized = true;
 
-		for (final NodeConfig nodeCfg : getNodes().values())
+		for (final BidiNodeConfig nodeCfg : getNodes().values())
 		{
 			if (nodeCfg instanceof Initializable)
 			{
@@ -98,7 +97,7 @@ public class DefaultBidiGraphConfig extends AbstractGraphConfig implements BidiG
 				isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
 			}
 
-			BidiNodeConfig targetNode = ((BidiNodeConfig) nodeCfg).getTargetNodeConfig();
+			BidiNodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
 			if (targetNode instanceof Initializable)
 			{
 				// binary AND; no short-circuit

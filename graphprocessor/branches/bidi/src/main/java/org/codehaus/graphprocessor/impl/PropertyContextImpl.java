@@ -3,10 +3,10 @@ package org.codehaus.graphprocessor.impl;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
 import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
-import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
@@ -17,14 +17,14 @@ public class PropertyContextImpl implements PropertyContext
 {
 	private static final Logger log = Logger.getLogger(PropertyContextImpl.class);
 
-	private PropertyConfig propertyConfig = null;
+	private BidiPropertyConfig propertyConfig = null;
 	private GraphContextImpl graphCtx = null;
 	private NodeContextImpl parentNodeCtx = null;
-	private CachedClassLookupMap<NodeConfig> childNodeLookup = null;
+	private CachedClassLookupMap<BidiNodeConfig> childNodeLookup = null;
 
 
 	protected PropertyContextImpl(final GraphContextImpl graphCtx, final NodeContextImpl nodeCtx,
-			final PropertyConfig propertyMapping, final CachedClassLookupMap<NodeConfig> nodeLookup)
+			final BidiPropertyConfig propertyMapping, final CachedClassLookupMap<BidiNodeConfig> nodeLookup)
 	{
 		this.propertyConfig = propertyMapping;
 		this.graphCtx = graphCtx;
@@ -42,7 +42,7 @@ public class PropertyContextImpl implements PropertyContext
 
 
 	@Override
-	public PropertyConfig getPropertyConfig()
+	public BidiPropertyConfig getPropertyConfig()
 	{
 		return this.propertyConfig;
 	}
@@ -56,10 +56,9 @@ public class PropertyContextImpl implements PropertyContext
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyContext#getNodeMappingsMap()
 	 */
-	protected CachedClassLookupMap<NodeConfig> getChildNodeLookup()
+	protected CachedClassLookupMap<BidiNodeConfig> getChildNodeLookup()
 	{
 		return this.childNodeLookup;
 	}
@@ -77,13 +76,13 @@ public class PropertyContextImpl implements PropertyContext
 		}
 
 		// TODO: use childNode
-		CachedClassLookupMap<NodeConfig> nodeLookup = this.graphCtx.getRuntimeNodeMappings(distance);
+		CachedClassLookupMap<BidiNodeConfig> nodeLookup = this.graphCtx.getRuntimeNodeMappings(distance);
 
 		if (nodeLookup == null)
 		{
 			// ...nodeLookup from this property
-			final CachedClassLookupMap<NodeConfig> base = this.getChildNodeLookup();
-			final CachedClassLookupMap<NodeConfig> merge = this.graphCtx.graphConfigImpl.getAllNodeConfigs(distance);
+			final CachedClassLookupMap<BidiNodeConfig> base = this.getChildNodeLookup();
+			final CachedClassLookupMap<BidiNodeConfig> merge = this.graphCtx.graphConfigImpl.getAllNodeConfigs(distance);
 
 			// ...build
 			nodeLookup = this.graphCtx.buildChildNodeLookup(base, merge);

@@ -6,39 +6,43 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+
 
 
 /**
- * Abstract base implementation for {@link NodeConfig}
+ * Abstract base implementation for {@link BidiNodeConfig}
  */
-public abstract class AbstractNodeConfig implements NodeConfig, Initializable
+public abstract class AbstractNodeConfig implements BidiNodeConfig, Initializable
 {
 
 	protected boolean isNodeInitialized = false;
 	protected boolean isPropertiesInitialized = false;
 
-	private GraphConfig graphConfig = null;
+	private BidiGraphConfig graphConfig = null;
 	private NodeProcessor nodeProcessor = null;
 
 	private Class<?> type = null;
 	private String[] uidPropnames = null;
-	private PropertyConfig[] uidProperties = null;
-	private Map<String, PropertyConfig> properties = null;
+	private BidiPropertyConfig[] uidProperties = null;
+	private Map<String, BidiPropertyConfig> properties = null;
 	private boolean isVirtualNode = false;
 
-	public AbstractNodeConfig(final GraphConfig graphConfig)
+	public AbstractNodeConfig(final BidiGraphConfig graphConfig)
 	{
 		this.graphConfig = graphConfig;
 	}
 
-	public AbstractNodeConfig(final GraphConfig graphConfig, final Class<?> type)
+	public AbstractNodeConfig(final BidiGraphConfig graphConfig, final Class<?> type)
 	{
 		this.graphConfig = graphConfig;
 		this.type = type;
 	}
 
 	@Override
-	public GraphConfig getGraphConfig()
+	public BidiGraphConfig getGraphConfig()
 	{
 		return this.graphConfig;
 	}
@@ -67,21 +71,21 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	protected abstract boolean initializeNode();
 
 	/**
-	 * Initializes each {@link PropertyConfig} of this node.
+	 * Initializes each {@link BidiPropertyConfig} of this node.
 	 * <p/>
-	 * If {@link PropertyConfig} is already initialized, it gets skipped.<br/>
-	 * If {@link PropertyConfig} is not initialized, their initializer method gets called. If initialization fails, property gets
-	 * removed from that node.
+	 * If {@link BidiPropertyConfig} is already initialized, it gets skipped.<br/>
+	 * If {@link BidiPropertyConfig} is not initialized, their initializer method gets called. If initialization fails, property
+	 * gets removed from that node.
 	 * 
 	 * @return true when initialization succeeds
 	 */
 	protected boolean initializeProperties()
 	{
 		// initialize/refresh properties (when not already done)
-		final Map<String, PropertyConfig> properties = this.getProperties();
-		for (final Iterator<PropertyConfig> iter = properties.values().iterator(); iter.hasNext();)
+		final Map<String, BidiPropertyConfig> properties = this.getProperties();
+		for (final Iterator<BidiPropertyConfig> iter = properties.values().iterator(); iter.hasNext();)
 		{
-			final PropertyConfig pCfg = iter.next();
+			final BidiPropertyConfig pCfg = iter.next();
 			if (pCfg instanceof AbstractPropertyConfig)
 			{
 				final AbstractPropertyConfig aPropCfg = (AbstractPropertyConfig) pCfg;
@@ -190,18 +194,18 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	 * @param uidProperties
 	 *           the uidProperties to set
 	 */
-	public void setUidProperties(final PropertyConfig[] uidProperties)
+	public void setUidProperties(final BidiPropertyConfig[] uidProperties)
 	{
 		this.uidProperties = uidProperties;
 	}
 
 
 	@Override
-	public PropertyConfig[] getUidProperties()
+	public BidiPropertyConfig[] getUidProperties()
 	{
 		if (this.uidProperties == null && uidPropnames != null && uidPropnames.length > 0)
 		{
-			this.uidProperties = new PropertyConfig[uidPropnames.length];
+			this.uidProperties = new BidiPropertyConfig[uidPropnames.length];
 			// this.uidProperties = new PropertyConfig[uidPropnames.length];
 			// final Map<String, PropertyConfig> cfgMap = this.getProperties();
 			for (int i = 0; i < uidPropnames.length; i++)
@@ -218,34 +222,34 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getProperties()
 	 */
 	@Override
-	public Map<String, PropertyConfig> getProperties()
+	public Map<String, BidiPropertyConfig> getProperties()
 	{
 		return this.properties;
 	}
 
 	@Override
-	public PropertyConfig getPropertyConfigByName(String propertyName)
+	public BidiPropertyConfig getPropertyConfigByName(String propertyName)
 	{
 		return this.properties.get(propertyName);
 	}
 
-	public void addPropertyConfig(PropertyConfig propCfg)
+	public void addPropertyConfig(BidiPropertyConfig propCfg)
 	{
 		getProperties().put(propCfg.getId(), propCfg);
 		this.isPropertiesInitialized = false;
 	}
 
 	@Override
-	public PropertyConfig removePropertyConfigByName(String propertyId)
+	public BidiPropertyConfig removePropertyConfigByName(String propertyId)
 	{
 		// TODO: reseting is initialized is not enough when removing a property includes removing a node
 		return getProperties().remove(propertyId);
 	}
 
 	@Override
-	public Map<String, PropertyConfig> removeAllProperties()
+	public Map<String, BidiPropertyConfig> removeAllProperties()
 	{
-		Map<String, PropertyConfig> result = new HashMap<String, PropertyConfig>(this.properties);
+		Map<String, BidiPropertyConfig> result = new HashMap<String, BidiPropertyConfig>(this.properties);
 		this.properties.clear();
 		return result;
 	}
@@ -268,13 +272,13 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 
 	}
 
-	private Map<String, PropertyConfig> createDefaultProperties()
+	private Map<String, BidiPropertyConfig> createDefaultProperties()
 	{
-		final Map<String, PropertyConfig> result = new LinkedHashMap<String, PropertyConfig>();
+		final Map<String, BidiPropertyConfig> result = new LinkedHashMap<String, BidiPropertyConfig>();
 		final Map<String, Method[]> props = AbstractPropertyConfig.getPropertiesFor(getType());
 		for (final String propertyName : props.keySet())
 		{
-			final PropertyConfig propCfg = this.createPropertyConfig(propertyName);
+			final BidiPropertyConfig propCfg = this.createPropertyConfig(propertyName);
 			if (propCfg.getReadMethod() != null || propCfg.getWriteMethod() != null)
 			{
 				result.put(propCfg.getId(), propCfg);
@@ -284,6 +288,6 @@ public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 	}
 
 
-	protected abstract PropertyConfig createPropertyConfig(final String propertyName);
+	protected abstract BidiPropertyConfig createPropertyConfig(final String propertyName);
 
 }

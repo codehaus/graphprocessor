@@ -27,13 +27,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.GraphConfiguration;
 import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.PropertyContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
-import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
-import org.codehaus.graphprocessor.impl.GraphContextImpl;
-import org.codehaus.graphprocessor.impl.NodeContextImpl;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressModel;
 import org.codehaus.graphprocessor.samples.usergraph.TuCountryDTO;
@@ -117,7 +114,7 @@ public class NodeContextTest
 
 		// build 'actual' value
 		// i collect all information first instead of asserting each iteration step as this gives better
-		// analysis/debug options in case (after a refactoring?) some errors occur 
+		// analysis/debug options in case (after a refactoring?) some errors occur
 		final List actual = new ArrayList();
 		for (final List<NodeContext> nodePath : nodes)
 		{
@@ -130,13 +127,13 @@ public class NodeContextTest
 			actual.add(_actual);
 		}
 
-		// assert 
+		// assert
 		assertEquals(Arrays.asList(expected), actual);
 	}
 
 	/**
 	 * Tests processed properties for correct processing order. <br/>
-	 * Tests object which is used for {@link NodeConfig} lookup for identity and/or equality.<br/>
+	 * Tests object which is used for {@link BidiNodeConfig} lookup for identity and/or equality.<br/>
 	 * <p/>
 	 * Test setup does not use collections.
 	 */
@@ -153,7 +150,7 @@ public class NodeContextTest
 
 		// identity check: used map instances to lookup for child nodes
 		test.assertUsedNodeLookupInstance("0,1,1,-,-|0,1,1,1,-|0,1,1,1,1|0,1,1,1,-|");
-		// nodeLookup: equality check 
+		// nodeLookup: equality check
 		assertEquals(test.getNodeConfigMapByMatrixId(0), test.getNodeConfigMapByMatrixId(1));
 
 
@@ -172,7 +169,7 @@ public class NodeContextTest
 		Assert.assertNull(test.getNodeConfigMapByMatrixId(0).get(String.class));
 		Assert.assertEquals(test.STRING_NODECONFIG, test.getNodeConfigMapByMatrixId(1).get(String.class));
 
-		// nodeLookup: equality check 
+		// nodeLookup: equality check
 		assertNotEquals(test.getNodeConfigMapByMatrixId(0), test.getNodeConfigMapByMatrixId(1));
 
 
@@ -189,15 +186,15 @@ public class NodeContextTest
 		test.assertUsedNodeLookupInstance("0,1,2,-,-|0,1,2,2,-|0,1,2,2,2|0,1,2,2,-|");
 
 		// basic content check
-		// ... graphtransformer lookup (global graph configuration) 
+		// ... graphtransformer lookup (global graph configuration)
 		Assert.assertNull(test.getNodeConfigMapByMatrixId(0).get(String.class));
 		// ... initial root node lookup (global context configuration)
 		Assert.assertNull(test.getNodeConfigMapByMatrixId(1).get(String.class));
-		// ... first child node lookup 
+		// ... first child node lookup
 		Assert.assertEquals(test.STRING_NODECONFIG, test.getNodeConfigMapByMatrixId(2).get(String.class));
 
 
-		// nodeLookup: equality check 
+		// nodeLookup: equality check
 		assertEquals(test.getNodeConfigMapByMatrixId(0), test.getNodeConfigMapByMatrixId(1));
 		assertNotEquals(test.getNodeConfigMapByMatrixId(1), test.getNodeConfigMapByMatrixId(2));
 
@@ -205,7 +202,7 @@ public class NodeContextTest
 
 	/**
 	 * Tests processed properties for correct processing order. <br/>
-	 * Tests object which is used for {@link NodeConfig} lookup for identity and/or equality.<br/>
+	 * Tests object which is used for {@link BidiNodeConfig} lookup for identity and/or equality.<br/>
 	 * <p/>
 	 * Test setup does not use collections.
 	 */
@@ -223,7 +220,7 @@ public class NodeContextTest
 		// identity check: used map instances to lookup for child nodes
 		test.assertUsedNodeLookupInstance("0,1,1,-,-,-|0,1,1,1,-,-|0,1,1,1,1,-|0,1,1,1,1,1|0,1,1,1,1,-|0,1,1,1,-,-|");
 
-		// nodeLookup: equality check 
+		// nodeLookup: equality check
 		assertEquals(test.getNodeConfigMapByMatrixId(0), test.getNodeConfigMapByMatrixId(1));
 
 		// TEST2
@@ -272,7 +269,7 @@ public class NodeContextTest
 
 	/**
 	 * Tests processed properties for correct processing order. <br/>
-	 * Tests object which is used for {@link NodeConfig} lookup for identity and/or equality.<br/>
+	 * Tests object which is used for {@link BidiNodeConfig} lookup for identity and/or equality.<br/>
 	 * <p/>
 	 * Test setup does use collections.
 	 */
@@ -405,8 +402,8 @@ public class NodeContextTest
 		private Object[][] identMatrix = null;
 
 		// a list which holds each entity which was used to create the identity matrix
-		// entity mapping is: "id of identMatrix" <-> "index of list element" 
-		private List<CachedClassLookupMap<NodeConfig>> matrixIdList = null;
+		// entity mapping is: "id of identMatrix" <-> "index of list element"
+		private List<CachedClassLookupMap<BidiNodeConfig>> matrixIdList = null;
 
 		private String identMatrixAsString = null;
 		private String propertyMatrixAsString = null;
@@ -428,7 +425,7 @@ public class NodeContextTest
 			// TestSetup 0:
 			// create a user with two addresses
 			// first address with a country
-			// second address without a country 
+			// second address without a country
 			if (testSetupConfig == 0)
 			{
 				final TuAddressDTO addr1 = new TuAddressDTO("first", "last");
@@ -440,7 +437,7 @@ public class NodeContextTest
 				identMatrix = new Object[4][5];
 			}
 
-			// create a user, set an address which includes a country, set a collection of addresses 
+			// create a user, set an address which includes a country, set a collection of addresses
 			if (testSetupConfig == 1)
 			{
 				final List<TuAddressDTO> addresses = new ArrayList<TuAddressDTO>();
@@ -480,11 +477,12 @@ public class NodeContextTest
 		/**
 		 * Returns a {@link CachedClassLookupMap} (node lookup map) which is mapped in the identity matrix under the given numeric
 		 * id.
+		 * 
 		 * @param id
 		 */
-		public CachedClassLookupMap<NodeConfig> getNodeConfigMapByMatrixId(final int id)
+		public CachedClassLookupMap<BidiNodeConfig> getNodeConfigMapByMatrixId(final int id)
 		{
-			final CachedClassLookupMap<NodeConfig> result = this.matrixIdList.get(id);
+			final CachedClassLookupMap<BidiNodeConfig> result = this.matrixIdList.get(id);
 			return result;
 		}
 
@@ -519,12 +517,12 @@ public class NodeContextTest
 		 */
 		private void createIdentityMatrix()
 		{
-			this.matrixIdList = new ArrayList<CachedClassLookupMap<NodeConfig>>();
+			this.matrixIdList = new ArrayList<CachedClassLookupMap<BidiNodeConfig>>();
 
 			// add nodelookup instances which are not available via logged NodeContext instances
-			// ... static graphtransformer config (matrix id: 0) 
-			//CachedClassLookupMap<NodeConfig> nodeCfgMap = graph.getNodeMapping();
-			CachedClassLookupMap<NodeConfig> nodeCfgMap = new CachedClassLookupMap<NodeConfig>(graph.getNodes());
+			// ... static graphtransformer config (matrix id: 0)
+			// CachedClassLookupMap<NodeConfig> nodeCfgMap = graph.getNodeMapping();
+			CachedClassLookupMap<BidiNodeConfig> nodeCfgMap = new CachedClassLookupMap<BidiNodeConfig>(graph.getNodes());
 			this.matrixIdList.add(nodeCfgMap);
 
 			// ... initialy created lookup for distance zero (matrix id: 1)

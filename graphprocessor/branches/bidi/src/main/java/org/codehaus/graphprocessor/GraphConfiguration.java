@@ -15,6 +15,8 @@ package org.codehaus.graphprocessor;
 
 import java.util.Collection;
 
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+
 
 
 /**
@@ -24,40 +26,49 @@ public interface GraphConfiguration
 {
 
 	/**
-	 * Adds a {@link NodeConfig} under a specific distance. Distance specifies the level of processing depth when this mapping
+	 * Adds a {@link BidiNodeConfig} under a specific distance. Distance specifies the level of processing depth when this mapping
 	 * shall become active.
-	 * @param distance processing distance when {@link NodeConfig} shall become activated
-	 * @param nodeMapping {@link NodeConfig} to add
+	 * 
+	 * @param distance
+	 *           processing distance when {@link BidiNodeConfig} shall become activated
+	 * @param nodeMapping
+	 *           {@link BidiNodeConfig} to add
 	 */
-	public void addNodeConfig(int distance, NodeConfig nodeMapping);
+	public void addNodeConfig(int distance, BidiNodeConfig nodeMapping);
 
 	/**
-	 * Adds a Collection of {@link NodeConfig} under a specific distance. Distance specifies the level of processing depth when
+	 * Adds a Collection of {@link BidiNodeConfig} under a specific distance. Distance specifies the level of processing depth when
 	 * this mapping shall become active.
-	 * @param distance processing distance when {@link NodeConfig} shall become activated
-	 * @param nodeMapping {@link NodeConfig} to add
+	 * 
+	 * @param distance
+	 *           processing distance when {@link BidiNodeConfig} shall become activated
+	 * @param nodeMapping
+	 *           {@link BidiNodeConfig} to add
 	 */
-	public void addNodeConfig(int distance, Collection<NodeConfig> nodeMapping);
+	public void addNodeConfig(int distance, Collection<BidiNodeConfig> nodeMapping);
 
 
 	/**
-	 * Returns the {@link NodeConfig} which was configured on root-level base.
+	 * Returns the {@link BidiNodeConfig} which was configured on root-level base.
 	 * <p/>
 	 * This call equals {@link #getNodeConfig(int, Class)} with a distance level of zero.
-	 * @param type type of node
-	 * @return {@link NodeConfig}
+	 * 
+	 * @param type
+	 *           type of node
+	 * @return {@link BidiNodeConfig}
 	 */
-	public NodeConfig getNodeConfig(Class<?> type);
+	public BidiNodeConfig getNodeConfig(Class<?> type);
 
 	/**
-	 * Returns the {@link NodeConfig} for a requested node type and requested distance when that mapping shall be used. A
-	 * {@link NodeConfig} which was added under e.g. distance 2 is not returned here when requesting it under distance level 3
+	 * Returns the {@link BidiNodeConfig} for a requested node type and requested distance when that mapping shall be used. A
+	 * {@link BidiNodeConfig} which was added under e.g. distance 2 is not returned here when requesting it under distance level 3
 	 * (this only works at runtime during graph processing)
+	 * 
 	 * @param distance
 	 * @param type
 	 * @return NodeConfig
 	 */
-	public NodeConfig getNodeConfig(int distance, Class<?> type);
+	public BidiNodeConfig getNodeConfig(int distance, Class<?> type);
 
 
 }

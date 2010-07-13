@@ -23,8 +23,8 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.NodeConfig;
-import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.samples.misc.InitGraph1Base;
 import org.codehaus.graphprocessor.samples.misc.InitGraph1Sub;
 import org.codehaus.graphprocessor.samples.misc.InitGraph2Base;
@@ -38,7 +38,7 @@ import org.junit.Test;
 /**
  * Testing graph initialization API oriented (very low level based)
  * <p/>
- * Tests single (internal) graph elements like {@link PropertyConfig}, {@link NodeConfig}
+ * Tests single (internal) graph elements like {@link BidiPropertyConfig}, {@link BidiNodeConfig}
  */
 public class GraphInitializerTest
 {
@@ -113,7 +113,7 @@ public class GraphInitializerTest
 
 
 	/**
-	 * Tests whether all properties are found correctly and an appropriate {@link PropertyConfig} was created.
+	 * Tests whether all properties are found correctly and an appropriate {@link BidiPropertyConfig} was created.
 	 * <p/>
 	 * There were several issues in the past with correct property detection which leads into incorrect or missing read and/or
 	 * write method detection. Reasons for that were:
@@ -127,13 +127,13 @@ public class GraphInitializerTest
 	@Test
 	public void testPropertyConfigLookup1()
 	{
-		//final NodeConfig nodeCfg = new DefaultNodeConfig(null, InitGraph1Sub.class);
+		// final NodeConfig nodeCfg = new DefaultNodeConfig(null, InitGraph1Sub.class);
 		BidiGraphTransformer graph = new BidiGraphTransformer(InitGraph1Sub.class);
-		final NodeConfig nodeCfg = graph.getNodeConfig(InitGraph1Sub.class);
-		final Map<String, PropertyConfig> propCfgMap = nodeCfg.getProperties();
+		final BidiNodeConfig nodeCfg = graph.getNodeConfig(InitGraph1Sub.class);
+		final Map<String, BidiPropertyConfig> propCfgMap = nodeCfg.getProperties();
 		propCfgMap.remove("class");
 
-		for (final PropertyConfig pCfg : propCfgMap.values())
+		for (final BidiPropertyConfig pCfg : propCfgMap.values())
 		{
 			this.assertPropertyConfig(pCfg, PropertyConfigTestResult1.class);
 		}
@@ -142,14 +142,14 @@ public class GraphInitializerTest
 	@Test
 	public void testPropertyConfigLookup2()
 	{
-		//final NodeConfig nodeCfg = new DefaultNodeConfig(InitGraph2Sub.class);
+		// final NodeConfig nodeCfg = new DefaultNodeConfig(InitGraph2Sub.class);
 		BidiGraphTransformer graph = new BidiGraphTransformer(InitGraph2Sub.class);
-		final NodeConfig nodeCfg = graph.getNodeConfig(InitGraph2Sub.class);
+		final BidiNodeConfig nodeCfg = graph.getNodeConfig(InitGraph2Sub.class);
 
-		final Map<String, PropertyConfig> propCfgMap = nodeCfg.getProperties();
+		final Map<String, BidiPropertyConfig> propCfgMap = nodeCfg.getProperties();
 		propCfgMap.remove("class");
 
-		for (final PropertyConfig pCfg : propCfgMap.values())
+		for (final BidiPropertyConfig pCfg : propCfgMap.values())
 		{
 			this.assertPropertyConfig(pCfg, PropertyConfigTestResult2.class);
 		}
@@ -157,21 +157,22 @@ public class GraphInitializerTest
 
 
 	/**
-	 * Tests whether appropriate {@link PropertyConfig} instances are created based on previously found {@link PropertyConfig}
+	 * Tests whether appropriate {@link BidiPropertyConfig} instances are created based on previously found
+	 * {@link BidiPropertyConfig}
 	 */
 	@Test
 	public void testPropertyConfigLookup3()
 	{
 		final BidiGraphTransformer graph = new BidiGraphTransformer(InitGraph1Sub.class);
-		final NodeConfig nm = graph.getNodeConfig(InitGraph1Sub.class);
+		final BidiNodeConfig nm = graph.getNodeConfig(InitGraph1Sub.class);
 
-		final Map<String, PropertyConfig> pMapping = new LinkedHashMap<String, PropertyConfig>(nm.getProperties());
+		final Map<String, BidiPropertyConfig> pMapping = new LinkedHashMap<String, BidiPropertyConfig>(nm.getProperties());
 
-		// five regular PropertyMapping instances 
+		// five regular PropertyMapping instances
 		// 'class' mapping is not available (no write method)
 		assertEquals(5, pMapping.size());
 
-		for (final PropertyConfig propertyConfig : pMapping.values())
+		for (final BidiPropertyConfig propertyConfig : pMapping.values())
 		{
 			this.assertPropertyConfig(propertyConfig, PropertyConfigTestResult1.class);
 		}
@@ -179,7 +180,7 @@ public class GraphInitializerTest
 
 	private boolean assertStrict = true;
 
-	private void assertPropertyConfig(final PropertyConfig pCfg, final Class enumType)
+	private void assertPropertyConfig(final BidiPropertyConfig pCfg, final Class enumType)
 	{
 		Enum _enum = null;
 		String readMethod = null;

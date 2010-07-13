@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.AbstractPropertyConfig;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.impl.BidiPropertyProcessor;
 
@@ -60,7 +59,7 @@ public class DefaultBidiPropertyConfig extends AbstractPropertyConfig implements
 	@Override
 	public BidiNodeConfig getNodeConfig()
 	{
-		return (BidiNodeConfig) super.getNodeConfig();
+		return super.getNodeConfig();
 	}
 
 
@@ -257,9 +256,8 @@ public class DefaultBidiPropertyConfig extends AbstractPropertyConfig implements
 
 
 
-		final NodeConfig nodeCfg = (readType != null) ? getNodeConfig().getGraphConfig().getNodeConfig(readType) : null;
-		final String transformed = (nodeCfg != null) ? "["
-				+ ((BidiNodeConfig) nodeCfg).getTargetNodeConfig().getType().getSimpleName() + "]" : "[]";
+		final BidiNodeConfig nodeCfg = (readType != null) ? getNodeConfig().getGraphConfig().getNodeConfig(readType) : null;
+		final String transformed = (nodeCfg != null) ? "[" + (nodeCfg).getTargetNodeConfig().getType().getSimpleName() + "]" : "[]";
 
 
 		// add enabled/disabled flags ...
@@ -295,8 +293,8 @@ public class DefaultBidiPropertyConfig extends AbstractPropertyConfig implements
 
 			if (readMethod != null && writeMethod != null)
 			{
-				final String fromType = nodeCfg == null ? readType.getSimpleName() : ((BidiNodeConfig) nodeCfg).getTargetNodeConfig()
-						.getType().getSimpleName();
+				final String fromType = nodeCfg == null ? readType.getSimpleName() : (nodeCfg).getTargetNodeConfig().getType()
+						.getSimpleName();
 				// ... read/write type not compatible (no node)
 				conflicts = conflicts + "read<->write type mismatch (" + fromType + "<->" + writeType.getSimpleName();
 			}

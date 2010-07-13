@@ -2,15 +2,15 @@ package org.codehaus.graphprocessor.transform;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProcessor;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiCollectionNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiGraphConfig;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
@@ -124,7 +124,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 	public <T> T process(final GraphContextImpl graphCtx, final Object source, final T target)
 	{
-		GraphConfig graphConfig = graphCtx.getGraphConfig();
+		BidiGraphConfig graphConfig = graphCtx.getGraphConfig();
 		if (graphConfig instanceof Initializable)
 		{
 			Initializable init = (Initializable) graphConfig;
@@ -142,12 +142,12 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 		// create nodeLookup to lookup root node
 		GraphConfigurationImpl graphConfigImpl = (GraphConfigurationImpl) graphCtx.getConfiguration();
-		final CachedClassLookupMap<NodeConfig> nodeLookup = graphConfigImpl.getAllNodeConfigs(0);
-		final NodeConfig nodeConfig = nodeLookup.get(source.getClass());
+		final CachedClassLookupMap<BidiNodeConfig> nodeLookup = graphConfigImpl.getAllNodeConfigs(0);
+		final BidiNodeConfig nodeConfig = nodeLookup.get(source.getClass());
 
 		if (nodeConfig == null)
 		{
-			throw new GraphException("Can't find a " + NodeConfig.class.getSimpleName() + " for " + source.getClass());
+			throw new GraphException("Can't find a " + BidiNodeConfig.class.getSimpleName() + " for " + source.getClass());
 		}
 
 		// create nodeLookup used for root nodes childs
@@ -179,7 +179,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 			this.initialize(0);
 		}
 
-		NodeConfig nodeConfig = getAssignableNodeConfig(node);
+		BidiNodeConfig nodeConfig = getAssignableNodeConfig(node);
 
 		if (nodeConfig != null)
 		{

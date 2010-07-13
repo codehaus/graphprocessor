@@ -14,9 +14,9 @@
 package org.codehaus.graphprocessor.basic;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
@@ -37,7 +37,7 @@ public class ModifiedPropertyFilter implements PropertyFilter
 		final Object node = ctx.getParentContext().getSourceNodeValue();
 		if (node instanceof ModifiedProperties)
 		{
-			final PropertyConfig prop = ctx.getPropertyConfig();
+			final BidiPropertyConfig prop = ctx.getPropertyConfig();
 			isFiltered = !((ModifiedProperties) node).getModifiedProperties().contains(prop.getName());
 			if (log.isDebugEnabled())
 			{

@@ -20,9 +20,9 @@ import java.util.List;
 import org.codehaus.graphprocessor.AbstractNodeConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
-import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
@@ -41,7 +41,7 @@ public class NodeContextImpl implements NodeContext
 
 	private int distance = 0;
 	private int virtualDistance = 0;
-	private CachedClassLookupMap<NodeConfig> childNodeLookup = null;
+	private CachedClassLookupMap<BidiNodeConfig> childNodeLookup = null;
 
 
 	/**
@@ -54,7 +54,7 @@ public class NodeContextImpl implements NodeContext
 	 * @param source
 	 */
 	protected NodeContextImpl(final GraphContextImpl graphCtx, final PropertyContextImpl propertyCtx,
-			final AbstractNodeConfig nodeMapping, final CachedClassLookupMap<NodeConfig> nodeMappingsMap, final int distance,
+			final AbstractNodeConfig nodeMapping, final CachedClassLookupMap<BidiNodeConfig> nodeMappingsMap, final int distance,
 			final int virtualDistance, final Object source)
 	{
 		super();
@@ -164,7 +164,6 @@ public class NodeContextImpl implements NodeContext
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeContext#getPath()
 	 */
 	@Override
@@ -191,19 +190,19 @@ public class NodeContextImpl implements NodeContext
 		return path;
 	}
 
-	protected CachedClassLookupMap<NodeConfig> getChildNodeLookup()
+	protected CachedClassLookupMap<BidiNodeConfig> getChildNodeLookup()
 	{
 		return this.childNodeLookup;
 	}
 
 
-	protected PropertyContextImpl createChildPropertyContext(final PropertyConfig propertyConfig)
+	protected PropertyContextImpl createChildPropertyContext(final BidiPropertyConfig propertyConfig)
 	{
-		CachedClassLookupMap<NodeConfig> nodeConfig = this.childNodeLookup;
+		CachedClassLookupMap<BidiNodeConfig> nodeConfig = this.childNodeLookup;
 		if (propertyConfig != null)
 		{
 			// create node lookup for property childs based on:
-			final List<NodeConfig> merge = propertyConfig.getNewNodeConfigs();
+			final List<BidiNodeConfig> merge = propertyConfig.getNewNodeConfigs();
 			nodeConfig = this.graphCtx.buildChildNodeLookup(nodeConfig, merge);
 		}
 

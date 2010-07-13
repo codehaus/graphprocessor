@@ -15,10 +15,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
-public abstract class AbstractPropertyConfig implements PropertyConfig, Initializable
+public abstract class AbstractPropertyConfig implements BidiPropertyConfig, Initializable
 {
 	public static final int COMPLIANCE_LEVEL_LOW = 0;
 	public static final int COMPLIANCE_LEVEL_MEDIUM = 1;
@@ -47,10 +49,10 @@ public abstract class AbstractPropertyConfig implements PropertyConfig, Initiali
 
 
 	protected boolean isInitialized = false;
-	protected NodeConfig nodeConfig = null;
+	protected BidiNodeConfig nodeConfig = null;
 	private List<PropertyFilter> propertyFilters = Collections.EMPTY_LIST;
 	private PropertyProcessor propertyProcessor = null;
-	private List<NodeConfig> nodeMappingList = Collections.EMPTY_LIST;
+	private List<BidiNodeConfig> nodeMappingList = Collections.EMPTY_LIST;
 
 
 	private String id = null;
@@ -69,7 +71,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig, Initiali
 	private boolean virtualWrite = false;
 
 
-	public AbstractPropertyConfig(final NodeConfig nodeConfig, String id, String name)
+	public AbstractPropertyConfig(final BidiNodeConfig nodeConfig, String id, String name)
 	{
 		this.nodeConfig = nodeConfig;
 		this.id = id;
@@ -122,7 +124,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig, Initiali
 	}
 
 
-	public NodeConfig getNodeConfig()
+	public BidiNodeConfig getNodeConfig()
 	{
 		return this.nodeConfig;
 	}
@@ -145,7 +147,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig, Initiali
 		this.propertyProcessor = propertyProcessor;
 	}
 
-	public List<NodeConfig> getNewNodeConfigs()
+	public List<BidiNodeConfig> getNewNodeConfigs()
 	{
 		return nodeMappingList;
 	}
@@ -154,7 +156,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig, Initiali
 	 * @param nodeConfig
 	 *           the nodeConfig to set
 	 */
-	public void setNewNodeMappings(final List<NodeConfig> nodeConfig)
+	public void setNewNodeMappings(final List<BidiNodeConfig> nodeConfig)
 	{
 		this.nodeMappingList = nodeConfig;
 	}
@@ -486,9 +488,9 @@ public abstract class AbstractPropertyConfig implements PropertyConfig, Initiali
 	/**
 	 * Creates a lookup map containing all properties of passed type.
 	 * <p/>
-	 * Result maps a property name to a {@link PropertyConfig}.
+	 * Result maps a property name to a {@link BidiPropertyConfig}.
 	 * </p>
-	 * Any property which keeps java bean standard is found and used for {@link PropertyConfig} creation. For finding all
+	 * Any property which keeps java bean standard is found and used for {@link BidiPropertyConfig} creation. For finding all
 	 * properties {@link Introspector} is used which returns general {@link PropertyDescriptor}. But read- and write methods
 	 * provided by {@link PropertyDescriptor} are only used as "suggestion" here and are getting post-processed to assure following
 	 * criteria:

@@ -15,6 +15,9 @@ package org.codehaus.graphprocessor;
 
 import java.util.List;
 
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+
 
 
 /**
@@ -24,6 +27,7 @@ public interface NodeContext
 {
 	/**
 	 * Returns the real processed distance up to current node. This also includes virtual nodes.
+	 * 
 	 * @return distance
 	 */
 	public int getRealDistance();
@@ -31,18 +35,21 @@ public interface NodeContext
 	/**
 	 * Returns the general distance for the node this context belongs too. Virtual nodes are not included in distance calculation.
 	 * Every virtual node which is part of the processed node path has the same distance as it's ancestor {@link NodeContext}.
+	 * 
 	 * @return distance
 	 */
 	public int getDistance();
 
 	/**
-	 * Returns the {@link NodeConfig} which is used for current node processing.
-	 * @return {@link NodeConfig}
+	 * Returns the {@link BidiNodeConfig} which is used for current node processing.
+	 * 
+	 * @return {@link BidiNodeConfig}
 	 */
-	public NodeConfig getNodeConfig();
+	public BidiNodeConfig getNodeConfig();
 
 	/**
 	 * Returns the raw value from source graph which shall be used for node processing.
+	 * 
 	 * @return source value
 	 */
 	public Object getSourceNodeValue();
@@ -50,6 +57,7 @@ public interface NodeContext
 	/**
 	 * Returns the raw value from target graph which gets "merged" with the transformed source value from
 	 * {@link #getSourceNodeValue()}
+	 * 
 	 * @return target value
 	 */
 	public Object getTargetNodeValue();
@@ -57,21 +65,24 @@ public interface NodeContext
 	/**
 	 * Returns the {@link PropertyContext} which was used to create this {@link NodeContext}.
 	 * <p/>
-	 * Returned {@link PropertyContext} is bound to a runtime value, which is a valid GraphProperty (a {@link PropertyConfig} is
-	 * available). It is the parent element of current processed runtime value, which itself is of meta-type GraphNode and
+	 * Returned {@link PropertyContext} is bound to a runtime value, which is a valid GraphProperty (a {@link BidiPropertyConfig}
+	 * is available). It is the parent element of current processed runtime value, which itself is of meta-type GraphNode and
 	 * represented by this {@link NodeContext} instance.
+	 * 
 	 * @return {@link PropertyContext}
 	 */
 	public PropertyContext getParentContext();
 
 	/**
 	 * Returns a list of {@link NodeContext} instances starting from a root context up to parent context of current processed node.
+	 * 
 	 * @return List of {@link NodeContext}
 	 */
 	public List<NodeContext> getProcessingPath();
 
 	/**
 	 * Returns the {@link GraphContext}
+	 * 
 	 * @return {@link GraphContext}
 	 */
 	public GraphContext getGraphContext();

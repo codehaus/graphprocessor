@@ -10,21 +10,24 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
 
 
 
-public abstract class AbstractGraphConfig implements GraphConfig, Initializable, ContextCreatedListener
+public abstract class AbstractGraphConfig implements BidiGraphConfig, Initializable, ContextCreatedListener
 {
 	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
 
 	private boolean _isInitialized = false;
 	private ContextCreatedListener listener = null;
 
-	protected final CachedClassLookupMap<NodeConfig> nodeLookupMap;
-	private final Map<Class<?>, NodeConfig> inmutableNodeLookup;
+	protected final CachedClassLookupMap<BidiNodeConfig> nodeLookupMap;
+	private final Map<Class<?>, BidiNodeConfig> inmutableNodeLookup;
 
 	protected final CachedClassLookupMap<NodeProcessor> nodeProcessorMap;
 	protected final CachedClassLookupMap<PropertyProcessor> propertyProcessorMap;
@@ -33,7 +36,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 	public AbstractGraphConfig()
 	{
 		this.listener = this;
-		this.nodeLookupMap = new CachedClassLookupMap<NodeConfig>();
+		this.nodeLookupMap = new CachedClassLookupMap<BidiNodeConfig>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
 
 		this.nodeProcessorMap = new CachedClassLookupMap<NodeProcessor>();
@@ -82,7 +85,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 
 	public void initializeAllNodes()
 	{
-		for (final NodeConfig nodeCfg : getNodes().values())
+		for (final BidiNodeConfig nodeCfg : getNodes().values())
 		{
 			if (nodeCfg instanceof Initializable)
 			{
@@ -103,32 +106,32 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodes()
 	 */
 	@Override
-	public Map<Class<?>, NodeConfig> getNodes()
+	public Map<Class<?>, BidiNodeConfig> getNodes()
 	{
 		// return (Map) this.nodeLookupMap.getStaticMap();
 		return this.inmutableNodeLookup;
 	}
 
 	@Override
-	public NodeConfig getNodeConfig(final Class node)
+	public BidiNodeConfig getNodeConfig(final Class node)
 	{
 		return getNodes().get(node);
 	}
 
 	@Override
-	public NodeConfig getAssignableNodeConfig(Class nodeType)
+	public BidiNodeConfig getAssignableNodeConfig(Class nodeType)
 	{
 		return this.nodeLookupMap.get(nodeType);
 	}
 
-	public void addNode(final NodeConfig nodeConfig)
+	public void addNode(final BidiNodeConfig nodeConfig)
 	{
 		this.nodeLookupMap.put(nodeConfig.getType(), nodeConfig);
 	}
 
-	public NodeConfig addNode(final Class node)
+	public BidiNodeConfig addNode(final Class node)
 	{
-		final NodeConfig result = this.createNodeConfig(node);
+		final BidiNodeConfig result = this.createNodeConfig(node);
 		this.addNode(result);
 		return result;
 	}
@@ -144,7 +147,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 			throw new GraphException(nodeClass.getName() + " is not annotated with " + GraphNode.class.getSimpleName());
 		}
 
-		final Map<Class, NodeConfig> result = new LinkedHashMap<Class, NodeConfig>();
+		final Map<Class, BidiNodeConfig> result = new LinkedHashMap<Class, BidiNodeConfig>();
 
 		log.debug("Start introspecting (sub)graph " + nodeClass + "...");
 
@@ -172,7 +175,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 	 * @param node
 	 *           start node
 	 */
-	private void findAndAddChildNodes(final Class node, final Map<Class, NodeConfig> newNodes)
+	private void findAndAddChildNodes(final Class node, final Map<Class, BidiNodeConfig> newNodes)
 	{
 		// only process node type if not already done
 		if (!this.getNodes().containsKey(node))
@@ -184,7 +187,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 				final GraphNode graphNode = (GraphNode) node.getAnnotation(GraphNode.class);
 
 				// create a NodeConfig
-				final NodeConfig cfg = this.addNode(node);
+				final BidiNodeConfig cfg = this.addNode(node);
 				newNodes.put(node, cfg);
 
 				// Recursive processing of child nodes
@@ -203,8 +206,8 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 
 				// strategy 2: child nodes are detected from available property types (getters)
 				// (with support for typed collections)
-				final Collection<PropertyConfig> pCfgList = cfg.getProperties().values();
-				for (final PropertyConfig pCfg : pCfgList)
+				final Collection<BidiPropertyConfig> pCfgList = cfg.getProperties().values();
+				for (final BidiPropertyConfig pCfg : pCfgList)
 				{
 					Class<?> childNodeCandidate = pCfg.getReadType();
 
@@ -293,7 +296,7 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable,
 
 	}
 
-	protected abstract NodeConfig createNodeConfig(Class node);
+	protected abstract BidiNodeConfig createNodeConfig(Class node);
 
 
 }

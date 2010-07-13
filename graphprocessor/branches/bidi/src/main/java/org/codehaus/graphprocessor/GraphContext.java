@@ -16,31 +16,36 @@ package org.codehaus.graphprocessor;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+
 
 /**
  * Provides runtime information about current graph transformation process.
  * <p/>
- * Additionally allows various customizations/modification which differ from globally {@link GraphConfig} configuration and are
- * used only for the transformation process which this context gets passed too.
+ * Additionally allows various customizations/modification which differ from globally {@link BidiGraphConfig} configuration and
+ * are used only for the transformation process which this context gets passed too.
  */
 public interface GraphContext
 {
 	/**
 	 * Returns highest found distance which was detected for all processed nodes up to currently processed one.
+	 * 
 	 * @return highest distance
 	 */
 	public int getMaxDistance();
 
 	/**
-	 * Returns {@link GraphConfig} which this context is used for.
-	 * @return {@link GraphConfig}
+	 * Returns {@link BidiGraphConfig} which this context is used for.
+	 * 
+	 * @return {@link BidiGraphConfig}
 	 */
-	public GraphConfig getGraphConfig();
+	public BidiGraphConfig getGraphConfig();
 
 
 	/**
 	 * Returns configuration options for this graph. Configuration settings are only valid for one transformation which this
 	 * context is bound too.
+	 * 
 	 * @return {@link GraphConfiguration}
 	 */
 	public GraphConfiguration getConfiguration();
@@ -49,6 +54,7 @@ public interface GraphContext
 	/**
 	 * Returns a modifiable List of {@link PropertyFilter} instances. This chain of filters is applied to every processed property
 	 * (including these ones which are treated as node).
+	 * 
 	 * @return List of {@link PropertyFilter} which are getting applied to every property
 	 */
 	// TODO: move to GraphConfiguration
@@ -57,6 +63,7 @@ public interface GraphContext
 	/**
 	 * Returns a modifiable List of {@link PropertyFilter} instances. This chain of filters is applied to every processed property
 	 * which is treated as GraphNode.
+	 * 
 	 * @return list of {@link PropertyFilter} which are getting applied to node-properties only
 	 */
 	// TODO: move to GraphConfiguration
@@ -64,6 +71,7 @@ public interface GraphContext
 
 	/**
 	 * A map of attributes which is free to use.
+	 * 
 	 * @return Map
 	 */
 	public Map getAttributes();
@@ -72,6 +80,7 @@ public interface GraphContext
 	 * Returns true when graph transformation process which used that context instance is finished. After a context is released it
 	 * can not be used a second time for another transformation. However, it can still be used to gather some statistical data
 	 * about the transformation.
+	 * 
 	 * @return true when context is released
 	 */
 	public boolean isReleased();

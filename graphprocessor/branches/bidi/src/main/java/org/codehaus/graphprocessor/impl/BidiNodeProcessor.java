@@ -20,10 +20,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeFactory;
-import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
@@ -44,7 +42,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	public <T> T process(final NodeContextImpl nodeCtx, final Object source, T target)
 	{
 		// lazy NodeMapping compilation if necessary
-		NodeConfig nodeCfg = nodeCtx.getNodeConfig();
+		BidiNodeConfig nodeCfg = nodeCtx.getNodeConfig();
 		if (nodeCfg instanceof Initializable)
 		{
 			Initializable init = (Initializable) nodeCfg;
@@ -130,23 +128,22 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	protected void processProperties(final NodeContextImpl nodeCtx, final Object source, final Object target)
 	{
 		// all properties which have to be processed (includes those which are itself nodes)
-		final Map<String, PropertyConfig> propCfg = nodeCtx.getNodeConfig().getProperties();
+		final Map<String, BidiPropertyConfig> propCfg = nodeCtx.getNodeConfig().getProperties();
 
-		for (final PropertyConfig property : propCfg.values())
+		for (final BidiPropertyConfig property : propCfg.values())
 		{
 			final PropertyContext propCtx = createChildPropertyContext(nodeCtx, property);
 			property.getProcessor().process(propCtx, source, target);
 		}
 
 		// NEW: process virtual write properties from target node
-		Map<String, BidiPropertyConfig> props = (Map) ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig()
-				.getProperties();
+		Map<String, BidiPropertyConfig> props = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig().getProperties();
 		for (Map.Entry<String, BidiPropertyConfig> entry : props.entrySet())
 		{
 			BidiPropertyConfig property = entry.getValue();
 			if (property.isVirtualWrite())
 			{
-				PropertyConfig sourcePropertyConfig = new VirtualPropertyConfig(property);
+				BidiPropertyConfig sourcePropertyConfig = new VirtualPropertyConfig(property);
 				final PropertyContext propCtx = createChildPropertyContext(nodeCtx, sourcePropertyConfig);
 				property.getProcessor().process(propCtx, source, target);
 			}
@@ -154,7 +151,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 
 	}
 
-	protected PropertyContext createChildPropertyContext(final NodeContextImpl nodeCtx, final PropertyConfig property)
+	protected PropertyContext createChildPropertyContext(final NodeContextImpl nodeCtx, final BidiPropertyConfig property)
 	{
 		return nodeCtx.createChildPropertyContext(property);
 	}
@@ -233,12 +230,12 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	private Object getValueId(final NodeContext nodeCtx, final Object srcNodeValue)
 	{
 		// take all properties which are configured to be taken for creation of a 'uid'
-		final PropertyConfig[] uidProps = nodeCtx.getNodeConfig().getUidProperties();
+		final BidiPropertyConfig[] uidProps = nodeCtx.getNodeConfig().getUidProperties();
 		Object result = null;
 		if (uidProps != null && uidProps.length > 0)
 		{
 			result = "";
-			for (final PropertyConfig pCfg : uidProps)
+			for (final BidiPropertyConfig pCfg : uidProps)
 			{
 				final Method m = pCfg.getReadMethod();
 				if (m != null)
@@ -283,7 +280,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	private Object getValueFromNodeFactory(final NodeContext nodeCtx, final Object srcNodeValue)
 	{
 		Object result = null;
-		final NodeFactory factory = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getNodeFactory();
+		final NodeFactory factory = (nodeCtx.getNodeConfig()).getNodeFactory();
 
 		if (factory != null)
 		{
