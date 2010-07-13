@@ -13,8 +13,8 @@
  */
 package org.codehaus.graphprocessor.samples.usergraph;
 
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeFactory;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 public class TuUserModelFactory implements NodeFactory<TuUserDTO, TuUserModel>
@@ -28,7 +28,7 @@ public class TuUserModelFactory implements NodeFactory<TuUserDTO, TuUserModel>
 	 * , java.lang.Object)
 	 */
 	@Override
-	public TuUserModel getValue(final NodeContext ctx, final TuUserDTO dto)
+	public TuUserModel getValue(final BidiNodeContext ctx, final TuUserDTO dto)
 	{
 		return null;
 	}

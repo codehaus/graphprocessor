@@ -4,7 +4,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.PropertyProcessor;
@@ -85,7 +84,7 @@ public interface BidiPropertyConfig
 	 * Returns the read-value type.
 	 * <p/>
 	 * Type is either return type of read-method or if an interceptor is assigned the return type of
-	 * {@link PropertyInterceptor#intercept(PropertyContext, Object)}
+	 * {@link PropertyInterceptor#intercept(BidiPropertyContext, Object)}
 	 * 
 	 * @return read-value type
 	 */
@@ -95,7 +94,7 @@ public interface BidiPropertyConfig
 	 * Returns the write-value type
 	 * <p/>
 	 * Type is either return type of write-method or if an interceptor is assigned the return type of
-	 * {@link PropertyInterceptor#intercept(PropertyContext, Object)}
+	 * {@link PropertyInterceptor#intercept(BidiPropertyContext, Object)}
 	 * 
 	 * @return write-value type
 	 */

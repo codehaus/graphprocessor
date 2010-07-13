@@ -13,6 +13,8 @@
  */
 package org.codehaus.graphprocessor;
 
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+
 
 
 /**
@@ -30,13 +32,17 @@ public interface NodeProcessor
 	 * must) have an influence on the target node type.
 	 * <p>
 	 * Result is always the target node regardless whether it was already passed or newly created.
+	 * 
 	 * @param <T>
-	 * @param nodeCtx {@link NodeContext}
-	 * @param source source node
-	 * @param target target node (null permitted)
+	 * @param nodeCtx
+	 *           {@link BidiNodeContext}
+	 * @param source
+	 *           source node
+	 * @param target
+	 *           target node (null permitted)
 	 * @return target instance
 	 */
-	public <T extends Object> T process(final NodeContext nodeCtx, final Object source, T target);
+	public <T extends Object> T process(final BidiNodeContext nodeCtx, final Object source, T target);
 
 
 

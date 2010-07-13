@@ -15,8 +15,8 @@ package org.codehaus.graphprocessor.impl;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 
@@ -31,7 +31,7 @@ public abstract class AbstractNodeProcessor implements NodeProcessor
 
 
 
-	public <T extends Object> T process(final NodeContext nodeCtx, final Object source, final T target)
+	public <T extends Object> T process(final BidiNodeContext nodeCtx, final Object source, final T target)
 	{
 		// instance check
 		if (!(nodeCtx instanceof NodeContextImpl))
@@ -40,7 +40,7 @@ public abstract class AbstractNodeProcessor implements NodeProcessor
 					+ NodeContextImpl.class.getName() + " to work properly");
 		}
 
-		// cast 
+		// cast
 		final NodeContextImpl nodeCtxImpl = (NodeContextImpl) nodeCtx;
 
 		return process(nodeCtxImpl, source, target);

@@ -15,8 +15,8 @@ package org.codehaus.graphprocessor.samples.misc;
 
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.GraphProperty;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyInterceptor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 @GraphNode(target = GraphPropTarget.class)
@@ -25,7 +25,7 @@ public class GraphPropSource
 	public static class IntToStringConverter implements PropertyInterceptor<Object, Object>
 	{
 		@Override
-		public String intercept(final PropertyContext ctx, final Object source)
+		public String intercept(final BidiPropertyContext ctx, final Object source)
 		{
 			return source != null ? ((Integer) source).toString() : null;
 		}
@@ -34,7 +34,7 @@ public class GraphPropSource
 	public static class StringToIntConverter implements PropertyInterceptor<String, Integer>
 	{
 		@Override
-		public Integer intercept(final PropertyContext ctx, final String source)
+		public Integer intercept(final BidiPropertyContext ctx, final String source)
 		{
 			return source != null ? Integer.valueOf(source) : null;
 		}
@@ -43,7 +43,7 @@ public class GraphPropSource
 	public static class NumberToStringConverter implements PropertyInterceptor<Object, Object>
 	{
 		@Override
-		public String intercept(final PropertyContext ctx, final Object source)
+		public String intercept(final BidiPropertyContext ctx, final Object source)
 		{
 			return source != null ? ((Number) source).toString() : null;
 		}
@@ -52,7 +52,7 @@ public class GraphPropSource
 	public static class StringToNumberConverter implements PropertyInterceptor<String, Number>
 	{
 		@Override
-		public Number intercept(final PropertyContext ctx, final String source)
+		public Number intercept(final BidiPropertyContext ctx, final String source)
 		{
 			return source != null ? Integer.valueOf(source) : null;
 		}

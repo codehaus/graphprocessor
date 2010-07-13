@@ -1,12 +1,11 @@
 package org.codehaus.graphprocessor.bidi;
 
-import org.codehaus.graphprocessor.AbstractGraphConfig;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
 
 
-public class DefaultBidiGraphConfig extends AbstractGraphConfig implements BidiGraphConfig
+public class DefaultBidiGraphConfig extends AbstractBidiGraphConfig implements BidiGraphConfig
 {
 	private DefaultBidiGraphConfig targetGraphCfg = null;
 

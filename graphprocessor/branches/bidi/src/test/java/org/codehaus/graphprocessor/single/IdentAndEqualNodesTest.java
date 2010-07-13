@@ -21,8 +21,8 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.samples.misc.CycleOneDTO;
 import org.codehaus.graphprocessor.samples.misc.CycleTwoDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;
@@ -95,7 +95,7 @@ public class IdentAndEqualNodesTest
 
 		// create graph
 		final BidiGraphTransformer graph = new BidiGraphTransformer(TuUserDTO.class);
-		final GraphContext ctx = graph.createGraphContext(TuUserDTO.class);
+		final BidiGraphContext ctx = graph.createGraphContext(TuUserDTO.class);
 
 		// transform
 		final TuUserModel result = (TuUserModel) graph.transform(ctx, user);

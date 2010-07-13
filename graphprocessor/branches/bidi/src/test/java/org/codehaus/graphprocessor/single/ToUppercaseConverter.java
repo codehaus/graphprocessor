@@ -13,15 +13,15 @@
  */
 package org.codehaus.graphprocessor.single;
 
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyInterceptor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 public class ToUppercaseConverter implements PropertyInterceptor<String, String>
 {
 
 	@Override
-	public String intercept(final PropertyContext ctx, final String source)
+	public String intercept(final BidiPropertyContext ctx, final String source)
 	{
 		return source.toUpperCase();
 	}

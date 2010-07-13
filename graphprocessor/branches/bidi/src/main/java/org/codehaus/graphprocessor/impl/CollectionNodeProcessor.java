@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractGraphConfig;
-import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.AbstractBidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 
@@ -46,18 +46,18 @@ public class CollectionNodeProcessor extends AbstractNodeProcessor
 		}
 
 		final PropertyContextImpl childPropCtx = nodeCtx.createChildPropertyContext(null);
-		((AbstractGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).propertyContextCreated(childPropCtx);
+		((AbstractBidiGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).propertyContextCreated(childPropCtx);
 
 
 		// process each element of source collection separately
 		for (Object sourceElement : (Collection<?>) source)
 		{
-			final AbstractNodeConfig nodeConfig = (AbstractNodeConfig) nodeCtx.getChildNodeLookup().get(sourceElement.getClass());
+			final AbstractBidiNodeConfig nodeConfig = (AbstractBidiNodeConfig) nodeCtx.getChildNodeLookup().get(sourceElement.getClass());
 
 			// if so, start node processing
 			if (nodeConfig != null)
 			{
-				final NodeContext childNodeCtx = childPropCtx.createChildNodeContext(nodeConfig, sourceElement);
+				final BidiNodeContext childNodeCtx = childPropCtx.createChildNodeContext(nodeConfig, sourceElement);
 				final NodeProcessor nodeProc = nodeConfig.getProcessor();
 				sourceElement = nodeProc.process(childNodeCtx, sourceElement, null);
 			}
@@ -132,7 +132,7 @@ public class CollectionNodeProcessor extends AbstractNodeProcessor
 		if (targetClass != null)
 		{
 			result = (T) this.createNode(targetClass);
-			((AbstractGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).nodeCreated(nodeCtx, result);
+			((AbstractBidiGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).nodeCreated(nodeCtx, result);
 		}
 
 		return result;

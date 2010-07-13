@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor;
+package org.codehaus.graphprocessor.bidi;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -6,16 +6,18 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.GraphNode;
+import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.PropertyProcessor;
 
 
 
 /**
  * Abstract base implementation for {@link BidiNodeConfig}
  */
-public abstract class AbstractNodeConfig implements BidiNodeConfig, Initializable
+public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initializable
 {
 
 	protected boolean isNodeInitialized = false;
@@ -30,12 +32,12 @@ public abstract class AbstractNodeConfig implements BidiNodeConfig, Initializabl
 	private Map<String, BidiPropertyConfig> properties = null;
 	private boolean isVirtualNode = false;
 
-	public AbstractNodeConfig(final BidiGraphConfig graphConfig)
+	public AbstractBidiNodeConfig(final BidiGraphConfig graphConfig)
 	{
 		this.graphConfig = graphConfig;
 	}
 
-	public AbstractNodeConfig(final BidiGraphConfig graphConfig, final Class<?> type)
+	public AbstractBidiNodeConfig(final BidiGraphConfig graphConfig, final Class<?> type)
 	{
 		this.graphConfig = graphConfig;
 		this.type = type;
@@ -86,12 +88,12 @@ public abstract class AbstractNodeConfig implements BidiNodeConfig, Initializabl
 		for (final Iterator<BidiPropertyConfig> iter = properties.values().iterator(); iter.hasNext();)
 		{
 			final BidiPropertyConfig pCfg = iter.next();
-			if (pCfg instanceof AbstractPropertyConfig)
+			if (pCfg instanceof AbstractBidiPropertyConfig)
 			{
-				final AbstractPropertyConfig aPropCfg = (AbstractPropertyConfig) pCfg;
+				final AbstractBidiPropertyConfig aPropCfg = (AbstractBidiPropertyConfig) pCfg;
 				if (!aPropCfg.isInitialized())
 				{
-					final boolean valid = aPropCfg.initialize(AbstractPropertyConfig.COMPLIANCE_LEVEL_LOW);
+					final boolean valid = aPropCfg.initialize(AbstractBidiPropertyConfig.COMPLIANCE_LEVEL_LOW);
 					if (!valid)
 					{
 						iter.remove();
@@ -100,7 +102,7 @@ public abstract class AbstractNodeConfig implements BidiNodeConfig, Initializabl
 			}
 			else
 			{
-				throw new GraphException("Need an instance of " + AbstractPropertyConfig.class.getSimpleName());
+				throw new GraphException("Need an instance of " + AbstractBidiPropertyConfig.class.getSimpleName());
 			}
 		}
 		return true;
@@ -275,7 +277,7 @@ public abstract class AbstractNodeConfig implements BidiNodeConfig, Initializabl
 	private Map<String, BidiPropertyConfig> createDefaultProperties()
 	{
 		final Map<String, BidiPropertyConfig> result = new LinkedHashMap<String, BidiPropertyConfig>();
-		final Map<String, Method[]> props = AbstractPropertyConfig.getPropertiesFor(getType());
+		final Map<String, Method[]> props = AbstractBidiPropertyConfig.getPropertiesFor(getType());
 		for (final String propertyName : props.keySet())
 		{
 			final BidiPropertyConfig propCfg = this.createPropertyConfig(propertyName);

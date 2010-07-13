@@ -13,6 +13,8 @@
  */
 package org.codehaus.graphprocessor;
 
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+
 
 
 /**
@@ -37,11 +39,11 @@ public interface NodeFactory<S, T>
 	 * Tries to find a target value for a passed source value. Null permitted.
 	 * 
 	 * @param ctx
-	 *           {@link NodeContext}
+	 *           {@link BidiNodeContext}
 	 * @param srcValue
 	 *           the source node
 	 * @return node value or 'null'
 	 */
-	public T getValue(NodeContext ctx, S srcValue);
+	public T getValue(BidiNodeContext ctx, S srcValue);
 
 }

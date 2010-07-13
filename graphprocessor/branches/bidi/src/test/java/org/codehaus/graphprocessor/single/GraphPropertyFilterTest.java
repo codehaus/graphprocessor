@@ -24,10 +24,10 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.basic.BasicNodeFilter;
 import org.codehaus.graphprocessor.basic.NullPropertyFilter;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
 import org.codehaus.graphprocessor.samples.productgraph.TpProductDTO;
 import org.codehaus.graphprocessor.samples.productgraph.TpProductModel;
@@ -67,7 +67,7 @@ public class GraphPropertyFilterTest
 
 		final NullPropertyFilter filter = new NullPropertyFilter();
 
-		final GraphContext ctx = new GraphContextImpl(graph);
+		final BidiGraphContext ctx = new GraphContextImpl(graph);
 		ctx.getPropertyFilterList().add(filter);
 
 		// transform (2)
@@ -96,7 +96,7 @@ public class GraphPropertyFilterTest
 
 		// initialize graph; add filter manually
 		final BidiGraphTransformer graph = new BidiGraphTransformer(TuUserDTO.class);
-		GraphContext ctx = graph.createGraphContext();
+		BidiGraphContext ctx = graph.createGraphContext();
 		ctx.getNodeFilterList().add(new BasicNodeFilter());
 		TuUserModel result = null;
 

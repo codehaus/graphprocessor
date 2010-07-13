@@ -30,9 +30,9 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.basic.NullPropertyFilter;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.samples.misc.TxCollectionDTO;
 import org.codehaus.graphprocessor.samples.misc.TxCollectionModel;
 import org.codehaus.graphprocessor.samples.productgraph.TpMediaDTO;
@@ -341,7 +341,7 @@ public class GraphGeneralTest
 		// without 'null' filter each model property gets overwritten
 		// note: NullFilter should be obsolete when ModifiedProperties are enabled
 		final BidiGraphTransformer graph = new BidiGraphTransformer(TuUserDTO.class);
-		final GraphContext ctx = graph.createSourceContext();
+		final BidiGraphContext ctx = graph.createSourceContext();
 		ctx.getPropertyFilterList().add(new NullPropertyFilter());
 
 		// transform

@@ -13,6 +13,8 @@
  */
 package org.codehaus.graphprocessor;
 
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+
 
 
 
@@ -27,12 +29,12 @@ public interface PropertyProcessor
 	 * target node.
 	 * 
 	 * @param pCtx
-	 *           {@link PropertyContext}
+	 *           {@link BidiPropertyContext}
 	 * @param source
 	 *           source node where property value is read from
 	 * @param target
 	 *           target node where property value gets written to
 	 */
-	void process(PropertyContext pCtx, Object source, Object target);
+	void process(BidiPropertyContext pCtx, Object source, Object target);
 
 }

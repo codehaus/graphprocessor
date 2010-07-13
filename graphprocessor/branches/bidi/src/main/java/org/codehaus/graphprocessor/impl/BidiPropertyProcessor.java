@@ -23,18 +23,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.AbstractPropertyConfig;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.AbstractBidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 
@@ -44,14 +44,14 @@ public class BidiPropertyProcessor implements PropertyProcessor
 	private static final Logger log = Logger.getLogger(BidiPropertyProcessor.class);
 
 	@Override
-	public void process(final PropertyContext pCtx, final Object source, final Object target)
+	public void process(final BidiPropertyContext pCtx, final Object source, final Object target)
 	{
 		// TODO: type safety?
 		final PropertyContextImpl pCtxImpl = (PropertyContextImpl) pCtx;
 		final BidiPropertyConfig propertyConfig = pCtx.getPropertyConfig();
 
 
-		final GraphContext graphCtx = pCtx.getGraphContext();
+		final BidiGraphContext graphCtx = pCtx.getGraphContext();
 
 		if (propertyConfig instanceof Initializable)
 		{
@@ -60,7 +60,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 			// lazy compile when necessary
 			if (!init.isInitialized())
 			{
-				init.initialize(AbstractPropertyConfig.COMPLIANCE_LEVEL_HIGH);
+				init.initialize(AbstractBidiPropertyConfig.COMPLIANCE_LEVEL_HIGH);
 			}
 
 		}
@@ -96,7 +96,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 			{
 				if (propertyConfig.isNode())
 				{
-					final AbstractNodeConfig nodeMapping = (AbstractNodeConfig) pCtxImpl.getChildNodeLookup().get(value.getClass());
+					final AbstractBidiNodeConfig nodeMapping = (AbstractBidiNodeConfig) pCtxImpl.getChildNodeLookup().get(value.getClass());
 
 					if (nodeMapping != null)
 					{
@@ -105,7 +105,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 						if (!isFiltered)
 						{
 							final NodeProcessor trans = nodeMapping.getProcessor();
-							final NodeContext nodeCtx = pCtxImpl.createChildNodeContext(nodeMapping, value);
+							final BidiNodeContext nodeCtx = pCtxImpl.createChildNodeContext(nodeMapping, value);
 							value = trans.process(nodeCtx, value, null);
 						}
 					}
@@ -159,7 +159,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 
 	}
 
-	protected boolean isFilterd(final PropertyContext pCtx, final Object value, final List<PropertyFilter> globalFilters,
+	protected boolean isFilterd(final BidiPropertyContext pCtx, final Object value, final List<PropertyFilter> globalFilters,
 			final List<PropertyFilter> localFilters)
 	{
 		boolean isFiltered = false;
@@ -193,7 +193,7 @@ public class BidiPropertyProcessor implements PropertyProcessor
 	 * Reads a property value from source node.
 	 * 
 	 * @param pCtx
-	 *           {@link PropertyContext}
+	 *           {@link BidiPropertyContext}
 	 * @param source
 	 *           source node
 	 * @return value

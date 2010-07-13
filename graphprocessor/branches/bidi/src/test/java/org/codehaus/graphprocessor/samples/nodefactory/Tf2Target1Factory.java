@@ -13,8 +13,8 @@
  */
 package org.codehaus.graphprocessor.samples.nodefactory;
 
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeFactory;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 public class Tf2Target1Factory implements NodeFactory<Tf2Source1, Tf2Target1>
@@ -28,7 +28,7 @@ public class Tf2Target1Factory implements NodeFactory<Tf2Source1, Tf2Target1>
 	 * , java.lang.Object)
 	 */
 	@Override
-	public Tf2Target1 getValue(final NodeContext ctx, final Tf2Source1 dto)
+	public Tf2Target1 getValue(final BidiNodeContext ctx, final Tf2Source1 dto)
 	{
 		// id lesser than 100: an instance gets created with id passed
 		// any other id: null is returned

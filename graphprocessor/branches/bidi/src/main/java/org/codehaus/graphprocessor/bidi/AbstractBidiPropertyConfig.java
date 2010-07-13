@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor;
+package org.codehaus.graphprocessor.bidi;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -15,12 +15,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.GraphProperty;
+import org.codehaus.graphprocessor.GraphPropertyInterceptor;
+import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.PropertyFilter;
+import org.codehaus.graphprocessor.PropertyInterceptor;
+import org.codehaus.graphprocessor.PropertyProcessor;
 
 
 
-public abstract class AbstractPropertyConfig implements BidiPropertyConfig, Initializable
+public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, Initializable
 {
 	public static final int COMPLIANCE_LEVEL_LOW = 0;
 	public static final int COMPLIANCE_LEVEL_MEDIUM = 1;
@@ -34,7 +39,7 @@ public abstract class AbstractPropertyConfig implements BidiPropertyConfig, Init
 		INTERCEPT_METHOD_NAME = PropertyInterceptor.class.getDeclaredMethods()[0].getName();
 	}
 
-	private static final Logger log = Logger.getLogger(AbstractPropertyConfig.class);
+	private static final Logger log = Logger.getLogger(AbstractBidiPropertyConfig.class);
 
 	// PropertyConfig creation
 	// - uses a global (static) lookup cache (yes, static is intended here)
@@ -71,7 +76,7 @@ public abstract class AbstractPropertyConfig implements BidiPropertyConfig, Init
 	private boolean virtualWrite = false;
 
 
-	public AbstractPropertyConfig(final BidiNodeConfig nodeConfig, String id, String name)
+	public AbstractBidiPropertyConfig(final BidiNodeConfig nodeConfig, String id, String name)
 	{
 		this.nodeConfig = nodeConfig;
 		this.id = id;

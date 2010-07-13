@@ -1,13 +1,17 @@
 package org.codehaus.graphprocessor;
 
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+
 public interface ContextCreatedListener
 {
 
-	void graphContextCreated(GraphContext graphContext);
+	void graphContextCreated(BidiGraphContext graphContext);
 
-	void nodeContextCreated(NodeContext nodeContext);
+	void nodeContextCreated(BidiNodeContext nodeContext);
 
-	void propertyContextCreated(PropertyContext propertyContext);
+	void propertyContextCreated(BidiPropertyContext propertyContext);
 
-	void nodeCreated(NodeContext nodeContext, Object node);
+	void nodeCreated(BidiNodeContext nodeContext, Object node);
 }

@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor;
+package org.codehaus.graphprocessor.bidi;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -10,18 +10,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.ContextCreatedListener;
+import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.GraphNode;
+import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.PropertyProcessor;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
 
 
 
-public abstract class AbstractGraphConfig implements BidiGraphConfig, Initializable, ContextCreatedListener
+public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initializable, ContextCreatedListener
 {
-	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
+	private static final Logger log = Logger.getLogger(AbstractBidiGraphConfig.class);
 
 	private boolean _isInitialized = false;
 	private ContextCreatedListener listener = null;
@@ -33,7 +36,7 @@ public abstract class AbstractGraphConfig implements BidiGraphConfig, Initializa
 	protected final CachedClassLookupMap<PropertyProcessor> propertyProcessorMap;
 
 
-	public AbstractGraphConfig()
+	public AbstractBidiGraphConfig()
 	{
 		this.listener = this;
 		this.nodeLookupMap = new CachedClassLookupMap<BidiNodeConfig>();
@@ -271,26 +274,26 @@ public abstract class AbstractGraphConfig implements BidiGraphConfig, Initializa
 	}
 
 	@Override
-	public void graphContextCreated(GraphContext graphContext)
+	public void graphContextCreated(BidiGraphContext graphContext)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void nodeContextCreated(NodeContext nodeContext)
+	public void nodeContextCreated(BidiNodeContext nodeContext)
 	{
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void propertyContextCreated(PropertyContext propertyContext)
+	public void propertyContextCreated(BidiPropertyContext propertyContext)
 	{
 		// NOP
 	}
 
 	@Override
-	public void nodeCreated(NodeContext nodeContext, Object node)
+	public void nodeCreated(BidiNodeContext nodeContext, Object node)
 	{
 		// TODO Auto-generated method stub
 

@@ -17,10 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 
 
@@ -69,7 +69,7 @@ public class BasicNodeFilter implements PropertyFilter
 
 
 	@Override
-	public boolean isFiltered(final PropertyContext ctx, final Object value)
+	public boolean isFiltered(final BidiPropertyContext ctx, final Object value)
 	{
 		boolean isFiltered = false;
 

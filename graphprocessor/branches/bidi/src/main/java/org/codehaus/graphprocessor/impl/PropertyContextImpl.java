@@ -1,19 +1,19 @@
 package org.codehaus.graphprocessor.impl;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeContext;
-import org.codehaus.graphprocessor.PropertyContext;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 
 /**
- * See specification of {@link PropertyContext}
+ * See specification of {@link BidiPropertyContext}
  */
-public class PropertyContextImpl implements PropertyContext
+public class PropertyContextImpl implements BidiPropertyContext
 {
 	private static final Logger log = Logger.getLogger(PropertyContextImpl.class);
 
@@ -34,7 +34,7 @@ public class PropertyContextImpl implements PropertyContext
 
 
 	@Override
-	public GraphContext getGraphContext()
+	public BidiGraphContext getGraphContext()
 	{
 		return this.graphCtx;
 	}
@@ -48,7 +48,7 @@ public class PropertyContextImpl implements PropertyContext
 	}
 
 	@Override
-	public NodeContext getParentContext()
+	public BidiNodeContext getParentContext()
 	{
 		return this.parentNodeCtx;
 	}
@@ -64,7 +64,7 @@ public class PropertyContextImpl implements PropertyContext
 	}
 
 
-	protected NodeContextImpl createChildNodeContext(final AbstractNodeConfig nodeConfig, final Object source)
+	protected NodeContextImpl createChildNodeContext(final AbstractBidiNodeConfig nodeConfig, final Object source)
 	{
 		final int distance = this.parentNodeCtx.getRealDistance() + 1;
 		final int virtualDist = nodeConfig.isVirtual() ? this.parentNodeCtx.getDistance() : this.parentNodeCtx.getDistance() + 1;

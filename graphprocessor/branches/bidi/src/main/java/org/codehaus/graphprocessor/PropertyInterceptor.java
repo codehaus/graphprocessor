@@ -13,6 +13,8 @@
  */
 package org.codehaus.graphprocessor;
 
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+
 /**
  * Intercepts processing of a property. A PropertyInterceptor can be assigned to a read- as well as a write property. In
  * case of a read-property, interceptor gets invoked immediately, after property was read (and before any other
@@ -21,7 +23,7 @@ package org.codehaus.graphprocessor;
  * In case of a write-property, interceptor gets invoked after every other operation is finished (like filters) but as
  * last step before property value gets written.
  * <p/>
- * With {@link PropertyContext} an Interceptor is given full access to each graph-element which is and will be
+ * With {@link BidiPropertyContext} an Interceptor is given full access to each graph-element which is and will be
  * processed. Therefore an Interceptor can be used as Converter, as Factory or just to do some other, implicit
  * processing stuff somewhere within the graph.
  * <p/>
@@ -37,12 +39,12 @@ public interface PropertyInterceptor<IN, OUT>
 	 * Intercepts current property processing.
 	 * 
 	 * @param propertyCtx
-	 *           {@link PropertyContext}
+	 *           {@link BidiPropertyContext}
 	 * @param propertyValue
 	 *           the unprocessed property value
 	 * @return the processed property value
 	 */
-	OUT intercept(final PropertyContext propertyCtx, final IN propertyValue);
+	OUT intercept(final BidiPropertyContext propertyCtx, final IN propertyValue);
 
 
 }

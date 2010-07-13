@@ -17,22 +17,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 
 
 /**
- * See specification of {@link NodeContext}.
+ * See specification of {@link BidiNodeContext}.
  */
-public class NodeContextImpl implements NodeContext
+public class NodeContextImpl implements BidiNodeContext
 {
-	private AbstractNodeConfig nodeMapping = null;
+	private AbstractBidiNodeConfig nodeMapping = null;
 	private Object sourceNodeValue = null;
 	private Object targetNodeValue = null;
 
@@ -54,7 +54,7 @@ public class NodeContextImpl implements NodeContext
 	 * @param source
 	 */
 	protected NodeContextImpl(final GraphContextImpl graphCtx, final PropertyContextImpl propertyCtx,
-			final AbstractNodeConfig nodeMapping, final CachedClassLookupMap<BidiNodeConfig> nodeMappingsMap, final int distance,
+			final AbstractBidiNodeConfig nodeMapping, final CachedClassLookupMap<BidiNodeConfig> nodeMappingsMap, final int distance,
 			final int virtualDistance, final Object source)
 	{
 		super();
@@ -64,7 +64,7 @@ public class NodeContextImpl implements NodeContext
 		{
 			if (propertyCtx.getGraphContext() != this.graphCtx)
 			{
-				throw new GraphException(GraphContext.class.getSimpleName() + " of passed property is not same as of this node");
+				throw new GraphException(BidiGraphContext.class.getSimpleName() + " of passed property is not same as of this node");
 			}
 		}
 		this.nodeMapping = nodeMapping;
@@ -97,7 +97,7 @@ public class NodeContextImpl implements NodeContext
 	/**
 	 * @return the nodeConfig
 	 */
-	public AbstractNodeConfig getNodeConfig()
+	public AbstractBidiNodeConfig getNodeConfig()
 	{
 		return nodeMapping;
 	}
@@ -143,7 +143,7 @@ public class NodeContextImpl implements NodeContext
 	/**
 	 * {@inheritDoc}
 	 * <p/>
-	 * This implementation of {@link NodeContext} returns always a {@link PropertyContextImpl} type.
+	 * This implementation of {@link BidiNodeContext} returns always a {@link PropertyContextImpl} type.
 	 */
 	@Override
 	public PropertyContextImpl getParentContext()
@@ -154,7 +154,7 @@ public class NodeContextImpl implements NodeContext
 	/**
 	 * {@inheritDoc}
 	 * <p/>
-	 * This implementation of {@link NodeContext} returns always a {@link GraphContextImpl} type.
+	 * This implementation of {@link BidiNodeContext} returns always a {@link GraphContextImpl} type.
 	 */
 	@Override
 	public GraphContextImpl getGraphContext()
@@ -167,11 +167,11 @@ public class NodeContextImpl implements NodeContext
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeContext#getPath()
 	 */
 	@Override
-	public List<NodeContext> getProcessingPath()
+	public List<BidiNodeContext> getProcessingPath()
 	{
-		final List<NodeContext> path = new ArrayList<NodeContext>();
+		final List<BidiNodeContext> path = new ArrayList<BidiNodeContext>();
 
-		NodeContext nodeCtx = this;
+		BidiNodeContext nodeCtx = this;
 
 		while (nodeCtx != null)
 		{

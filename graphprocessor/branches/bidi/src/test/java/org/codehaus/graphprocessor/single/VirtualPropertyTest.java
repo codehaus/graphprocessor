@@ -6,9 +6,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.GraphProperty;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 import org.codehaus.graphprocessor.transform.BidiGraphTransformer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class VirtualPropertyTest
 	public static class TestVirtualPropConverter implements PropertyInterceptor
 	{
 		@Override
-		public Object intercept(final PropertyContext ctx, final Object source)
+		public Object intercept(final BidiPropertyContext ctx, final Object source)
 		{
 			// source node has no such property; property value must always be null
 			Assert.assertNull(source);

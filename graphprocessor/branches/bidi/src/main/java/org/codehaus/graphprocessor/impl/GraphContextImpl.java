@@ -21,20 +21,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractNodeConfig;
 import org.codehaus.graphprocessor.GraphConfiguration;
-import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.PropertyFilter;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 
 /**
  * Context which is used for and during the process of transforming one object graph into another one.
  */
-public class GraphContextImpl implements GraphContext
+public class GraphContextImpl implements BidiGraphContext
 {
 	private static final Logger log = Logger.getLogger(GraphContextImpl.class);
 
@@ -175,17 +175,17 @@ public class GraphContextImpl implements GraphContext
 
 
 	/**
-	 * Creates an initial {@link NodeContext} (root node context)
+	 * Creates an initial {@link BidiNodeContext} (root node context)
 	 * 
 	 * @param rootNodeLookup
 	 * @param nodeMapping
 	 * @param source
-	 * @return {@link NodeContext}
+	 * @return {@link BidiNodeContext}
 	 */
-	public NodeContext createRootNodeContext(final CachedClassLookupMap<BidiNodeConfig> rootNodeLookup,
-			final AbstractNodeConfig nodeMapping, final Object source)
+	public BidiNodeContext createRootNodeContext(final CachedClassLookupMap<BidiNodeConfig> rootNodeLookup,
+			final AbstractBidiNodeConfig nodeMapping, final Object source)
 	{
-		NodeContext result = null;
+		BidiNodeContext result = null;
 
 		// configured nodeLookup for distance 1
 		// final CachedClassLookupMap<NodeMapping> add = this.graphConfigImpl.getAllNodeMappings(1);

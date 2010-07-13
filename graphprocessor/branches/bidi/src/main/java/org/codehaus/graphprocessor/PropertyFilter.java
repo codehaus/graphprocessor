@@ -13,6 +13,9 @@
  */
 package org.codehaus.graphprocessor;
 
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+
 
 
 /**
@@ -24,10 +27,10 @@ public interface PropertyFilter
 	 * Returns true when property value shall be filtered.
 	 * 
 	 * @param ctx
-	 *           {@link GraphContext}
+	 *           {@link BidiGraphContext}
 	 * @param value
 	 *           property value
 	 * @return true when value shall be filtered
 	 */
-	boolean isFiltered(PropertyContext ctx, Object value);
+	boolean isFiltered(BidiPropertyContext ctx, Object value);
 }

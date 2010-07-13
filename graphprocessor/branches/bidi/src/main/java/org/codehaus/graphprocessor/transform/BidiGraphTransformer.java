@@ -1,17 +1,17 @@
 package org.codehaus.graphprocessor.transform;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProcessor;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiCollectionNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
@@ -49,7 +49,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 	}
 
 	@Override
-	public <T> T transform(final GraphContext ctx, final Object source)
+	public <T> T transform(final BidiGraphContext ctx, final Object source)
 	{
 		return (T) transform(ctx, source, null);
 	}
@@ -77,7 +77,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 
 	@Override
-	public <T> T transform(GraphContext ctx, final Object source, final T target)
+	public <T> T transform(BidiGraphContext ctx, final Object source, final T target)
 	{
 		// a source graph must be specified
 		if (source == null)
@@ -108,7 +108,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 
 	@Override
-	public <T> T process(final GraphContext graphCtx, final Object source, final T target)
+	public <T> T process(final BidiGraphContext graphCtx, final Object source, final T target)
 	{
 		if (!(graphCtx instanceof GraphContextImpl))
 		{
@@ -137,7 +137,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 		if (graphCtx.isReleased())
 		{
-			throw new GraphException("Can't use an instance of " + GraphContext.class.getSimpleName() + " twice");
+			throw new GraphException("Can't use an instance of " + BidiGraphContext.class.getSimpleName() + " twice");
 		}
 
 		// create nodeLookup to lookup root node
@@ -151,7 +151,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 		}
 
 		// create nodeLookup used for root nodes childs
-		final NodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractNodeConfig) nodeConfig, source);
+		final BidiNodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractBidiNodeConfig) nodeConfig, source);
 
 		NodeProcessor nodeProcessor = nodeConfig.getProcessor();
 		final T result = nodeProcessor.process(nodeCtx, source, target);
@@ -160,19 +160,19 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 		return result;
 	}
 
-	public GraphContext createGraphContext()
+	public BidiGraphContext createGraphContext()
 	{
 		return this.createSourceContext();
 	}
 
-	public GraphContext createGraphContext(Class node)
+	public BidiGraphContext createGraphContext(Class node)
 	{
 		if (node == null)
 		{
-			throw new GraphException("Can't create " + GraphContext.class.getSimpleName() + " (no node type available)",
+			throw new GraphException("Can't create " + BidiGraphContext.class.getSimpleName() + " (no node type available)",
 					new NullPointerException());
 		}
-		GraphContext result = null;
+		BidiGraphContext result = null;
 
 		if (!this.isInitialized())
 		{
@@ -195,7 +195,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 
 		if (result == null)
 		{
-			LOG.debug("Successfully created " + GraphContext.class.getSimpleName() + " for " + node.getSimpleName());
+			LOG.debug("Successfully created " + BidiGraphContext.class.getSimpleName() + " for " + node.getSimpleName());
 		}
 
 		return result;
@@ -203,12 +203,12 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 	}
 
 
-	public GraphContext createSourceContext()
+	public BidiGraphContext createSourceContext()
 	{
 		return new GraphContextImpl(this);
 	}
 
-	public GraphContext createTargetContext()
+	public BidiGraphContext createTargetContext()
 	{
 		return new GraphContextImpl(this.getTargetConfig());
 	}

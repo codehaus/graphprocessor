@@ -13,8 +13,8 @@
  */
 package org.codehaus.graphprocessor.basic;
 
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 public class NullPropertyFilter implements PropertyFilter
@@ -53,7 +53,7 @@ public class NullPropertyFilter implements PropertyFilter
 	 * objectgraphtransformer.ObjectGraphContext, java.lang.Object)
 	 */
 	@Override
-	public boolean isFiltered(final PropertyContext ctx, final Object value)
+	public boolean isFiltered(final BidiPropertyContext ctx, final Object value)
 	{
 		return (value == null) && isFilterNullValues();
 	}

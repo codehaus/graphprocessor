@@ -26,11 +26,11 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.GraphConfiguration;
-import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeContext;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressModel;
 import org.codehaus.graphprocessor.samples.usergraph.TuCountryDTO;
@@ -45,8 +45,8 @@ import org.junit.Test;
 
 
 /**
- * Tests for correct context, their usage and their content. Checked context classes are: {@link GraphContext},
- * {@link NodeContext} and {@link PropertyContext}.
+ * Tests for correct context, their usage and their content. Checked context classes are: {@link BidiGraphContext},
+ * {@link BidiNodeContext} and {@link BidiPropertyContext}.
  * <p/>
  * Some of the tested issues are:
  * <ul>
@@ -60,11 +60,11 @@ public class NodeContextTest
 	private static final Logger log = Logger.getLogger(NodeContextTest.class);
 
 	/**
-	 * Special {@link GraphTransformer} which logs every {@link NodeContext} which gets created.
+	 * Special {@link GraphTransformer} which logs every {@link BidiNodeContext} which gets created.
 	 */
 	private static class TestGraphTransformer extends BidiGraphTransformer
 	{
-		private final List<List<NodeContext>> loggedRuntimeNodes = new ArrayList<List<NodeContext>>();
+		private final List<List<BidiNodeContext>> loggedRuntimeNodes = new ArrayList<List<BidiNodeContext>>();
 
 		public TestGraphTransformer(final Class clazz)
 		{
@@ -72,14 +72,14 @@ public class NodeContextTest
 		}
 
 		@Override
-		public void nodeContextCreated(final NodeContext nodeCtx)
+		public void nodeContextCreated(final BidiNodeContext nodeCtx)
 		{
 			super.nodeContextCreated(nodeCtx);
-			final List<NodeContext> nodeCtxList = nodeCtx.getProcessingPath();
+			final List<BidiNodeContext> nodeCtxList = nodeCtx.getProcessingPath();
 			this.loggedRuntimeNodes.add(nodeCtxList);
 		}
 
-		public List<List<NodeContext>> getProcessedNodes()
+		public List<List<BidiNodeContext>> getProcessedNodes()
 		{
 			return this.loggedRuntimeNodes;
 		}
@@ -88,7 +88,7 @@ public class NodeContextTest
 
 	/**
 	 * Tests processed properties for correct processing order. <br/>
-	 * Tests {@link NodeContext} for correct distance property
+	 * Tests {@link BidiNodeContext} for correct distance property
 	 */
 	@Test
 	public void testPropOrderAndDistance()
@@ -96,7 +96,7 @@ public class NodeContextTest
 		final NodeContextTestSetup test = new NodeContextTestSetup(1);
 		test.execute();
 
-		final List<List<NodeContext>> nodes = test.processedNodes;
+		final List<List<BidiNodeContext>> nodes = test.processedNodes;
 
 		// ASSERTING
 
@@ -116,10 +116,10 @@ public class NodeContextTest
 		// i collect all information first instead of asserting each iteration step as this gives better
 		// analysis/debug options in case (after a refactoring?) some errors occur
 		final List actual = new ArrayList();
-		for (final List<NodeContext> nodePath : nodes)
+		for (final List<BidiNodeContext> nodePath : nodes)
 		{
 			String _actual = "";
-			for (final NodeContext nodeCtx : nodePath)
+			for (final BidiNodeContext nodeCtx : nodePath)
 			{
 				final int dist = ((NodeContextImpl) nodeCtx).getDistance();
 				_actual = _actual + dist + ":" + nodeCtx.getNodeConfig().getType().getSimpleName() + " ";
@@ -341,9 +341,9 @@ public class NodeContextTest
 
 		test.execute();
 
-		final List<NodeContext> nodeCtxList = test.processedNodes.get(3);
+		final List<BidiNodeContext> nodeCtxList = test.processedNodes.get(3);
 
-		NodeContext node = nodeCtxList.get(0);
+		BidiNodeContext node = nodeCtxList.get(0);
 		Assert.assertNotNull(node.getSourceNodeValue());
 		assertEquals(node.getSourceNodeValue().getClass(), TuUserDTO.class);
 		assertEquals(node.getTargetNodeValue().getClass(), TuUserModel.class);
@@ -395,7 +395,7 @@ public class NodeContextTest
 		GraphContextImpl graphCtx = null;
 		TuUserDTO userDto = null;
 		TuUserModel userModel = null;
-		List<List<NodeContext>> processedNodes = null;
+		List<List<BidiNodeContext>> processedNodes = null;
 
 		// a matrix [n x m] whose elements are numeric.
 		// each number represents an object entity (identity id)
@@ -532,10 +532,10 @@ public class NodeContextTest
 			{
 				identMatrix[i1][0] = Integer.valueOf(0);
 				identMatrix[i1][1] = Integer.valueOf(1);
-				final List<NodeContext> nodePath = processedNodes.get(i1);
+				final List<BidiNodeContext> nodePath = processedNodes.get(i1);
 				for (int i2 = 0; i2 < nodePath.size(); i2++)
 				{
-					final NodeContext nodeCtx = nodePath.get(i2);
+					final BidiNodeContext nodeCtx = nodePath.get(i2);
 					Integer key = null;
 					for (int i3 = 0; i3 < this.matrixIdList.size(); i3++)
 					{
@@ -599,9 +599,9 @@ public class NodeContextTest
 		private String createPropertyMatrixAsString()
 		{
 			String result = "";
-			for (final List<NodeContext> nodeCtxList : this.processedNodes)
+			for (final List<BidiNodeContext> nodeCtxList : this.processedNodes)
 			{
-				for (final NodeContext nodeCtx : nodeCtxList)
+				for (final BidiNodeContext nodeCtx : nodeCtxList)
 				{
 					String add = "";
 					if (nodeCtx.getParentContext() != null && nodeCtx.getParentContext().getPropertyConfig() != null)

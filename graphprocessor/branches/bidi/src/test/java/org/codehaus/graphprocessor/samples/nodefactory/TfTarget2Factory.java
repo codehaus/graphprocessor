@@ -13,8 +13,8 @@
  */
 package org.codehaus.graphprocessor.samples.nodefactory;
 
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeFactory;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 public class TfTarget2Factory implements NodeFactory<TfSource2, TfTarget2>
@@ -22,7 +22,7 @@ public class TfTarget2Factory implements NodeFactory<TfSource2, TfTarget2>
 	public static TfTarget2 STATIC_TARGETDTO2 = new TfTarget2();
 
 	@Override
-	public TfTarget2 getValue(final NodeContext ctx, final TfSource2 dto)
+	public TfTarget2 getValue(final BidiNodeContext ctx, final TfSource2 dto)
 	{
 		TfTarget2 result = null;
 		if (dto.getValue() > 0)

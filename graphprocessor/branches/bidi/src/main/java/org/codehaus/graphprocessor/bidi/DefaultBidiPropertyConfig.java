@@ -4,14 +4,13 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractPropertyConfig;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.impl.BidiPropertyProcessor;
 
 
 
-public class DefaultBidiPropertyConfig extends AbstractPropertyConfig implements BidiPropertyConfig
+public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implements BidiPropertyConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiPropertyConfig.class);
 

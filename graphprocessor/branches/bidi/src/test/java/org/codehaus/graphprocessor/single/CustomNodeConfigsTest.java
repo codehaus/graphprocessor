@@ -26,12 +26,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.AbstractPropertyConfig;
-import org.codehaus.graphprocessor.GraphContext;
+import org.codehaus.graphprocessor.bidi.AbstractBidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressModel;
@@ -79,7 +79,7 @@ public class CustomNodeConfigsTest
 
 		// now add a new NodeProperty which maps lastname to firstname
 		DefaultBidiPropertyConfig prop = new DefaultBidiPropertyConfig(cfg, "lastname", "firstname");
-		prop.initialize(AbstractPropertyConfig.COMPLIANCE_LEVEL_HIGH);
+		prop.initialize(AbstractBidiPropertyConfig.COMPLIANCE_LEVEL_HIGH);
 		cfg.addPropertyConfig(prop);
 
 		// transform
@@ -98,7 +98,7 @@ public class CustomNodeConfigsTest
 		cfg.removePropertyConfigByName("propertyId");
 		prop = new DefaultBidiPropertyConfig(cfg, "firstname");
 		prop.getTargetProperty().setWriteInterceptor(new ToUppercaseConverter());
-		prop.initialize(AbstractPropertyConfig.COMPLIANCE_LEVEL_HIGH);
+		prop.initialize(AbstractBidiPropertyConfig.COMPLIANCE_LEVEL_HIGH);
 		cfg.addPropertyConfig(prop);
 
 		// transform
@@ -125,7 +125,7 @@ public class CustomNodeConfigsTest
 		final BidiGraphTransformer graph = new BidiGraphTransformer(TuUserDTO.class);
 
 		final BidiNodeConfig cfg = graph.getNodeConfig(TuAddressDTO.class);
-		final GraphContext ctx = new GraphContextImpl(graph);
+		final BidiGraphContext ctx = new GraphContextImpl(graph);
 
 		// NodeMapping expected = ctx.getCurrentNodeConfig().getNodeConfig(TuAddressDTO.class);
 		final BidiNodeConfig actual = ctx.getConfiguration().getNodeConfig(0, TuAddressDTO.class);
@@ -222,7 +222,7 @@ public class CustomNodeConfigsTest
 				.getPropertyConfigByName("secondAddress");
 		p.setNewNodeMappings((List) Arrays.asList(newCfg));
 
-		final GraphContext ctx = graph.createGraphContext();
+		final BidiGraphContext ctx = graph.createGraphContext();
 
 		ctx.getConfiguration().addNodeConfig(1, newCfg);
 
@@ -258,7 +258,7 @@ public class CustomNodeConfigsTest
 		// that PropertyConfig is newly created (could also be reused from another AddressDTO node)
 		newCfg.addPropertyConfig(new DefaultBidiPropertyConfig(newCfg, "firstname"));
 
-		final GraphContext ctx = graph.createGraphContext();
+		final BidiGraphContext ctx = graph.createGraphContext();
 
 		ctx.getConfiguration().addNodeConfig(1, newCfg);
 
@@ -288,7 +288,7 @@ public class CustomNodeConfigsTest
 		newCfg.removeAllProperties();
 		newCfg.addPropertyConfig(new DefaultBidiPropertyConfig(newCfg, "firstname"));
 
-		final GraphContext ctx = graph.createGraphContext();
+		final BidiGraphContext ctx = graph.createGraphContext();
 
 		ctx.getConfiguration().addNodeConfig(0, newCfg);
 

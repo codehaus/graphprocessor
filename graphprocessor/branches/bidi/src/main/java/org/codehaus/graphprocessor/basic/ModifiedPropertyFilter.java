@@ -14,9 +14,9 @@
 package org.codehaus.graphprocessor.basic;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 
@@ -31,7 +31,7 @@ public class ModifiedPropertyFilter implements PropertyFilter
 	 * de.hybris.platform.webservices.util.objectgraphtransformer.proto.PropertyProcessor)
 	 */
 	@Override
-	public boolean isFiltered(final PropertyContext ctx, final Object value)
+	public boolean isFiltered(final BidiPropertyContext ctx, final Object value)
 	{
 		boolean isFiltered = false;
 		final Object node = ctx.getParentContext().getSourceNodeValue();

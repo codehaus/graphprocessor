@@ -13,21 +13,21 @@
  */
 package org.codehaus.graphprocessor.transform;
 
-import org.codehaus.graphprocessor.GraphContext;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 
 
 /**
  * Transforms a graph or a subgraph from a source into a target representation. For each single transformation a
- * {@link GraphContext} is used. If no {@link GraphContext} is passed, an appropriate one gets created automatically.
+ * {@link BidiGraphContext} is used. If no {@link BidiGraphContext} is passed, an appropriate one gets created automatically.
  * <p/>
- * A {@link GraphContext} can be created manually with {@link #createGraphContext(Class)}. Such context can be used to customize
+ * A {@link BidiGraphContext} can be created manually with {@link #createGraphContext(Class)}. Such context can be used to customize
  * transformation behavior for exactly one transformation process. After that context can still be used to fetch some statistic
  * values but not for a second transformation process again.
  */
 public interface GraphTransformer
 {
 	/**
-	 * Calls {@link #transform(GraphContext, Object, Object)} with no specific context and no given target.
+	 * Calls {@link #transform(BidiGraphContext, Object, Object)} with no specific context and no given target.
 	 * @param <T>
 	 * @param source source graph
 	 * @return target graph
@@ -35,7 +35,7 @@ public interface GraphTransformer
 	<T extends Object> T transform(final Object source);
 
 	/**
-	 * Calls {@link #transform(GraphContext, Object, Object)} with no specific context.
+	 * Calls {@link #transform(BidiGraphContext, Object, Object)} with no specific context.
 	 * @param <T>
 	 * @param source source graph
 	 * @param target target graph or null
@@ -45,13 +45,13 @@ public interface GraphTransformer
 
 
 	/**
-	 * Calls {@link #transform(GraphContext, Object, Object)} without a specific target.
+	 * Calls {@link #transform(BidiGraphContext, Object, Object)} without a specific target.
 	 * @param <T>
-	 * @param ctx {@link GraphContext}
+	 * @param ctx {@link BidiGraphContext}
 	 * @param source source graph
 	 * @return target graph
 	 */
-	<T extends Object> T transform(final GraphContext ctx, final Object source);
+	<T extends Object> T transform(final BidiGraphContext ctx, final Object source);
 
 
 
@@ -64,15 +64,15 @@ public interface GraphTransformer
 	 * @param target target graph or null
 	 * @return target graph
 	 */
-	<T extends Object> T transform(final GraphContext ctx, final Object source, T target);
+	<T extends Object> T transform(final BidiGraphContext ctx, final Object source, T target);
 
 	/**
-	 * Creates a {@link GraphContext}. Such context can be used to customize transformation behavior or fetch some statistics after
+	 * Creates a {@link BidiGraphContext}. Such context can be used to customize transformation behavior or fetch some statistics after
 	 * transformation.
-	 * @return {@link GraphContext}.
+	 * @return {@link BidiGraphContext}.
 	 */
 	//GraphContext createGraphContext();
 
-	GraphContext createGraphContext(Class node);
+	BidiGraphContext createGraphContext(Class node);
 
 }

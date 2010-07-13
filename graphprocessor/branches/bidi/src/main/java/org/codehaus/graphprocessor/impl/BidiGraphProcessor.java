@@ -1,20 +1,20 @@
 package org.codehaus.graphprocessor.impl;
 
-import org.codehaus.graphprocessor.AbstractNodeConfig;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProcessor;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 public class BidiGraphProcessor implements GraphProcessor
 {
 
 	@Override
-	public <T> T process(final GraphContext graphCtx, final Object source, final T target)
+	public <T> T process(final BidiGraphContext graphCtx, final Object source, final T target)
 	{
 		if (!(graphCtx instanceof GraphContextImpl))
 		{
@@ -43,7 +43,7 @@ public class BidiGraphProcessor implements GraphProcessor
 
 		if (graphCtx.isReleased())
 		{
-			throw new GraphException("Can't use an instance of " + GraphContext.class.getSimpleName() + " twice");
+			throw new GraphException("Can't use an instance of " + BidiGraphContext.class.getSimpleName() + " twice");
 		}
 
 		// create nodeLookup to lookup root node
@@ -57,7 +57,7 @@ public class BidiGraphProcessor implements GraphProcessor
 		}
 
 		// create nodeLookup used for root nodes childs
-		final NodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractNodeConfig) nodeMapping, source);
+		final BidiNodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractBidiNodeConfig) nodeMapping, source);
 
 		final T result = nodeMapping.getProcessor().process(nodeCtx, source, target);
 		graphCtx.setReleased(true);

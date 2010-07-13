@@ -11,19 +11,17 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor;
+package org.codehaus.graphprocessor.bidi;
 
 import java.util.List;
 
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
 /**
  * Provides context (runtime) information about current processed node.
  */
-public interface NodeContext
+public interface BidiNodeContext
 {
 	/**
 	 * Returns the real processed distance up to current node. This also includes virtual nodes.
@@ -34,7 +32,7 @@ public interface NodeContext
 
 	/**
 	 * Returns the general distance for the node this context belongs too. Virtual nodes are not included in distance calculation.
-	 * Every virtual node which is part of the processed node path has the same distance as it's ancestor {@link NodeContext}.
+	 * Every virtual node which is part of the processed node path has the same distance as it's ancestor {@link BidiNodeContext}.
 	 * 
 	 * @return distance
 	 */
@@ -63,28 +61,28 @@ public interface NodeContext
 	public Object getTargetNodeValue();
 
 	/**
-	 * Returns the {@link PropertyContext} which was used to create this {@link NodeContext}.
+	 * Returns the {@link BidiPropertyContext} which was used to create this {@link BidiNodeContext}.
 	 * <p/>
-	 * Returned {@link PropertyContext} is bound to a runtime value, which is a valid GraphProperty (a {@link BidiPropertyConfig}
+	 * Returned {@link BidiPropertyContext} is bound to a runtime value, which is a valid GraphProperty (a {@link BidiPropertyConfig}
 	 * is available). It is the parent element of current processed runtime value, which itself is of meta-type GraphNode and
-	 * represented by this {@link NodeContext} instance.
+	 * represented by this {@link BidiNodeContext} instance.
 	 * 
-	 * @return {@link PropertyContext}
+	 * @return {@link BidiPropertyContext}
 	 */
-	public PropertyContext getParentContext();
+	public BidiPropertyContext getParentContext();
 
 	/**
-	 * Returns a list of {@link NodeContext} instances starting from a root context up to parent context of current processed node.
+	 * Returns a list of {@link BidiNodeContext} instances starting from a root context up to parent context of current processed node.
 	 * 
-	 * @return List of {@link NodeContext}
+	 * @return List of {@link BidiNodeContext}
 	 */
-	public List<NodeContext> getProcessingPath();
+	public List<BidiNodeContext> getProcessingPath();
 
 	/**
-	 * Returns the {@link GraphContext}
+	 * Returns the {@link BidiGraphContext}
 	 * 
-	 * @return {@link GraphContext}
+	 * @return {@link BidiGraphContext}
 	 */
-	public GraphContext getGraphContext();
+	public BidiGraphContext getGraphContext();
 
 }

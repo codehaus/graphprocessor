@@ -20,11 +20,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeFactory;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 import org.codehaus.graphprocessor.bidi.VirtualPropertyConfig;
 
 
@@ -132,7 +132,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 
 		for (final BidiPropertyConfig property : propCfg.values())
 		{
-			final PropertyContext propCtx = createChildPropertyContext(nodeCtx, property);
+			final BidiPropertyContext propCtx = createChildPropertyContext(nodeCtx, property);
 			property.getProcessor().process(propCtx, source, target);
 		}
 
@@ -144,14 +144,14 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 			if (property.isVirtualWrite())
 			{
 				BidiPropertyConfig sourcePropertyConfig = new VirtualPropertyConfig(property);
-				final PropertyContext propCtx = createChildPropertyContext(nodeCtx, sourcePropertyConfig);
+				final BidiPropertyContext propCtx = createChildPropertyContext(nodeCtx, sourcePropertyConfig);
 				property.getProcessor().process(propCtx, source, target);
 			}
 		}
 
 	}
 
-	protected PropertyContext createChildPropertyContext(final NodeContextImpl nodeCtx, final BidiPropertyConfig property)
+	protected BidiPropertyContext createChildPropertyContext(final NodeContextImpl nodeCtx, final BidiPropertyConfig property)
 	{
 		return nodeCtx.createChildPropertyContext(property);
 	}
@@ -227,7 +227,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	// }
 
 	// getValueUID
-	private Object getValueId(final NodeContext nodeCtx, final Object srcNodeValue)
+	private Object getValueId(final BidiNodeContext nodeCtx, final Object srcNodeValue)
 	{
 		// take all properties which are configured to be taken for creation of a 'uid'
 		final BidiPropertyConfig[] uidProps = nodeCtx.getNodeConfig().getUidProperties();
@@ -277,7 +277,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 		return result;
 	}
 
-	private Object getValueFromNodeFactory(final NodeContext nodeCtx, final Object srcNodeValue)
+	private Object getValueFromNodeFactory(final BidiNodeContext nodeCtx, final Object srcNodeValue)
 	{
 		Object result = null;
 		final NodeFactory factory = (nodeCtx.getNodeConfig()).getNodeFactory();

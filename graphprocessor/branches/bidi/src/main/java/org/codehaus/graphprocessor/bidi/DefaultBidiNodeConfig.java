@@ -3,14 +3,13 @@ package org.codehaus.graphprocessor.bidi;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.AbstractNodeConfig;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.NodeFactory;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
 
 
 
-public class DefaultBidiNodeConfig extends AbstractNodeConfig implements BidiNodeConfig
+public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements BidiNodeConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiNodeConfig.class);
 

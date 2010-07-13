@@ -6,13 +6,13 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.GraphProperty;
-import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.basic.BasicNodeFilter;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 import org.codehaus.graphprocessor.transform.BidiGraphTransformer;
 import org.codehaus.graphprocessor.transform.GraphTransformer;
 import org.junit.Test;
@@ -160,7 +160,7 @@ public class ConvertNodeToPropertyTest
 	public static class MyChildDtoToStringInterceptor implements PropertyInterceptor<MyChildDto, String>
 	{
 		@Override
-		public String intercept(final PropertyContext propertyCtx, final MyChildDto propertyValue)
+		public String intercept(final BidiPropertyContext propertyCtx, final MyChildDto propertyValue)
 		{
 			return propertyValue.getId() + ":" + propertyValue.getCode();
 		}
@@ -182,7 +182,7 @@ public class ConvertNodeToPropertyTest
 		// test 1
 		// nothing special, default converter behavior
 		// which is: processing all nodes
-		final GraphContext ctx = graph.createGraphContext(model.getClass());
+		final BidiGraphContext ctx = graph.createGraphContext(model.getClass());
 		MyDto target = graph.transform(ctx, model);
 		Assert.assertEquals("name", target.getName());
 		Assert.assertNotNull(target.getChild1());
@@ -194,7 +194,7 @@ public class ConvertNodeToPropertyTest
 		// expected behavior: 
 		// - child1 property gets filtered because it copies/transforms a source into a target node 
 		// - child2 property gets processed although it's source is node (but target is a plain String property)
-		final GraphContext ctx2 = graph.createGraphContext(model.getClass());
+		final BidiGraphContext ctx2 = graph.createGraphContext(model.getClass());
 		final PropertyFilter propFilter = new BasicNodeFilter(0);
 		ctx2.getNodeFilterList().add(propFilter);
 
