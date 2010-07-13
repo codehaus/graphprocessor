@@ -25,7 +25,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.NodeFactory;
-import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.impl.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.samples.nodefactory.Tf2Source1;
 import org.codehaus.graphprocessor.samples.nodefactory.Tf2Target1;
 import org.codehaus.graphprocessor.samples.nodefactory.Tf2Target1Factory;
