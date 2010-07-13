@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
-import org.codehaus.graphprocessor.PropertyProcessor;
 import org.codehaus.graphprocessor.transform.GraphTransformer;
 
 

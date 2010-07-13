@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor.bidi.impl;
 
 
 
@@ -25,23 +25,20 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeProcessor;
 import org.codehaus.graphprocessor.PropertyFilter;
-import org.codehaus.graphprocessor.PropertyProcessor;
-import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.AbstractBidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.PropertyProcessor;
 
 
 
 // BidiPropertyProcessor
-public class BidiPropertyProcessor implements PropertyProcessor
+public class BidiPropertyProcessorImpl implements PropertyProcessor
 {
-	private static final Logger log = Logger.getLogger(BidiPropertyProcessor.class);
+	private static final Logger log = Logger.getLogger(BidiPropertyProcessorImpl.class);
 
 	@Override
 	public void process(final BidiPropertyContext pCtx, final Object source, final Object target)

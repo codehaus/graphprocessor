@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -6,7 +6,8 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.PropertyInterceptor;
-import org.codehaus.graphprocessor.impl.BidiPropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
@@ -14,7 +15,7 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiPropertyConfig.class);
 
-	private static final BidiPropertyProcessor DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessor();
+	private static final BidiPropertyProcessorImpl DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessorImpl();
 
 	private DefaultBidiPropertyConfig targetProperty = null;
 	private boolean _isTypeCheckEnabled = false;

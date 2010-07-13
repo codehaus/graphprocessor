@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.bidi.VirtualPropertyConfig;
+import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
 
 
 
@@ -34,9 +34,9 @@ import org.codehaus.graphprocessor.bidi.VirtualPropertyConfig;
  * A default node transformer implementation which transforms a source type into a target type and copies various properties from
  * source to target instance.
  */
-public class BidiNodeProcessor extends AbstractNodeProcessor
+public class BidiNodeProcessorImpl extends AbstractNodeProcessor
 {
-	private static final Logger log = Logger.getLogger(BidiNodeProcessor.class);
+	private static final Logger log = Logger.getLogger(BidiNodeProcessorImpl.class);
 
 	@Override
 	public <T> T process(final NodeContextImpl nodeCtx, final Object source, T target)

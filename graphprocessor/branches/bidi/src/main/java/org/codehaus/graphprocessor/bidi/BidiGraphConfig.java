@@ -5,8 +5,6 @@ import java.util.Set;
 
 import org.codehaus.graphprocessor.ContextCreatedListener;
 import org.codehaus.graphprocessor.GraphNode;
-import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.PropertyProcessor;
 
 
 public interface BidiGraphConfig

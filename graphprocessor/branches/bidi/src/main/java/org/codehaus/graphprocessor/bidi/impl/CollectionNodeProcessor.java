@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor.bidi.impl;
 
 
 import java.util.ArrayList;
@@ -21,11 +21,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.bidi.AbstractBidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
 
 
 

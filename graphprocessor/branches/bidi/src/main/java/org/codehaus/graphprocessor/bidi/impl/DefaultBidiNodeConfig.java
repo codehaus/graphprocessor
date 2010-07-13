@@ -1,11 +1,13 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.NodeFactory;
-import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
@@ -13,7 +15,7 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiNodeConfig.class);
 
-	private static final BidiNodeProcessor DEFAULT_NODE_PROCESSOR = new BidiNodeProcessor();
+	private static final BidiNodeProcessorImpl DEFAULT_NODE_PROCESSOR = new BidiNodeProcessorImpl();
 
 	private DefaultBidiNodeConfig targetNode = null;
 

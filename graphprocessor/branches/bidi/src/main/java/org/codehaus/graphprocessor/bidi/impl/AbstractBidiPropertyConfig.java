@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -21,7 +21,9 @@ import org.codehaus.graphprocessor.GraphPropertyInterceptor;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
-import org.codehaus.graphprocessor.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.PropertyProcessor;
 
 
 

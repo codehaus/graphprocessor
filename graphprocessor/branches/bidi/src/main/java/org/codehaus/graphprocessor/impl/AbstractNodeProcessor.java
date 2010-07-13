@@ -15,8 +15,9 @@ package org.codehaus.graphprocessor.impl;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.impl.NodeContextImpl;
 
 
 

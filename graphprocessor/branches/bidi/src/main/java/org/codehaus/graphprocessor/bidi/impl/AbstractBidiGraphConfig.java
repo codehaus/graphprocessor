@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -14,10 +14,15 @@ import org.codehaus.graphprocessor.ContextCreatedListener;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.PropertyProcessor;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
-import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
 
 

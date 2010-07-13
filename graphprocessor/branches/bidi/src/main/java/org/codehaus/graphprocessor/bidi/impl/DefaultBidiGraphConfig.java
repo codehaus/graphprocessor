@@ -1,8 +1,9 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 
 
 public class DefaultBidiGraphConfig extends AbstractBidiGraphConfig implements BidiGraphConfig
@@ -13,7 +14,7 @@ public class DefaultBidiGraphConfig extends AbstractBidiGraphConfig implements B
 	{
 		// circular reference
 		this.targetGraphCfg = new DefaultBidiGraphConfig(this);
-		nodeProcessorMap.put(Object.class, new BidiNodeProcessor());
+		nodeProcessorMap.put(Object.class, new BidiNodeProcessorImpl());
 	}
 
 	public DefaultBidiGraphConfig(final Class rootNode)

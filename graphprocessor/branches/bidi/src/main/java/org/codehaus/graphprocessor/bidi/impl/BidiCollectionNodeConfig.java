@@ -11,14 +11,16 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
-import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
 
 

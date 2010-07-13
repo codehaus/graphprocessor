@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -9,8 +9,11 @@ import java.util.Map;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.PropertyProcessor;
 
 
 

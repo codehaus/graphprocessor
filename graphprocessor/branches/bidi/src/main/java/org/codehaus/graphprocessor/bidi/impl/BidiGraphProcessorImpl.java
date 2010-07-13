@@ -1,16 +1,17 @@
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor.bidi.impl;
 
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.GraphProcessor;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.GraphProcessor;
+import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
+import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
 
 
-public class BidiGraphProcessor implements GraphProcessor
+public class BidiGraphProcessorImpl implements GraphProcessor
 {
 
 	@Override

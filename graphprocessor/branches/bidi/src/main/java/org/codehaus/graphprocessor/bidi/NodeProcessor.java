@@ -11,9 +11,8 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor;
+package org.codehaus.graphprocessor.bidi;
 
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 

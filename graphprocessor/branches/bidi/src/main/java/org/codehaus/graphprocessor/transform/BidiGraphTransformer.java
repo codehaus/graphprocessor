@@ -2,19 +2,19 @@ package org.codehaus.graphprocessor.transform;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.GraphProcessor;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.bidi.AbstractBidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiCollectionNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.DefaultBidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.GraphProcessor;
+import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.impl.AbstractBidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.impl.BidiCollectionNodeConfig;
+import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
+import org.codehaus.graphprocessor.bidi.impl.GraphContextImpl;
 import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
-import org.codehaus.graphprocessor.impl.GraphContextImpl;
 
 
 

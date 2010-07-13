@@ -4,8 +4,6 @@ import java.util.Map;
 
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.NodeFactory;
-import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.PropertyProcessor;
 
 
 public interface BidiNodeConfig
