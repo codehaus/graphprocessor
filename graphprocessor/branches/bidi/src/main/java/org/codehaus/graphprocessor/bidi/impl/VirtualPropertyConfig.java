@@ -8,7 +8,7 @@ import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
@@ -48,7 +48,7 @@ public class VirtualPropertyConfig implements BidiPropertyConfig
 	}
 
 	@Override
-	public PropertyProcessor getProcessor()
+	public BidiPropertyProcessor getProcessor()
 	{
 		return getNodeConfig().getPropertyProcessor(targetPropertyConfig.getWriteType());
 	}

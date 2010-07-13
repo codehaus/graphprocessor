@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.ContextCreatedListener;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphNode;
@@ -20,9 +21,8 @@ import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.bidi.NodeProcessor;
-import org.codehaus.graphprocessor.bidi.PropertyProcessor;
-import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
+import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
@@ -37,8 +37,8 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	protected final CachedClassLookupMap<BidiNodeConfig> nodeLookupMap;
 	private final Map<Class<?>, BidiNodeConfig> inmutableNodeLookup;
 
-	protected final CachedClassLookupMap<NodeProcessor> nodeProcessorMap;
-	protected final CachedClassLookupMap<PropertyProcessor> propertyProcessorMap;
+	protected final CachedClassLookupMap<BidiNodeProcessor> nodeProcessorMap;
+	protected final CachedClassLookupMap<BidiPropertyProcessor> propertyProcessorMap;
 
 
 	public AbstractBidiGraphConfig()
@@ -47,8 +47,8 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		this.nodeLookupMap = new CachedClassLookupMap<BidiNodeConfig>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
 
-		this.nodeProcessorMap = new CachedClassLookupMap<NodeProcessor>();
-		this.propertyProcessorMap = new CachedClassLookupMap<PropertyProcessor>();
+		this.nodeProcessorMap = new CachedClassLookupMap<BidiNodeProcessor>();
+		this.propertyProcessorMap = new CachedClassLookupMap<BidiPropertyProcessor>();
 
 		nodeProcessorMap.put(Collection.class, new CollectionNodeProcessor());
 		nodeProcessorMap.put(Object.class, null);
@@ -59,7 +59,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodeProcessor(java.lang.Class)
 	 */
 	@Override
-	public NodeProcessor getDefaultNodeProcessor(Class nodeType)
+	public BidiNodeProcessor getDefaultNodeProcessor(Class nodeType)
 	{
 		return nodeProcessorMap.get(nodeType);
 	}
@@ -70,7 +70,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
-	public PropertyProcessor getDefaultPropertyProcessor(Class propertyType)
+	public BidiPropertyProcessor getDefaultPropertyProcessor(Class propertyType)
 	{
 		return propertyProcessorMap.get(propertyType);
 	}

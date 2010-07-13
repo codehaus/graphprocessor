@@ -1,12 +1,12 @@
 package org.codehaus.graphprocessor.bidi.impl;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 
 
 

@@ -17,11 +17,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
 
 
 

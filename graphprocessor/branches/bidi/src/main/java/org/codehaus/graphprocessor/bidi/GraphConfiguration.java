@@ -11,11 +11,10 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor;
+package org.codehaus.graphprocessor.bidi;
 
 import java.util.Collection;
 
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 
 
 

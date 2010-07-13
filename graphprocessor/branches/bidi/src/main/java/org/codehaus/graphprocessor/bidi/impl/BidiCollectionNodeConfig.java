@@ -17,16 +17,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
 
 
 
 public class BidiCollectionNodeConfig extends DefaultBidiNodeConfig
 {
-	private static final AbstractNodeProcessor DEFAULT_NODE_PROCESSOR = new CollectionNodeProcessor();
+	private static final AbstractBidiNodeProcessor DEFAULT_NODE_PROCESSOR = new CollectionNodeProcessor();
 
 	public BidiCollectionNodeConfig(final BidiGraphConfig graphConfig)
 	{

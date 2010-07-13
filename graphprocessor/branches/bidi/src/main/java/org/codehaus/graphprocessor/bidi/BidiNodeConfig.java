@@ -80,12 +80,12 @@ public interface BidiNodeConfig
 	boolean isVirtual();
 
 	/**
-	 * Returns the {@link NodeProcessor} which is used for processing this node.
+	 * Returns the {@link BidiNodeProcessor} which is used for processing this node.
 	 * 
-	 * @return {@link NodeProcessor}
+	 * @return {@link BidiNodeProcessor}
 	 */
-	NodeProcessor getProcessor();
+	BidiNodeProcessor getProcessor();
 
-	PropertyProcessor getPropertyProcessor(Class propertyType);
+	BidiPropertyProcessor getPropertyProcessor(Class propertyType);
 
 }

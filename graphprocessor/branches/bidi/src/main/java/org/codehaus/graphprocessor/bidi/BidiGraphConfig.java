@@ -62,21 +62,21 @@ public interface BidiGraphConfig
 	ContextCreatedListener getContextListener();
 
 	/**
-	 * The default {@link NodeProcessor} which shall be used when processing a node of specified type.
+	 * The default {@link BidiNodeProcessor} which shall be used when processing a node of specified type.
 	 * 
 	 * @param nodeType
 	 *           the type of node
-	 * @return {@link NodeProcessor}
+	 * @return {@link BidiNodeProcessor}
 	 */
-	NodeProcessor getDefaultNodeProcessor(Class nodeType);
+	BidiNodeProcessor getDefaultNodeProcessor(Class nodeType);
 
 	/**
 	 * The default PropertyProcessor which shall be used when processing a property of specified type.
 	 * 
 	 * @param propertyType
 	 *           the type of property
-	 * @return {@link PropertyProcessor}
+	 * @return {@link BidiPropertyProcessor}
 	 */
-	PropertyProcessor getDefaultPropertyProcessor(Class propertyType);
+	BidiPropertyProcessor getDefaultPropertyProcessor(Class propertyType);
 
 }

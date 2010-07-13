@@ -30,13 +30,13 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.bidi.NodeProcessor;
-import org.codehaus.graphprocessor.bidi.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
 // BidiPropertyProcessor
-public class BidiPropertyProcessorImpl implements PropertyProcessor
+public class BidiPropertyProcessorImpl implements BidiPropertyProcessor
 {
 	private static final Logger log = Logger.getLogger(BidiPropertyProcessorImpl.class);
 
@@ -101,7 +101,7 @@ public class BidiPropertyProcessorImpl implements PropertyProcessor
 						isFiltered = this.isFilterd(pCtx, value, graphCtx.getNodeFilterList(), Collections.EMPTY_LIST);
 						if (!isFiltered)
 						{
-							final NodeProcessor trans = nodeMapping.getProcessor();
+							final BidiNodeProcessor trans = nodeMapping.getProcessor();
 							final BidiNodeContext nodeCtx = pCtxImpl.createChildNodeContext(nodeMapping, value);
 							value = trans.process(nodeCtx, value, null);
 						}

@@ -22,7 +22,7 @@ package org.codehaus.graphprocessor.bidi;
  * Processes each property of current node and includes all operations which are necessary to move each property value from source
  * node to target node.
  */
-public interface NodeProcessor
+public interface BidiNodeProcessor
 {
 
 	/**

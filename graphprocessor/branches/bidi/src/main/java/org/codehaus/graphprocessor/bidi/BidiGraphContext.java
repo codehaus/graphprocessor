@@ -16,7 +16,6 @@ package org.codehaus.graphprocessor.bidi;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.graphprocessor.GraphConfiguration;
 import org.codehaus.graphprocessor.PropertyFilter;
 
 

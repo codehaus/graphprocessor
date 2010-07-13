@@ -21,11 +21,11 @@ import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeFactory;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
 
 
 
@@ -34,7 +34,7 @@ import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
  * A default node transformer implementation which transforms a source type into a target type and copies various properties from
  * source to target instance.
  */
-public class BidiNodeProcessorImpl extends AbstractNodeProcessor
+public class BidiNodeProcessorImpl extends AbstractBidiNodeProcessor
 {
 	private static final Logger log = Logger.getLogger(BidiNodeProcessorImpl.class);
 

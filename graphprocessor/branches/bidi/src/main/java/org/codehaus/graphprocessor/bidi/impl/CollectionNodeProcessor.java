@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.bidi.AbstractBidiNodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.NodeProcessor;
-import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
 
 
 
-public class CollectionNodeProcessor extends AbstractNodeProcessor
+public class CollectionNodeProcessor extends AbstractBidiNodeProcessor
 {
 	private static final Logger log = Logger.getLogger(CollectionNodeProcessor.class);
 
@@ -57,7 +57,7 @@ public class CollectionNodeProcessor extends AbstractNodeProcessor
 			if (nodeConfig != null)
 			{
 				final BidiNodeContext childNodeCtx = childPropCtx.createChildNodeContext(nodeConfig, sourceElement);
-				final NodeProcessor nodeProc = nodeConfig.getProcessor();
+				final BidiNodeProcessor nodeProc = nodeConfig.getProcessor();
 				sourceElement = nodeProc.process(childNodeCtx, sourceElement, null);
 			}
 

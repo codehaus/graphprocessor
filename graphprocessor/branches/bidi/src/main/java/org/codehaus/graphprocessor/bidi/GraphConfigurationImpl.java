@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor.bidi;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,10 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.GraphConfiguration;
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 
 
 

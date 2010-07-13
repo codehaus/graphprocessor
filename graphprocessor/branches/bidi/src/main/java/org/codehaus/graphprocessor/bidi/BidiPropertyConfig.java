@@ -33,7 +33,7 @@ public interface BidiPropertyConfig
 
 	List<PropertyFilter> getPropertyFilters();
 
-	PropertyProcessor getProcessor();
+	BidiPropertyProcessor getProcessor();
 
 	/**
 	 * Returns an ID which is unique for the Node which this property belongs too.

@@ -11,12 +11,10 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor.bidi;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.NodeProcessor;
 import org.codehaus.graphprocessor.bidi.impl.NodeContextImpl;
 
 
@@ -24,11 +22,11 @@ import org.codehaus.graphprocessor.bidi.impl.NodeContextImpl;
 
 
 /**
- * Abstract base implementation for a {@link NodeProcessor}.
+ * Abstract base implementation for a {@link BidiNodeProcessor}.
  */
-public abstract class AbstractNodeProcessor implements NodeProcessor
+public abstract class AbstractBidiNodeProcessor implements BidiNodeProcessor
 {
-	private static final Logger log = Logger.getLogger(AbstractNodeProcessor.class);
+	private static final Logger log = Logger.getLogger(AbstractBidiNodeProcessor.class);
 
 
 

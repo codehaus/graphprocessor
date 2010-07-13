@@ -12,8 +12,8 @@ import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.NodeProcessor;
-import org.codehaus.graphprocessor.bidi.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
@@ -27,7 +27,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	protected boolean isPropertiesInitialized = false;
 
 	private BidiGraphConfig graphConfig = null;
-	private NodeProcessor nodeProcessor = null;
+	private BidiNodeProcessor nodeProcessor = null;
 
 	private Class<?> type = null;
 	private String[] uidPropnames = null;
@@ -126,7 +126,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	/**
 	 * @return the nodeProcessor
 	 */
-	public NodeProcessor getProcessor()
+	public BidiNodeProcessor getProcessor()
 	{
 		return nodeProcessor;
 	}
@@ -135,7 +135,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 * @param nodeProcessor
 	 *           the nodeProcessor to set
 	 */
-	public void setProcessor(NodeProcessor nodeProcessor)
+	public void setProcessor(BidiNodeProcessor nodeProcessor)
 	{
 		this.nodeProcessor = nodeProcessor;
 	}
@@ -145,7 +145,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
-	public PropertyProcessor getPropertyProcessor(Class propertyType)
+	public BidiPropertyProcessor getPropertyProcessor(Class propertyType)
 	{
 		return getGraphConfig().getDefaultPropertyProcessor(propertyType);
 	}

@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.impl;
+package org.codehaus.graphprocessor;
 
 import java.util.ArrayList;
 import java.util.Collection;

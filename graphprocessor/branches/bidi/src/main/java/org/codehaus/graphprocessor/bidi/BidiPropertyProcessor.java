@@ -20,7 +20,7 @@ package org.codehaus.graphprocessor.bidi;
 /**
  * Processes a single property of a node. This includes copying ad well as conversion (when needed)
  */
-public interface PropertyProcessor
+public interface BidiPropertyProcessor
 {
 
 	/**

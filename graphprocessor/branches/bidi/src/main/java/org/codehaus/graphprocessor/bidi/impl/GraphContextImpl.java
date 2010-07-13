@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.GraphConfiguration;
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
-import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
+import org.codehaus.graphprocessor.bidi.GraphConfiguration;
+import org.codehaus.graphprocessor.bidi.GraphConfigurationImpl;
 
 
 

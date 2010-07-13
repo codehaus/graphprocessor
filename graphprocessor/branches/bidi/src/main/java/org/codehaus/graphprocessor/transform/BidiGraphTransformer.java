@@ -1,24 +1,24 @@
 package org.codehaus.graphprocessor.transform;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.GraphProcessor;
-import org.codehaus.graphprocessor.bidi.NodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiGraphProcessor;
+import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.GraphConfigurationImpl;
 import org.codehaus.graphprocessor.bidi.impl.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.BidiCollectionNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.impl.GraphContextImpl;
-import org.codehaus.graphprocessor.impl.CachedClassLookupMap;
-import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
 
 
 
-public class BidiGraphTransformer extends DefaultBidiGraphConfig implements GraphProcessor, GraphTransformer
+public class BidiGraphTransformer extends DefaultBidiGraphConfig implements BidiGraphProcessor, GraphTransformer
 {
 
 	private static final Logger LOG = Logger.getLogger(BidiGraphTransformer.class);
@@ -153,7 +153,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Grap
 		// create nodeLookup used for root nodes childs
 		final BidiNodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractBidiNodeConfig) nodeConfig, source);
 
-		NodeProcessor nodeProcessor = nodeConfig.getProcessor();
+		BidiNodeProcessor nodeProcessor = nodeConfig.getProcessor();
 		final T result = nodeProcessor.process(nodeCtx, source, target);
 		graphCtx.setReleased(true);
 

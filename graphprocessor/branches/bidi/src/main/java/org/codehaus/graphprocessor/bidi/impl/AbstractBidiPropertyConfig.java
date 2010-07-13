@@ -23,7 +23,7 @@ import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.PropertyProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
@@ -58,7 +58,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	protected boolean isInitialized = false;
 	protected BidiNodeConfig nodeConfig = null;
 	private List<PropertyFilter> propertyFilters = Collections.EMPTY_LIST;
-	private PropertyProcessor propertyProcessor = null;
+	private BidiPropertyProcessor propertyProcessor = null;
 	private List<BidiNodeConfig> nodeMappingList = Collections.EMPTY_LIST;
 
 
@@ -140,7 +140,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	/**
 	 * @return the propertyProcessor
 	 */
-	public PropertyProcessor getProcessor()
+	public BidiPropertyProcessor getProcessor()
 	{
 		return propertyProcessor;
 	}
@@ -149,7 +149,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 * @param propertyProcessor
 	 *           the propertyProcessor to set
 	 */
-	public void setProcessor(PropertyProcessor propertyProcessor)
+	public void setProcessor(BidiPropertyProcessor propertyProcessor)
 	{
 		this.propertyProcessor = propertyProcessor;
 	}
