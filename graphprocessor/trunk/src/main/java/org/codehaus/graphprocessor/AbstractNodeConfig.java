@@ -11,13 +11,14 @@ import java.util.Map;
 /**
  * Abstract base implementation for {@link NodeConfig}
  */
-public abstract class AbstractNodeConfig<T extends PropertyConfig> implements NodeConfig<T>, Initializable
+public abstract class AbstractNodeConfig<G extends GraphConfig, T extends PropertyConfig> implements NodeConfig<G, T>,
+		Initializable
 {
 
 	protected boolean isNodeInitialized = false;
 	protected boolean isPropertiesInitialized = false;
 
-	private GraphConfig graphConfig = null;
+	private G graphConfig = null;
 	private NodeProcessor nodeProcessor = null;
 
 	private Class<?> type = null;
@@ -26,19 +27,19 @@ public abstract class AbstractNodeConfig<T extends PropertyConfig> implements No
 	private Map<String, T> properties = null;
 	private boolean isVirtualNode = false;
 
-	public AbstractNodeConfig(final GraphConfig graphConfig)
+	public AbstractNodeConfig(final G graphConfig)
 	{
 		this.graphConfig = graphConfig;
 	}
 
-	public AbstractNodeConfig(final GraphConfig graphConfig, final Class<?> type)
+	public AbstractNodeConfig(final G graphConfig, final Class<?> type)
 	{
 		this.graphConfig = graphConfig;
 		this.type = type;
 	}
 
 	@Override
-	public GraphConfig getGraphConfig()
+	public G getGraphConfig()
 	{
 		return this.graphConfig;
 	}

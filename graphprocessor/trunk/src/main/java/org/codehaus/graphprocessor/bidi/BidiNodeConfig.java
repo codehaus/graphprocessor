@@ -4,7 +4,7 @@ import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeFactory;
 
 
-public interface BidiNodeConfig extends NodeConfig<BidiPropertyConfig>
+public interface BidiNodeConfig extends NodeConfig<BidiGraphConfig, BidiPropertyConfig>
 {
 
 	BidiNodeConfig getTargetNodeConfig();
@@ -37,8 +37,8 @@ public interface BidiNodeConfig extends NodeConfig<BidiPropertyConfig>
 	BidiPropertyConfig removePropertyConfigByName(String propertyName, String targetPropName);
 
 
-	@Override
-	BidiGraphConfig getGraphConfig();
+	// @Override
+	// BidiGraphConfig getGraphConfig();
 
 	/**
 	 * @return the nodeFactory

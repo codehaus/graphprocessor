@@ -8,7 +8,7 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 /**
  * Describes a single node from a graph.
  */
-public interface NodeConfig<T extends PropertyConfig>
+public interface NodeConfig<G extends GraphConfig, P extends PropertyConfig>
 {
 
 	/**
@@ -25,7 +25,7 @@ public interface NodeConfig<T extends PropertyConfig>
 	 * 
 	 * @return List of {@link PropertyConfig}
 	 */
-	T[] getUidProperties();
+	P[] getUidProperties();
 
 	/**
 	 * Returns a {@link PropertyConfig} for a mapping whose source and target property name are matching passed name.
@@ -34,20 +34,20 @@ public interface NodeConfig<T extends PropertyConfig>
 	 *           name of source and target property
 	 * @return {@link BidiPropertyConfig}
 	 */
-	T getPropertyConfigByName(String propertyName);
+	P getPropertyConfigByName(String propertyName);
 
-	T removePropertyConfigByName(String propertyName);
+	P removePropertyConfigByName(String propertyName);
 
-	Map<String, T> removeAllProperties();
+	Map<String, P> removeAllProperties();
 
 	/**
 	 * Returns a mapping of all {@link PropertyConfig} for this node.
 	 * 
 	 * @return {@link PropertyConfig} mapping
 	 */
-	Map<String, T> getProperties();
+	Map<String, P> getProperties();
 
-	GraphConfig getGraphConfig();
+	G getGraphConfig();
 
 	boolean isVirtual();
 
