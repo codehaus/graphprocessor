@@ -5,7 +5,7 @@ import org.codehaus.graphprocessor.AbstractGraphConfig;
 
 
 
-public class DefaultGraphConfig extends AbstractGraphConfig<DefaultNodeConfig>
+public class DefaultGraphConfig extends AbstractGraphConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultGraphConfig.class);
 

@@ -139,7 +139,8 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 		}
 
 		// NEW: process virtual write properties from target node
-		Map<String, BidiPropertyConfig> props = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig().getProperties();
+		Map<String, BidiPropertyConfig> props = (Map) ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig()
+				.getProperties();
 		for (Map.Entry<String, BidiPropertyConfig> entry : props.entrySet())
 		{
 			BidiPropertyConfig property = entry.getValue();

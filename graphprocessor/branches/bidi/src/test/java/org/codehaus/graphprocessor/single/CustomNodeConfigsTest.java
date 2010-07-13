@@ -29,7 +29,7 @@ import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.AbstractPropertyConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.NodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.DefaultBidiPropertyConfig;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
@@ -60,7 +60,7 @@ public class CustomNodeConfigsTest
 		final DefaultBidiNodeConfig cfg = (DefaultBidiNodeConfig) graph.getNodeConfig(TuAddressDTO.class);
 
 		// assert nodes properties as they are configured from transformer by default
-		final Map<String, BidiPropertyConfig> m = cfg.getProperties();
+		final Map<String, PropertyConfig> m = cfg.getProperties();
 		assertNotNull(cfg.getPropertyConfigByName("firstname"));
 		assertNotNull(cfg.getPropertyConfigByName("lastname"));
 		assertNotNull(cfg.getPropertyConfigByName("owner"));
@@ -213,7 +213,7 @@ public class CustomNodeConfigsTest
 		// create a new NodeConfig for type 'AddressDTO' node
 		final DefaultBidiNodeConfig newCfg = new DefaultBidiNodeConfig(graph, TuAddressDTO.class);
 		// ... clear all auto-detected properties
-		Map<String, BidiPropertyConfig> props = newCfg.removeAllProperties();
+		Map<String, PropertyConfig> props = newCfg.removeAllProperties();
 		// ... and add property 'firstname'
 		// that PropertyConfig is reused (same instance) from another AddressDTO node
 		newCfg.addPropertyConfig(graph.getNodeConfig(TuAddressDTO.class).getPropertyConfigByName("firstname"));

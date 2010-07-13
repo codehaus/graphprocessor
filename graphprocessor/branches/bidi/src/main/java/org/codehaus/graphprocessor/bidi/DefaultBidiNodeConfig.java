@@ -11,7 +11,7 @@ import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
 
 
 
-public class DefaultBidiNodeConfig extends AbstractNodeConfig<BidiGraphConfig, BidiPropertyConfig> implements BidiNodeConfig
+public class DefaultBidiNodeConfig extends AbstractNodeConfig implements BidiNodeConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiNodeConfig.class);
 
@@ -142,7 +142,7 @@ public class DefaultBidiNodeConfig extends AbstractNodeConfig<BidiGraphConfig, B
 	@Override
 	public BidiGraphConfig getGraphConfig()
 	{
-		return super.getGraphConfig();
+		return (BidiGraphConfig) super.getGraphConfig();
 	}
 
 	/*
@@ -205,7 +205,7 @@ public class DefaultBidiNodeConfig extends AbstractNodeConfig<BidiGraphConfig, B
 	@Override
 	public BidiPropertyConfig getPropertyConfigByName(String source, String target)
 	{
-		return getProperties().get(source + "-" + target);
+		return (BidiPropertyConfig) getProperties().get(source + "-" + target);
 	}
 
 	@Override
@@ -217,7 +217,7 @@ public class DefaultBidiNodeConfig extends AbstractNodeConfig<BidiGraphConfig, B
 	@Override
 	public BidiPropertyConfig removePropertyConfigByName(String propertyName, String targetPropName)
 	{
-		return super.removePropertyConfigByName(propertyName + "-" + targetPropName);
+		return (BidiPropertyConfig) super.removePropertyConfigByName(propertyName + "-" + targetPropName);
 	}
 
 	private void initMetaData(Class type)

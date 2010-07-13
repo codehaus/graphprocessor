@@ -3,8 +3,12 @@ package org.codehaus.graphprocessor.bidi;
 import org.codehaus.graphprocessor.GraphConfig;
 
 
-public interface BidiGraphConfig extends GraphConfig<BidiNodeConfig>
+public interface BidiGraphConfig extends GraphConfig
 {
-	public BidiGraphConfig getTargetConfig();
+	BidiGraphConfig getTargetConfig();
+
+	BidiNodeConfig getNodeConfig(Class type);
+
+	BidiNodeConfig getAssignableNodeConfig(Class type);
 
 }

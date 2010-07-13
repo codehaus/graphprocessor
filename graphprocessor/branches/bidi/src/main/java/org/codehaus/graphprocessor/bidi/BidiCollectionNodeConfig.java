@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
 import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
@@ -37,7 +38,7 @@ public class BidiCollectionNodeConfig extends DefaultBidiNodeConfig
 	}
 
 	@Override
-	public Map<String, BidiPropertyConfig> getProperties()
+	public Map<String, PropertyConfig> getProperties()
 	{
 		return Collections.EMPTY_MAP;
 	}

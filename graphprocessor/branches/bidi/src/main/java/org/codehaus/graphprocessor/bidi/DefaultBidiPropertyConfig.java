@@ -12,7 +12,7 @@ import org.codehaus.graphprocessor.impl.BidiPropertyProcessor;
 
 
 
-public class DefaultBidiPropertyConfig extends AbstractPropertyConfig<BidiNodeConfig> implements BidiPropertyConfig
+public class DefaultBidiPropertyConfig extends AbstractPropertyConfig implements BidiPropertyConfig
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiPropertyConfig.class);
 
@@ -60,7 +60,7 @@ public class DefaultBidiPropertyConfig extends AbstractPropertyConfig<BidiNodeCo
 	@Override
 	public BidiNodeConfig getNodeConfig()
 	{
-		return super.getNodeConfig();
+		return (BidiNodeConfig) super.getNodeConfig();
 	}
 
 

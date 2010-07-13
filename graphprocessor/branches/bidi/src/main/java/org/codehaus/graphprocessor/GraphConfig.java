@@ -9,14 +9,14 @@ import java.util.Set;
  * 
  * @author denny.strietzbaum
  */
-public interface GraphConfig<T extends NodeConfig>
+public interface GraphConfig
 {
 	/**
 	 * Returns an immutable (unmodifiable) view of all configured node types with their appropriate {@link NodeConfig}.
 	 * 
 	 * @return Mapping between a node type and {@link NodeConfig}
 	 */
-	Map<Class<?>, T> getNodes();
+	Map<Class<?>, NodeConfig> getNodes();
 
 	/**
 	 * Adds passed node including all child nodes which can be found to this graph.
@@ -41,7 +41,7 @@ public interface GraphConfig<T extends NodeConfig>
 	 * @return {@link NodeConfig} or null
 	 */
 	// TODO: convenience method necessary?
-	T getNodeConfig(Class node);
+	NodeConfig getNodeConfig(Class node);
 
 	/**
 	 * Lookup for a {@link NodeConfig} for given node type.
@@ -54,7 +54,7 @@ public interface GraphConfig<T extends NodeConfig>
 	 *           type of node for which a {@link NodeConfig} is requested
 	 * @return {@link NodeConfig} or null
 	 */
-	T getAssignableNodeConfig(Class node);
+	NodeConfig getAssignableNodeConfig(Class node);
 
 	// TODO: debug method
 	Set<String> getDebugNodes();

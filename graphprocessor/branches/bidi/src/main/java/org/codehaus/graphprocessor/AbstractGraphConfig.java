@@ -16,15 +16,15 @@ import org.codehaus.graphprocessor.impl.CollectionNodeProcessor;
 
 
 
-public abstract class AbstractGraphConfig<T extends NodeConfig> implements GraphConfig<T>, Initializable, ContextCreatedListener
+public abstract class AbstractGraphConfig implements GraphConfig, Initializable, ContextCreatedListener
 {
 	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
 
 	private boolean _isInitialized = false;
 	private ContextCreatedListener listener = null;
 
-	protected final CachedClassLookupMap<T> nodeLookupMap;
-	private final Map<Class<?>, T> inmutableNodeLookup;
+	protected final CachedClassLookupMap<NodeConfig> nodeLookupMap;
+	private final Map<Class<?>, NodeConfig> inmutableNodeLookup;
 
 	protected final CachedClassLookupMap<NodeProcessor> nodeProcessorMap;
 	protected final CachedClassLookupMap<PropertyProcessor> propertyProcessorMap;
@@ -33,7 +33,7 @@ public abstract class AbstractGraphConfig<T extends NodeConfig> implements Graph
 	public AbstractGraphConfig()
 	{
 		this.listener = this;
-		this.nodeLookupMap = new CachedClassLookupMap<T>();
+		this.nodeLookupMap = new CachedClassLookupMap<NodeConfig>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
 
 		this.nodeProcessorMap = new CachedClassLookupMap<NodeProcessor>();
@@ -103,32 +103,32 @@ public abstract class AbstractGraphConfig<T extends NodeConfig> implements Graph
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodes()
 	 */
 	@Override
-	public Map<Class<?>, T> getNodes()
+	public Map<Class<?>, NodeConfig> getNodes()
 	{
 		// return (Map) this.nodeLookupMap.getStaticMap();
 		return this.inmutableNodeLookup;
 	}
 
 	@Override
-	public T getNodeConfig(final Class node)
+	public NodeConfig getNodeConfig(final Class node)
 	{
 		return getNodes().get(node);
 	}
 
 	@Override
-	public T getAssignableNodeConfig(Class nodeType)
+	public NodeConfig getAssignableNodeConfig(Class nodeType)
 	{
 		return this.nodeLookupMap.get(nodeType);
 	}
 
-	public void addNode(final T nodeConfig)
+	public void addNode(final NodeConfig nodeConfig)
 	{
 		this.nodeLookupMap.put(nodeConfig.getType(), nodeConfig);
 	}
 
-	public T addNode(final Class node)
+	public NodeConfig addNode(final Class node)
 	{
-		final T result = this.createNodeConfig(node);
+		final NodeConfig result = this.createNodeConfig(node);
 		this.addNode(result);
 		return result;
 	}
@@ -293,7 +293,7 @@ public abstract class AbstractGraphConfig<T extends NodeConfig> implements Graph
 
 	}
 
-	protected abstract T createNodeConfig(Class node);
+	protected abstract NodeConfig createNodeConfig(Class node);
 
 
 }

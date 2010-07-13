@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 
 
-public abstract class AbstractPropertyConfig<T extends NodeConfig> implements PropertyConfig<T>, Initializable
+public abstract class AbstractPropertyConfig implements PropertyConfig, Initializable
 {
 	public static final int COMPLIANCE_LEVEL_LOW = 0;
 	public static final int COMPLIANCE_LEVEL_MEDIUM = 1;
@@ -47,10 +47,10 @@ public abstract class AbstractPropertyConfig<T extends NodeConfig> implements Pr
 
 
 	protected boolean isInitialized = false;
-	protected T nodeConfig = null;
+	protected NodeConfig nodeConfig = null;
 	private List<PropertyFilter> propertyFilters = Collections.EMPTY_LIST;
 	private PropertyProcessor propertyProcessor = null;
-	private List<T> nodeMappingList = Collections.EMPTY_LIST;
+	private List<NodeConfig> nodeMappingList = Collections.EMPTY_LIST;
 
 
 	private String id = null;
@@ -69,7 +69,7 @@ public abstract class AbstractPropertyConfig<T extends NodeConfig> implements Pr
 	private boolean virtualWrite = false;
 
 
-	public AbstractPropertyConfig(final T nodeConfig, String id, String name)
+	public AbstractPropertyConfig(final NodeConfig nodeConfig, String id, String name)
 	{
 		this.nodeConfig = nodeConfig;
 		this.id = id;
@@ -122,7 +122,7 @@ public abstract class AbstractPropertyConfig<T extends NodeConfig> implements Pr
 	}
 
 
-	public T getNodeConfig()
+	public NodeConfig getNodeConfig()
 	{
 		return this.nodeConfig;
 	}
@@ -145,7 +145,7 @@ public abstract class AbstractPropertyConfig<T extends NodeConfig> implements Pr
 		this.propertyProcessor = propertyProcessor;
 	}
 
-	public List<T> getNewNodeConfigs()
+	public List<NodeConfig> getNewNodeConfigs()
 	{
 		return nodeMappingList;
 	}
@@ -154,7 +154,7 @@ public abstract class AbstractPropertyConfig<T extends NodeConfig> implements Pr
 	 * @param nodeConfig
 	 *           the nodeConfig to set
 	 */
-	public void setNewNodeMappings(final List<T> nodeConfig)
+	public void setNewNodeMappings(final List<NodeConfig> nodeConfig)
 	{
 		this.nodeMappingList = nodeConfig;
 	}

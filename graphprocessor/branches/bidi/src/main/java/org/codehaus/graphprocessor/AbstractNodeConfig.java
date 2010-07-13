@@ -11,35 +11,34 @@ import java.util.Map;
 /**
  * Abstract base implementation for {@link NodeConfig}
  */
-public abstract class AbstractNodeConfig<G extends GraphConfig, T extends PropertyConfig> implements NodeConfig<G, T>,
-		Initializable
+public abstract class AbstractNodeConfig implements NodeConfig, Initializable
 {
 
 	protected boolean isNodeInitialized = false;
 	protected boolean isPropertiesInitialized = false;
 
-	private G graphConfig = null;
+	private GraphConfig graphConfig = null;
 	private NodeProcessor nodeProcessor = null;
 
 	private Class<?> type = null;
 	private String[] uidPropnames = null;
-	private T[] uidProperties = null;
-	private Map<String, T> properties = null;
+	private PropertyConfig[] uidProperties = null;
+	private Map<String, PropertyConfig> properties = null;
 	private boolean isVirtualNode = false;
 
-	public AbstractNodeConfig(final G graphConfig)
+	public AbstractNodeConfig(final GraphConfig graphConfig)
 	{
 		this.graphConfig = graphConfig;
 	}
 
-	public AbstractNodeConfig(final G graphConfig, final Class<?> type)
+	public AbstractNodeConfig(final GraphConfig graphConfig, final Class<?> type)
 	{
 		this.graphConfig = graphConfig;
 		this.type = type;
 	}
 
 	@Override
-	public G getGraphConfig()
+	public GraphConfig getGraphConfig()
 	{
 		return this.graphConfig;
 	}
@@ -79,10 +78,10 @@ public abstract class AbstractNodeConfig<G extends GraphConfig, T extends Proper
 	protected boolean initializeProperties()
 	{
 		// initialize/refresh properties (when not already done)
-		final Map<String, T> properties = this.getProperties();
-		for (final Iterator<T> iter = properties.values().iterator(); iter.hasNext();)
+		final Map<String, PropertyConfig> properties = this.getProperties();
+		for (final Iterator<PropertyConfig> iter = properties.values().iterator(); iter.hasNext();)
 		{
-			final T pCfg = iter.next();
+			final PropertyConfig pCfg = iter.next();
 			if (pCfg instanceof AbstractPropertyConfig)
 			{
 				final AbstractPropertyConfig aPropCfg = (AbstractPropertyConfig) pCfg;
@@ -191,18 +190,18 @@ public abstract class AbstractNodeConfig<G extends GraphConfig, T extends Proper
 	 * @param uidProperties
 	 *           the uidProperties to set
 	 */
-	public void setUidProperties(final T[] uidProperties)
+	public void setUidProperties(final PropertyConfig[] uidProperties)
 	{
 		this.uidProperties = uidProperties;
 	}
 
 
 	@Override
-	public T[] getUidProperties()
+	public PropertyConfig[] getUidProperties()
 	{
 		if (this.uidProperties == null && uidPropnames != null && uidPropnames.length > 0)
 		{
-			this.uidProperties = (T[]) new Object[uidPropnames.length];
+			this.uidProperties = new PropertyConfig[uidPropnames.length];
 			// this.uidProperties = new PropertyConfig[uidPropnames.length];
 			// final Map<String, PropertyConfig> cfgMap = this.getProperties();
 			for (int i = 0; i < uidPropnames.length; i++)
@@ -219,34 +218,34 @@ public abstract class AbstractNodeConfig<G extends GraphConfig, T extends Proper
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getProperties()
 	 */
 	@Override
-	public Map<String, T> getProperties()
+	public Map<String, PropertyConfig> getProperties()
 	{
 		return this.properties;
 	}
 
 	@Override
-	public T getPropertyConfigByName(String propertyName)
+	public PropertyConfig getPropertyConfigByName(String propertyName)
 	{
 		return this.properties.get(propertyName);
 	}
 
-	public void addPropertyConfig(T propCfg)
+	public void addPropertyConfig(PropertyConfig propCfg)
 	{
 		getProperties().put(propCfg.getId(), propCfg);
 		this.isPropertiesInitialized = false;
 	}
 
 	@Override
-	public T removePropertyConfigByName(String propertyId)
+	public PropertyConfig removePropertyConfigByName(String propertyId)
 	{
 		// TODO: reseting is initialized is not enough when removing a property includes removing a node
 		return getProperties().remove(propertyId);
 	}
 
 	@Override
-	public Map<String, T> removeAllProperties()
+	public Map<String, PropertyConfig> removeAllProperties()
 	{
-		Map<String, T> result = new HashMap<String, T>(this.properties);
+		Map<String, PropertyConfig> result = new HashMap<String, PropertyConfig>(this.properties);
 		this.properties.clear();
 		return result;
 	}
@@ -269,13 +268,13 @@ public abstract class AbstractNodeConfig<G extends GraphConfig, T extends Proper
 
 	}
 
-	private Map<String, T> createDefaultProperties()
+	private Map<String, PropertyConfig> createDefaultProperties()
 	{
-		final Map<String, T> result = new LinkedHashMap<String, T>();
+		final Map<String, PropertyConfig> result = new LinkedHashMap<String, PropertyConfig>();
 		final Map<String, Method[]> props = AbstractPropertyConfig.getPropertiesFor(getType());
 		for (final String propertyName : props.keySet())
 		{
-			final T propCfg = this.createPropertyConfig(propertyName);
+			final PropertyConfig propCfg = this.createPropertyConfig(propertyName);
 			if (propCfg.getReadMethod() != null || propCfg.getWriteMethod() != null)
 			{
 				result.put(propCfg.getId(), propCfg);
@@ -285,6 +284,6 @@ public abstract class AbstractNodeConfig<G extends GraphConfig, T extends Proper
 	}
 
 
-	protected abstract T createPropertyConfig(final String propertyName);
+	protected abstract PropertyConfig createPropertyConfig(final String propertyName);
 
 }

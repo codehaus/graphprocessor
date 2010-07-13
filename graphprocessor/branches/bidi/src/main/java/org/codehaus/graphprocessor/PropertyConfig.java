@@ -28,11 +28,11 @@ import org.codehaus.graphprocessor.transform.GraphTransformer;
  * standard a {@link PropertyConfig} this implementation allows various "incompatible" settings and additionally provides
  * {@link GraphTransformer} specific information like available {@link PropertyInterceptor}.
  */
-public interface PropertyConfig<T extends NodeConfig>
+public interface PropertyConfig
 {
-	T getNodeConfig();
+	NodeConfig getNodeConfig();
 
-	List<T> getNewNodeConfigs();
+	List<NodeConfig> getNewNodeConfigs();
 
 	List<PropertyFilter> getPropertyFilters();
 

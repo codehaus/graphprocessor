@@ -7,7 +7,7 @@ import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessor;
 
 
-public class DefaultBidiGraphConfig extends AbstractGraphConfig<BidiNodeConfig> implements BidiGraphConfig
+public class DefaultBidiGraphConfig extends AbstractGraphConfig implements BidiGraphConfig
 {
 	private DefaultBidiGraphConfig targetGraphCfg = null;
 
@@ -38,13 +38,13 @@ public class DefaultBidiGraphConfig extends AbstractGraphConfig<BidiNodeConfig> 
 	@Override
 	public BidiNodeConfig getNodeConfig(final Class node)
 	{
-		return super.getNodeConfig(node);
+		return (BidiNodeConfig) super.getNodeConfig(node);
 	}
 
 	@Override
 	public BidiNodeConfig getAssignableNodeConfig(Class nodeType)
 	{
-		return super.getAssignableNodeConfig(nodeType);
+		return (BidiNodeConfig) super.getAssignableNodeConfig(nodeType);
 	}
 
 	/*
@@ -53,12 +53,12 @@ public class DefaultBidiGraphConfig extends AbstractGraphConfig<BidiNodeConfig> 
 	 * webservices.util.objectgraphtransformer.NodeConfig)
 	 */
 	@Override
-	public void addNode(final BidiNodeConfig nodeConfig)
+	public void addNode(final NodeConfig nodeConfig)
 	{
 		if (nodeConfig instanceof BidiNodeConfig)
 		{
 			super.addNode(nodeConfig);
-			final BidiNodeConfig targetNode = (nodeConfig).getTargetNodeConfig();
+			final BidiNodeConfig targetNode = ((BidiNodeConfig) nodeConfig).getTargetNodeConfig();
 
 			// this.targetGraphCfg.nodesMap.put(targetNode.getType(), targetNode);
 			// need direct access to member to prevent an infinite cycle
