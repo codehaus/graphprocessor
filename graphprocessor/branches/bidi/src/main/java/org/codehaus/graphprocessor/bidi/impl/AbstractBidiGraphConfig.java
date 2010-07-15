@@ -11,28 +11,32 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
-import org.codehaus.graphprocessor.ContextCreatedListener;
+import org.codehaus.graphprocessor.GraphListener;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.NodeListener;
+import org.codehaus.graphprocessor.PropertyListener;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
 
-public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initializable, ContextCreatedListener
+public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initializable
 {
 	private static final Logger log = Logger.getLogger(AbstractBidiGraphConfig.class);
 
 	private boolean _isInitialized = false;
-	private ContextCreatedListener listener = null;
+	private GraphListener<BidiGraphContext> graphListener = null;
+	private NodeListener<BidiNodeContext> nodeListener = null;
+	private PropertyListener<BidiPropertyContext> propertyListener = null;
 
 	protected final CachedClassLookupMap<BidiNodeConfig> nodeLookupMap;
 	private final Map<Class<?>, BidiNodeConfig> inmutableNodeLookup;
@@ -43,7 +47,6 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 
 	public AbstractBidiGraphConfig()
 	{
-		this.listener = this;
 		this.nodeLookupMap = new CachedClassLookupMap<BidiNodeConfig>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
 
@@ -103,10 +106,41 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		}
 	}
 
-
-	public void setContextListener(ContextCreatedListener listener)
+	public GraphListener<BidiGraphContext> getGraphListener()
 	{
-		this.listener = listener;
+		return graphListener;
+	}
+
+	public void setGraphListener(GraphListener<BidiGraphContext> graphCtxListener)
+	{
+		this.graphListener = graphCtxListener;
+	}
+
+	public PropertyListener<BidiPropertyContext> getPropertyListener()
+	{
+		return propertyListener;
+	}
+
+	public void setPropertyListener(PropertyListener<BidiPropertyContext> propertyCtxListener)
+	{
+		this.propertyListener = propertyCtxListener;
+	}
+
+
+	public NodeListener<BidiNodeContext> getNodeListener()
+	{
+		return nodeListener;
+	}
+
+	public void setNodeListener(NodeListener<BidiNodeContext> nodeCtxListener)
+	{
+		this.nodeListener = nodeCtxListener;
+	}
+
+
+	public CachedClassLookupMap<BidiPropertyProcessor> getPropertyProcessorMap()
+	{
+		return propertyProcessorMap;
 	}
 
 	/*
@@ -268,41 +302,6 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getContextListener()
-	 */
-	@Override
-	public ContextCreatedListener getContextListener()
-	{
-		return this.listener;
-	}
-
-	@Override
-	public void graphContextCreated(BidiGraphContext graphContext)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void nodeContextCreated(BidiNodeContext nodeContext)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void propertyContextCreated(BidiPropertyContext propertyContext)
-	{
-		// NOP
-	}
-
-	@Override
-	public void nodeCreated(BidiNodeContext nodeContext, Object node)
-	{
-		// TODO Auto-generated method stub
-
-	}
 
 	protected abstract BidiNodeConfig createNodeConfig(Class node);
 

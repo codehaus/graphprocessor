@@ -2,10 +2,11 @@ package org.codehaus.graphprocessor.bidi.impl;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.NodeListener;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
@@ -97,7 +98,12 @@ public class PropertyContextImpl implements BidiPropertyContext
 		final NodeContextImpl result = new NodeContextImpl(this.graphCtx, this, nodeConfig, nodeLookup, distance, virtualDist,
 				source);
 
-		this.graphCtx.getGraphConfig().getContextListener().nodeContextCreated(result);
+		NodeListener<BidiNodeContext> listener = graphCtx.getGraphConfig().getNodeListener();
+		if (listener != null)
+		{
+			listener.nodeContextCreated(result);
+		}
+
 
 		return result;
 	}

@@ -15,6 +15,7 @@ package org.codehaus.graphprocessor.bidi;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.NodeListener;
 import org.codehaus.graphprocessor.bidi.impl.NodeContextImpl;
 
 
@@ -46,6 +47,19 @@ public abstract class AbstractBidiNodeProcessor implements BidiNodeProcessor
 	}
 
 	public abstract <T> T process(final NodeContextImpl nodeCtx, final Object source, final T target);
+
+
+	protected void notifyNodeCreatedListener(BidiNodeContext nodeCtx, Object node)
+	{
+		BidiGraphConfig graphCfg = nodeCtx.getGraphContext().getGraphConfig();
+		NodeListener<BidiNodeContext> listener = graphCfg.getNodeListener();
+
+		if (listener != null)
+		{
+			listener.nodeCreated(nodeCtx, node);
+		}
+	}
+
 
 	/**
 	 * Creates a new node.

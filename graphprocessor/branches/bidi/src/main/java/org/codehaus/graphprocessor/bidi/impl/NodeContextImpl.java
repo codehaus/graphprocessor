@@ -19,10 +19,12 @@ import java.util.List;
 
 import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.PropertyListener;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
 
@@ -54,8 +56,8 @@ public class NodeContextImpl implements BidiNodeContext
 	 * @param source
 	 */
 	protected NodeContextImpl(final GraphContextImpl graphCtx, final PropertyContextImpl propertyCtx,
-			final AbstractBidiNodeConfig nodeMapping, final CachedClassLookupMap<BidiNodeConfig> nodeMappingsMap, final int distance,
-			final int virtualDistance, final Object source)
+			final AbstractBidiNodeConfig nodeMapping, final CachedClassLookupMap<BidiNodeConfig> nodeMappingsMap,
+			final int distance, final int virtualDistance, final Object source)
 	{
 		super();
 		this.graphCtx = graphCtx;
@@ -208,7 +210,12 @@ public class NodeContextImpl implements BidiNodeContext
 
 		final PropertyContextImpl result = new PropertyContextImpl(this.graphCtx, this, propertyConfig, nodeConfig);
 
-		this.graphCtx.getGraphConfig().getContextListener().propertyContextCreated(result);
+		PropertyListener<BidiPropertyContext> listener = graphCtx.getGraphConfig().getPropertyListener();
+		if (listener != null)
+		{
+			listener.propertyContextCreated(result);
+		}
+
 
 		return result;
 	}
@@ -232,5 +239,6 @@ public class NodeContextImpl implements BidiNodeContext
 		}
 		return result;
 	}
+
 
 }

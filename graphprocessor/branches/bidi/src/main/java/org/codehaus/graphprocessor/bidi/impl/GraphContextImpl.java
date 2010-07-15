@@ -24,8 +24,8 @@ import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
+import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.GraphConfiguration;
 import org.codehaus.graphprocessor.bidi.GraphConfigurationImpl;
@@ -208,7 +208,12 @@ public class GraphContextImpl implements BidiGraphContext
 		// create result context
 		result = new NodeContextImpl(this, null, nodeMapping, childNodesLookup, 0, 0, source);
 
-		this.graphConfig.getContextListener().nodeContextCreated(result);
+		if (graphConfig.getNodeListener() != null)
+		{
+			this.graphConfig.getNodeListener().nodeContextCreated(result);
+		}
+
+
 
 		return result;
 	}

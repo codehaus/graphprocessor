@@ -29,9 +29,6 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, Initializable
 {
-	public static final int COMPLIANCE_LEVEL_LOW = 0;
-	public static final int COMPLIANCE_LEVEL_MEDIUM = 1;
-	public static final int COMPLIANCE_LEVEL_HIGH = 2;
 
 	// this is the name of the method defined by PropertyInterceptor interface
 	private static final String INTERCEPT_METHOD_NAME;

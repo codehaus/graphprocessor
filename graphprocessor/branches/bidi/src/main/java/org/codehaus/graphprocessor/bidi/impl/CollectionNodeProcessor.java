@@ -22,9 +22,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.bidi.AbstractBidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
@@ -45,13 +45,14 @@ public class CollectionNodeProcessor extends AbstractBidiNodeProcessor
 		}
 
 		final PropertyContextImpl childPropCtx = nodeCtx.createChildPropertyContext(null);
-		((AbstractBidiGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).propertyContextCreated(childPropCtx);
+		// ((AbstractBidiGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).propertyContextCreated(childPropCtx);
 
 
 		// process each element of source collection separately
 		for (Object sourceElement : (Collection<?>) source)
 		{
-			final AbstractBidiNodeConfig nodeConfig = (AbstractBidiNodeConfig) nodeCtx.getChildNodeLookup().get(sourceElement.getClass());
+			final AbstractBidiNodeConfig nodeConfig = (AbstractBidiNodeConfig) nodeCtx.getChildNodeLookup().get(
+					sourceElement.getClass());
 
 			// if so, start node processing
 			if (nodeConfig != null)
@@ -69,7 +70,7 @@ public class CollectionNodeProcessor extends AbstractBidiNodeProcessor
 
 	private <T> T getOrCreateTargetNode(final NodeContextImpl nodeCtx, final Object srcNodeValue)
 	{
-		//final Object source = nodeCtx.getSourceNode();
+		// final Object source = nodeCtx.getSourceNode();
 		T result = null;
 
 		// default: contract is type of source value
@@ -78,7 +79,7 @@ public class CollectionNodeProcessor extends AbstractBidiNodeProcessor
 		// if available: contract is write method parameter type
 		if (nodeCtx.getParentContext() != null)
 		{
-			BidiPropertyConfig propConfig = (BidiPropertyConfig) nodeCtx.getParentContext().getPropertyConfig();
+			BidiPropertyConfig propConfig = nodeCtx.getParentContext().getPropertyConfig();
 			contract = propConfig.getTargetProperty().getWriteMethod().getParameterTypes()[0];
 		}
 
@@ -131,7 +132,7 @@ public class CollectionNodeProcessor extends AbstractBidiNodeProcessor
 		if (targetClass != null)
 		{
 			result = (T) this.createNode(targetClass);
-			((AbstractBidiGraphConfig) nodeCtx.getGraphContext().getGraphConfig()).nodeCreated(nodeCtx, result);
+			notifyNodeCreatedListener(nodeCtx, result);
 		}
 
 		return result;

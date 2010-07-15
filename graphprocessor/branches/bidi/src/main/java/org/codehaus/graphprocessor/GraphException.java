@@ -13,32 +13,30 @@
  */
 package org.codehaus.graphprocessor;
 
+/**
+ * A GraphProcessor specific {@link RuntimeException} which can be thrown during processing/initializing a graph.
+ */
 public class GraphException extends RuntimeException
 {
 
 	public GraphException()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public GraphException(final String message, final Throwable cause)
 	{
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GraphException(final String message)
 	{
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GraphException(final Throwable cause)
 	{
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
-
 
 }

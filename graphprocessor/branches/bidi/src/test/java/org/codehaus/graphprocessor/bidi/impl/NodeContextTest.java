@@ -26,6 +26,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.NodeListener;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
@@ -63,19 +64,28 @@ public class NodeContextTest
 	/**
 	 * Special {@link GraphTransformer} which logs every {@link BidiNodeContext} which gets created.
 	 */
-	private static class TestGraphTransformer extends BidiGraphTransformer
+	private static class TestGraphTransformer extends BidiGraphTransformer implements NodeListener<BidiNodeContext>
 	{
 		private final List<List<BidiNodeContext>> loggedRuntimeNodes = new ArrayList<List<BidiNodeContext>>();
 
 		public TestGraphTransformer(final Class clazz)
 		{
 			super(clazz);
+			setNodeListener(this);
 		}
+
+
+		@Override
+		public void nodeCreated(BidiNodeContext nodeContext, Object node)
+		{
+			// TODO Auto-generated method stub
+
+		}
+
 
 		@Override
 		public void nodeContextCreated(final BidiNodeContext nodeCtx)
 		{
-			super.nodeContextCreated(nodeCtx);
 			final List<BidiNodeContext> nodeCtxList = nodeCtx.getProcessingPath();
 			this.loggedRuntimeNodes.add(nodeCtxList);
 		}

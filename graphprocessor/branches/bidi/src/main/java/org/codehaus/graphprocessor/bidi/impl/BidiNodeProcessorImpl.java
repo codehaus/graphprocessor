@@ -23,8 +23,8 @@ import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeFactory;
 import org.codehaus.graphprocessor.bidi.AbstractBidiNodeProcessor;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 
 
@@ -200,8 +200,7 @@ public class BidiNodeProcessorImpl extends AbstractBidiNodeProcessor
 			{
 				final Class<?> nodeType = ((BidiNodeConfig) nodeCtx.getNodeConfig()).getTargetNodeConfig().getType();
 				result = this.createNode(nodeType);
-				nodeCtx.getGraphContext().getGraphConfig().getContextListener().nodeCreated(nodeCtx, result);
-
+				this.notifyNodeCreatedListener(nodeCtx, result);
 			}
 			ctx.getProcessedNodesId().put(srcNodeUid, result);
 		}
@@ -311,7 +310,7 @@ public class BidiNodeProcessorImpl extends AbstractBidiNodeProcessor
 			final Object pNodeValue = parentPropCtx.getParentContext().getTargetNodeValue();
 
 			// get read method from target graphs write property
-			final Method readMethod = ((BidiPropertyConfig) parentPropCtx.getPropertyConfig()).getTargetProperty().getReadMethod();
+			final Method readMethod = (parentPropCtx.getPropertyConfig()).getTargetProperty().getReadMethod();
 			if (readMethod != null)
 			{
 				try

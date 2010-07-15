@@ -3,8 +3,10 @@ package org.codehaus.graphprocessor.bidi;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.graphprocessor.ContextCreatedListener;
+import org.codehaus.graphprocessor.GraphListener;
 import org.codehaus.graphprocessor.GraphNode;
+import org.codehaus.graphprocessor.NodeListener;
+import org.codehaus.graphprocessor.PropertyListener;
 
 
 public interface BidiGraphConfig
@@ -59,8 +61,6 @@ public interface BidiGraphConfig
 	// TODO: debug method
 	Set<String> getDebugNodes();
 
-	ContextCreatedListener getContextListener();
-
 	/**
 	 * The default {@link BidiNodeProcessor} which shall be used when processing a node of specified type.
 	 * 
@@ -78,5 +78,11 @@ public interface BidiGraphConfig
 	 * @return {@link BidiPropertyProcessor}
 	 */
 	BidiPropertyProcessor getDefaultPropertyProcessor(Class propertyType);
+
+	GraphListener<BidiGraphContext> getGraphListener();
+
+	NodeListener<BidiNodeContext> getNodeListener();
+
+	PropertyListener<BidiPropertyContext> getPropertyListener();
 
 }
