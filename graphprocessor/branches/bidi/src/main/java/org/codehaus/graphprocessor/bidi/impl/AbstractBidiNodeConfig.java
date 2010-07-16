@@ -11,8 +11,8 @@ import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
@@ -91,9 +91,10 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 		for (final Iterator<BidiPropertyConfig> iter = properties.values().iterator(); iter.hasNext();)
 		{
 			final BidiPropertyConfig pCfg = iter.next();
-			if (pCfg instanceof AbstractBidiPropertyConfig)
+
+			if (pCfg instanceof Initializable)
 			{
-				final AbstractBidiPropertyConfig aPropCfg = (AbstractBidiPropertyConfig) pCfg;
+				final Initializable aPropCfg = (Initializable) pCfg;
 				if (!aPropCfg.isInitialized())
 				{
 					final boolean valid = aPropCfg.initialize(AbstractBidiPropertyConfig.COMPLIANCE_LEVEL_LOW);
@@ -102,10 +103,6 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 						iter.remove();
 					}
 				}
-			}
-			else
-			{
-				throw new GraphException("Need an instance of " + AbstractBidiPropertyConfig.class.getSimpleName());
 			}
 		}
 		return true;
@@ -215,8 +212,15 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 			// final Map<String, PropertyConfig> cfgMap = this.getProperties();
 			for (int i = 0; i < uidPropnames.length; i++)
 			{
-				// uidProperties[i] = cfgMap.get(uidPropnames[i]);
-				uidProperties[i] = this.getPropertyConfigByName(uidPropnames[i]);
+				final BidiPropertyConfig propCfg = this.getPropertyConfigByName(uidPropnames[i]);
+
+				if (propCfg == null)
+				{
+					throw new GraphException("Can't find  declared unique property '" + uidPropnames[i] + " on type "
+							+ this.type.getSimpleName());
+				}
+
+				uidProperties[i] = propCfg;
 			}
 		}
 		return this.uidProperties;

@@ -95,7 +95,7 @@ public class VirtualPropertyTest
 		final BidiNodeConfig nodeConfig = graph.getNodeConfig(TestVirtualPropSource.class);
 		Assert.assertNotNull(nodeConfig.getPropertyConfigByName("value1"));
 		// XXX: according above changes: will never evaluate to true again
-		Assert.assertNull(nodeConfig.getPropertyConfigByName("value2"));
+		Assert.assertNotNull(nodeConfig.getPropertyConfigByName("value2"));
 
 		final TestVirtualPropSource source = new TestVirtualPropSource();
 		source.value1 = "value1";

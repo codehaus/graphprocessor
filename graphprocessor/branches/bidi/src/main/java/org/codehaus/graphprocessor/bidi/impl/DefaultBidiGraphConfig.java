@@ -20,6 +20,12 @@ public class DefaultBidiGraphConfig extends AbstractBidiGraphConfig implements B
 	public DefaultBidiGraphConfig(final Class rootNode)
 	{
 		this();
+
+		if (rootNode == null)
+		{
+			throw new GraphException("Error creating " + this.getClass().getSimpleName() + "; no root node was passed");
+		}
+
 		addNodes(rootNode);
 	}
 

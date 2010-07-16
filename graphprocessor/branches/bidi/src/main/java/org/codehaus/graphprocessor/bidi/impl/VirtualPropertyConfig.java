@@ -14,7 +14,6 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 public class VirtualPropertyConfig implements BidiPropertyConfig
 {
-
 	private final BidiPropertyConfig targetPropertyConfig;
 
 	public VirtualPropertyConfig(BidiPropertyConfig targetProperty)
@@ -50,7 +49,8 @@ public class VirtualPropertyConfig implements BidiPropertyConfig
 	@Override
 	public BidiPropertyProcessor getProcessor()
 	{
-		return getNodeConfig().getPropertyProcessor(targetPropertyConfig.getWriteType());
+		// return getNodeConfig().getPropertyProcessor(targetPropertyConfig.getWriteType());
+		return null;
 	}
 
 	@Override

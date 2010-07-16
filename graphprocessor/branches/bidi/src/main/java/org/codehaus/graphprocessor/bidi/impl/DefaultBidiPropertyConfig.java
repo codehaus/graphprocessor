@@ -152,6 +152,14 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 				}
 			}
 		}
+		else
+		{
+			if (this.isInitialized)
+			{
+				BidiPropertyConfig propCfg = new VirtualPropertyConfig(this);
+				((DefaultBidiNodeConfig) this.nodeConfig.getTargetNodeConfig()).addPropertyConfig(propCfg);
+			}
+		}
 
 
 		// debug
@@ -160,6 +168,13 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 			final String action = this.isInitialized ? "Take " : "Skip ";
 			final String logMsg = action + toExtString();
 			log.debug(logMsg);
+
+			if (isInitialized && !hasTarget)
+			{
+				log.debug("...added as virtual property to " + this.nodeConfig.getTargetNodeConfig().getType().getSimpleName() + "#"
+						+ this.getName());
+			}
+
 		}
 
 		// error handling in case compilation fails
