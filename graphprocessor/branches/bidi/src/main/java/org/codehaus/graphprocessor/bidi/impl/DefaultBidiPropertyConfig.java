@@ -171,10 +171,8 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 			if (isInitialized && !hasTarget)
 			{
-				log.debug("...added as virtual property to " + this.nodeConfig.getTargetNodeConfig().getType().getSimpleName() + "#"
-						+ this.getName());
+				log.debug("TAKE VIRTUALLY " + this.nodeConfig.getTargetNodeConfig().getType().getSimpleName() + "#" + this.getName());
 			}
-
 		}
 
 		// error handling in case compilation fails

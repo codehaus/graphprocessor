@@ -15,6 +15,7 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 public class VirtualPropertyConfig implements BidiPropertyConfig
 {
 	private final BidiPropertyConfig targetPropertyConfig;
+	private BidiPropertyProcessor processor = null;
 
 	public VirtualPropertyConfig(BidiPropertyConfig targetProperty)
 	{
@@ -50,7 +51,17 @@ public class VirtualPropertyConfig implements BidiPropertyConfig
 	public BidiPropertyProcessor getProcessor()
 	{
 		// return getNodeConfig().getPropertyProcessor(targetPropertyConfig.getWriteType());
-		return null;
+		// TODO: allow non-object.class properties
+		if (this.processor == null)
+		{
+			this.processor = getNodeConfig().getPropertyProcessor(Object.class);
+		}
+		return this.processor;
+	}
+
+	public void setProcessor(BidiPropertyProcessor processor)
+	{
+		this.processor = processor;
 	}
 
 	@Override

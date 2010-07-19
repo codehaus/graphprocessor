@@ -1,5 +1,7 @@
 package org.codehaus.graphprocessor.single;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -8,11 +10,12 @@ import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.GraphProperty;
 import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+import org.codehaus.graphprocessor.bidi.impl.VirtualPropertyConfig;
 import org.codehaus.graphprocessor.transform.BidiGraphTransformer;
 import org.junit.Assert;
 import org.junit.Test;
-
 
 
 public class VirtualPropertyTest
@@ -93,9 +96,14 @@ public class VirtualPropertyTest
 		// (yes, even virtual get makes sense: e.g. when "splitting' property value into multiple ones) and set them directly at
 		// target
 		final BidiNodeConfig nodeConfig = graph.getNodeConfig(TestVirtualPropSource.class);
-		Assert.assertNotNull(nodeConfig.getPropertyConfigByName("value1"));
+
+		BidiPropertyConfig pCfg = nodeConfig.getPropertyConfigByName("value1");
+		assertNotNull(pCfg);
 		// XXX: according above changes: will never evaluate to true again
-		Assert.assertNotNull(nodeConfig.getPropertyConfigByName("value2"));
+		pCfg = nodeConfig.getPropertyConfigByName("value2");
+		assertNotNull(pCfg);
+		Assert.assertTrue(pCfg instanceof VirtualPropertyConfig);
+		assertNotNull(pCfg.getProcessor());
 
 		final TestVirtualPropSource source = new TestVirtualPropSource();
 		source.value1 = "value1";

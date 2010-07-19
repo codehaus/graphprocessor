@@ -11,8 +11,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
-import org.codehaus.graphprocessor.GraphListener;
 import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.GraphListener;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeListener;
@@ -31,6 +31,10 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initializable
 {
+	private static final BidiPropertyProcessor DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessorImpl();
+	private static final BidiNodeProcessor DEFAULT_NODE_PROCESSOR = new BidiNodeProcessorImpl();
+	private static final BidiNodeProcessor DEFAULT_COLLECTIONNODE_PROCESSOR = new BidiCollectionNodeProcessor();
+
 	private static final Logger log = Logger.getLogger(AbstractBidiGraphConfig.class);
 
 	private boolean _isInitialized = false;
@@ -53,7 +57,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		this.nodeProcessorMap = new CachedClassLookupMap<BidiNodeProcessor>();
 		this.propertyProcessorMap = new CachedClassLookupMap<BidiPropertyProcessor>();
 
-		nodeProcessorMap.put(Collection.class, new CollectionNodeProcessor());
+		nodeProcessorMap.put(Collection.class, new BidiCollectionNodeProcessor());
 		nodeProcessorMap.put(Object.class, null);
 	}
 
@@ -90,20 +94,49 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 
 	public boolean initialize(int complianceLevel)
 	{
-		this.initializeAllNodes();
+		boolean success = this.initializeGraph();
+
+		if (success)
+		{
+			success = this.initializeNodes();
+		}
+		setInitialized(success);
+
+		return success;
+	}
+
+	public boolean initializeGraph()
+	{
+		// add default processors
+		this.propertyProcessorMap.put(Object.class, DEFAULT_PROPERTY_PROCESSOR);
+
+		this.nodeProcessorMap.put(Object.class, DEFAULT_NODE_PROCESSOR);
+		this.nodeProcessorMap.put(Collection.class, DEFAULT_COLLECTIONNODE_PROCESSOR);
+
 		return true;
 	}
 
-	public void initializeAllNodes()
+	public boolean initializeNodes()
 	{
+		boolean isInitialized = true;
+
 		for (final BidiNodeConfig nodeCfg : getNodes().values())
 		{
 			if (nodeCfg instanceof Initializable)
 			{
-				((Initializable) nodeCfg).initialize(0);
+				// binary AND; no short-circuit
+				isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
 			}
 
+			BidiNodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
+			if (targetNode instanceof Initializable)
+			{
+				// binary AND; no short-circuit
+				isInitialized = isInitialized & ((Initializable) targetNode).initialize(0);
+			}
 		}
+		setInitialized(isInitialized);
+		return isInitialized;
 	}
 
 	public GraphListener<BidiGraphContext> getGraphListener()

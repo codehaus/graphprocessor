@@ -28,9 +28,9 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 
 
-public class CollectionNodeProcessor extends AbstractBidiNodeProcessor
+public class BidiCollectionNodeProcessor extends AbstractBidiNodeProcessor
 {
-	private static final Logger log = Logger.getLogger(CollectionNodeProcessor.class);
+	private static final Logger log = Logger.getLogger(BidiCollectionNodeProcessor.class);
 
 
 

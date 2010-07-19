@@ -26,7 +26,7 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 
 public class BidiCollectionNodeConfig extends DefaultBidiNodeConfig
 {
-	private static final AbstractBidiNodeProcessor DEFAULT_NODE_PROCESSOR = new CollectionNodeProcessor();
+	private static final AbstractBidiNodeProcessor DEFAULT_NODE_PROCESSOR = new BidiCollectionNodeProcessor();
 
 	public BidiCollectionNodeConfig(final BidiGraphConfig graphConfig)
 	{
