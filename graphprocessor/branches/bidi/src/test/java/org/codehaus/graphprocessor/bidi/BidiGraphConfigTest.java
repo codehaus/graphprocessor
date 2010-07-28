@@ -29,9 +29,9 @@ import org.junit.Test;
 
 
 
-public class ConfigObjectsTest
+public class BidiGraphConfigTest
 {
-	private static final Logger log = Logger.getLogger(ConfigObjectsTest.class);
+	private static final Logger log = Logger.getLogger(BidiGraphConfigTest.class);
 
 	@Test
 	public void testBidiGraphConfig()
@@ -162,7 +162,7 @@ public class ConfigObjectsTest
 		Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%-5p [%c{1}] %m%n")));
 
 		Logger.getRootLogger().setLevel(Level.DEBUG);
-		final ConfigObjectsTest test = new ConfigObjectsTest();
+		final BidiGraphConfigTest test = new BidiGraphConfigTest();
 		test.testBidiInitialization();
 	}
 

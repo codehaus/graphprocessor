@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses(
 { ClassLookupMapTest.class, //
-		ConfigObjectsTest.class, //
+		BidiGraphConfigTest.class, //
 		GraphGeneralTest.class, //
 		GraphInitializerTest.class, //
 		GraphInitializerTest2.class, //
