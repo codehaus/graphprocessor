@@ -4,6 +4,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.codehaus.graphprocessor.ClassLookupMapTest;
 import org.codehaus.graphprocessor.bidi.impl.NodeContextTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
