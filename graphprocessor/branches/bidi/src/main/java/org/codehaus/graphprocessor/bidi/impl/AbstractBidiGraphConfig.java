@@ -101,11 +101,12 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 			success = this.initializeNodes();
 		}
 		setInitialized(success);
+		((AbstractBidiGraphConfig) getTargetConfig()).setInitialized(success);
 
 		return success;
 	}
 
-	public boolean initializeGraph()
+	protected boolean initializeGraph()
 	{
 		// add default processors
 		this.propertyProcessorMap.put(Object.class, DEFAULT_PROPERTY_PROCESSOR);
@@ -116,7 +117,12 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		return true;
 	}
 
-	public boolean initializeNodes()
+	/**
+	 * Initializes all nodes of source and target graph.
+	 * 
+	 * @return true when successful
+	 */
+	protected boolean initializeNodes()
 	{
 		boolean isInitialized = true;
 
@@ -135,7 +141,6 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 				isInitialized = isInitialized & ((Initializable) targetNode).initialize(0);
 			}
 		}
-		setInitialized(isInitialized);
 		return isInitialized;
 	}
 

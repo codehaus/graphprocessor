@@ -81,6 +81,9 @@ public class BidiGraphConfigTest
 		assertNotNull(cfg1);
 		assertNotNull(cfg2);
 
+		assertTrue(bidiGraph.isInitialized());
+		assertTrue(bidiGraph.getTargetConfig().isInitialized());
+
 		cfg1 = bidiGraph.getNodeConfig(TuUserDTO.class);
 
 		// for now this still fails
@@ -187,7 +190,7 @@ public class BidiGraphConfigTest
 
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		final BidiGraphConfigTest test = new BidiGraphConfigTest();
-		test.testBidiGraphConfig();
+		test.testBidiGraphTransformer();
 	}
 
 
