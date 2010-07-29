@@ -46,7 +46,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	private final Map<Class<?>, BidiNodeConfig> inmutableNodeLookup;
 
 	protected final CachedClassLookupMap<BidiNodeProcessor> nodeProcessorMap;
-	protected final CachedClassLookupMap<BidiPropertyProcessor> propertyProcessorMap;
+	private final CachedClassLookupMap<BidiPropertyProcessor> propertyProcessorMap;
 
 
 	public AbstractBidiGraphConfig()
@@ -57,27 +57,32 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		this.nodeProcessorMap = new CachedClassLookupMap<BidiNodeProcessor>();
 		this.propertyProcessorMap = new CachedClassLookupMap<BidiPropertyProcessor>();
 
-		nodeProcessorMap.put(Collection.class, new BidiCollectionNodeProcessor());
-		nodeProcessorMap.put(Object.class, null);
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodeProcessor(java.lang.Class)
 	 */
 	@Override
-	public BidiNodeProcessor getDefaultNodeProcessor(Class nodeType)
+	public BidiNodeProcessor getDefaultNodeProcessor(final Class nodeType)
 	{
 		return nodeProcessorMap.get(nodeType);
 	}
 
+	public void setDefaultNodeProcessor(final Class nodeType, final BidiNodeProcessor processor)
+	{
+		this.nodeProcessorMap.put(nodeType, processor);
+	}
+
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
-	public BidiPropertyProcessor getDefaultPropertyProcessor(Class propertyType)
+	public BidiPropertyProcessor getDefaultPropertyProcessor(final Class propertyType)
 	{
 		return propertyProcessorMap.get(propertyType);
 	}
@@ -87,14 +92,15 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		return this._isInitialized;
 	}
 
-	protected void setInitialized(boolean isInitialized)
+	protected void setInitialized(final boolean isInitialized)
 	{
 		this._isInitialized = isInitialized;
 	}
 
-	public boolean initialize(int complianceLevel)
+	public boolean initialize(final int complianceLevel)
 	{
 		boolean success = this.initializeGraph();
+		success = success | ((AbstractBidiGraphConfig) getTargetConfig()).initializeGraph();
 
 		if (success)
 		{
@@ -134,7 +140,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 				isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
 			}
 
-			BidiNodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
+			final BidiNodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
 			if (targetNode instanceof Initializable)
 			{
 				// binary AND; no short-circuit
@@ -149,7 +155,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		return graphListener;
 	}
 
-	public void setGraphListener(GraphListener<BidiGraphContext> graphCtxListener)
+	public void setGraphListener(final GraphListener<BidiGraphContext> graphCtxListener)
 	{
 		this.graphListener = graphCtxListener;
 	}
@@ -159,7 +165,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		return propertyListener;
 	}
 
-	public void setPropertyListener(PropertyListener<BidiPropertyContext> propertyCtxListener)
+	public void setPropertyListener(final PropertyListener<BidiPropertyContext> propertyCtxListener)
 	{
 		this.propertyListener = propertyCtxListener;
 	}
@@ -170,7 +176,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		return nodeListener;
 	}
 
-	public void setNodeListener(NodeListener<BidiNodeContext> nodeCtxListener)
+	public void setNodeListener(final NodeListener<BidiNodeContext> nodeCtxListener)
 	{
 		this.nodeListener = nodeCtxListener;
 	}
@@ -183,6 +189,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodes()
 	 */
 	@Override
@@ -199,7 +206,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	}
 
 	@Override
-	public BidiNodeConfig getAssignableNodeConfig(Class nodeType)
+	public BidiNodeConfig getAssignableNodeConfig(final Class nodeType)
 	{
 		return this.nodeLookupMap.get(nodeType);
 	}

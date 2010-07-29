@@ -15,13 +15,13 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 {
 	private static final Logger log = Logger.getLogger(DefaultBidiNodeConfig.class);
 
-	private static final BidiNodeProcessorImpl DEFAULT_NODE_PROCESSOR = new BidiNodeProcessorImpl();
+	//private static final BidiNodeProcessorImpl DEFAULT_NODE_PROCESSOR = new BidiNodeProcessorImpl();
 
 	private DefaultBidiNodeConfig targetNode = null;
 
 	/**
-	 * Create a bidirectional {@link BidiNodeConfig} which is bound to a {@link BidiGraphConfig} and a node type which is taken as
-	 * source node.
+	 * Create a bidirectional {@link BidiNodeConfig} which is bound to a {@link BidiGraphConfig} and a node type which is
+	 * taken as source node.
 	 * 
 	 * @param graphConfig
 	 * @param type
@@ -123,7 +123,7 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 	protected void setDefaults()
 	{
 		super.setDefaults();
-		setProcessor(DEFAULT_NODE_PROCESSOR);
+		//setProcessor(DEFAULT_NODE_PROCESSOR);
 	}
 
 	public BidiNodeConfig getTargetNodeConfig()
@@ -147,7 +147,9 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.impl.DefaultNodeConfig#createPropertyConfig(java.lang
+	 * 
+	 * @see
+	 * de.hybris.platform.webservices.util.objectgraphtransformer.impl.DefaultNodeConfig#createPropertyConfig(java.lang
 	 * .String)
 	 */
 	@Override
@@ -165,6 +167,7 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.impl.AbstractNodeConfig#isDebugEnabled()
 	 */
 	@Override
@@ -191,36 +194,36 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 	 * @param nodeFactory
 	 *           the nodeFactory to set
 	 */
-	public void setNodeFactory(NodeFactory nodeFactory)
+	public void setNodeFactory(final NodeFactory nodeFactory)
 	{
 		this.nodeFactory = nodeFactory;
 	}
 
 	@Override
-	public BidiPropertyConfig getPropertyConfigByName(String source)
+	public BidiPropertyConfig getPropertyConfigByName(final String source)
 	{
 		return getPropertyConfigByName(source, source);
 	}
 
 	@Override
-	public BidiPropertyConfig getPropertyConfigByName(String source, String target)
+	public BidiPropertyConfig getPropertyConfigByName(final String source, final String target)
 	{
 		return getProperties().get(source + "-" + target);
 	}
 
 	@Override
-	public BidiPropertyConfig removePropertyConfigByName(String propertyId)
+	public BidiPropertyConfig removePropertyConfigByName(final String propertyId)
 	{
 		return removePropertyConfigByName(propertyId, propertyId);
 	}
 
 	@Override
-	public BidiPropertyConfig removePropertyConfigByName(String propertyName, String targetPropName)
+	public BidiPropertyConfig removePropertyConfigByName(final String propertyName, final String targetPropName)
 	{
 		return super.removePropertyConfigByName(propertyName + "-" + targetPropName);
 	}
 
-	private void initMetaData(Class type)
+	private void initMetaData(final Class type)
 	{
 		if (type.isAnnotationPresent(GraphNode.class))
 		{
@@ -231,19 +234,19 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 
 				if (!nodeAnno.factory().equals(NodeFactory.class))
 				{
-					NodeFactory factory = this.getInstance(nodeAnno.factory());
+					final NodeFactory factory = this.getInstance(nodeAnno.factory());
 					setNodeFactory(factory);
 				}
 
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				log.error("Error getting " + GraphNode.class.getSimpleName() + " annotation", e);
 			}
 		}
 	}
 
-	private <T> T getInstance(Class clazz)
+	private <T> T getInstance(final Class clazz)
 	{
 
 		T result = null;
@@ -251,7 +254,7 @@ public class DefaultBidiNodeConfig extends AbstractBidiNodeConfig implements Bid
 		{
 			result = (T) clazz.newInstance();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			log.error(e.getMessage());
 

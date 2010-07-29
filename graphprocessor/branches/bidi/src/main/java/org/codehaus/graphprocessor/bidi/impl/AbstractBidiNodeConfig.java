@@ -57,7 +57,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 * Initializes this node.
 	 * <p/>
 	 */
-	public boolean initialize(int complianceLevel)
+	public boolean initialize(final int complianceLevel)
 	{
 		// step1: initialize node
 		if (!this.isNodeInitialized)
@@ -79,8 +79,8 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 * Initializes each {@link BidiPropertyConfig} of this node.
 	 * <p/>
 	 * If {@link BidiPropertyConfig} is already initialized, it gets skipped.<br/>
-	 * If {@link BidiPropertyConfig} is not initialized, their initializer method gets called. If initialization fails, property
-	 * gets removed from that node.
+	 * If {@link BidiPropertyConfig} is not initialized, their initializer method gets called. If initialization fails,
+	 * property gets removed from that node.
 	 * 
 	 * @return true when initialization succeeds
 	 */
@@ -125,6 +125,10 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 */
 	public BidiNodeProcessor getProcessor()
 	{
+		if (this.nodeProcessor == null)
+		{
+			this.nodeProcessor = this.graphConfig.getDefaultNodeProcessor(this.type);
+		}
 		return nodeProcessor;
 	}
 
@@ -132,17 +136,18 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 * @param nodeProcessor
 	 *           the nodeProcessor to set
 	 */
-	public void setProcessor(BidiNodeProcessor nodeProcessor)
+	public void setProcessor(final BidiNodeProcessor nodeProcessor)
 	{
 		this.nodeProcessor = nodeProcessor;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
-	public BidiPropertyProcessor getPropertyProcessor(Class propertyType)
+	public BidiPropertyProcessor getPropertyProcessor(final Class propertyType)
 	{
 		return getGraphConfig().getDefaultPropertyProcessor(propertyType);
 	}
@@ -228,6 +233,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getProperties()
 	 */
 	@Override
@@ -237,19 +243,19 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	}
 
 	@Override
-	public BidiPropertyConfig getPropertyConfigByName(String propertyName)
+	public BidiPropertyConfig getPropertyConfigByName(final String propertyName)
 	{
 		return this.properties.get(propertyName);
 	}
 
-	public void addPropertyConfig(BidiPropertyConfig propCfg)
+	public void addPropertyConfig(final BidiPropertyConfig propCfg)
 	{
 		getProperties().put(propCfg.getId(), propCfg);
 		this.isPropertiesInitialized = false;
 	}
 
 	@Override
-	public BidiPropertyConfig removePropertyConfigByName(String propertyId)
+	public BidiPropertyConfig removePropertyConfigByName(final String propertyId)
 	{
 		// TODO: reseting is initialized is not enough when removing a property includes removing a node
 		return getProperties().remove(propertyId);
@@ -258,7 +264,7 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	@Override
 	public Map<String, BidiPropertyConfig> removeAllProperties()
 	{
-		Map<String, BidiPropertyConfig> result = new HashMap<String, BidiPropertyConfig>(this.properties);
+		final Map<String, BidiPropertyConfig> result = new HashMap<String, BidiPropertyConfig>(this.properties);
 		this.properties.clear();
 		return result;
 	}

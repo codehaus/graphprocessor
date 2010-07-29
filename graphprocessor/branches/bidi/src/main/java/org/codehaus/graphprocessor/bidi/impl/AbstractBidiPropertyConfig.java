@@ -75,7 +75,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	private boolean virtualWrite = false;
 
 
-	public AbstractBidiPropertyConfig(final BidiNodeConfig nodeConfig, String id, String name)
+	public AbstractBidiPropertyConfig(final BidiNodeConfig nodeConfig, final String id, final String name)
 	{
 		this.nodeConfig = nodeConfig;
 		this.id = id;
@@ -139,6 +139,10 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 */
 	public BidiPropertyProcessor getProcessor()
 	{
+		if (this.propertyProcessor == null)
+		{
+			this.propertyProcessor = getNodeConfig().getPropertyProcessor(Object.class);
+		}
 		return propertyProcessor;
 	}
 
@@ -146,7 +150,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 * @param propertyProcessor
 	 *           the propertyProcessor to set
 	 */
-	public void setProcessor(BidiPropertyProcessor propertyProcessor)
+	public void setProcessor(final BidiPropertyProcessor propertyProcessor)
 	{
 		this.propertyProcessor = propertyProcessor;
 	}
@@ -179,7 +183,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 * @param propertyFilters
 	 *           the propertyFilters to set
 	 */
-	public void setPropertyFilters(List<PropertyFilter> propertyFilters)
+	public void setPropertyFilters(final List<PropertyFilter> propertyFilters)
 	{
 		this.propertyFilters = propertyFilters;
 	}
@@ -195,7 +199,8 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	}
 
 	/**
-	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed graph.
+	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed
+	 * graph.
 	 * 
 	 * @param complianceLevel
 	 *           various levels for error handling
@@ -259,6 +264,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#getReadInterceptor()
 	 */
 	public PropertyInterceptor getReadInterceptor()
@@ -314,6 +320,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#isTypeCheckEnabled()
 	 */
 	@Override
@@ -324,6 +331,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#isWriteTypeCheckEnabled()
 	 */
 	@Override
@@ -334,6 +342,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#getReadType()
 	 */
 	@Override
@@ -344,6 +353,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#getWriteType()
 	 */
 	@Override
@@ -431,7 +441,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 		return this.virtualRead;
 	}
 
-	public void setVirtualRead(boolean isVirtualRead)
+	public void setVirtualRead(final boolean isVirtualRead)
 	{
 		this.virtualRead = isVirtualRead;
 	}
@@ -443,7 +453,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 		return this.virtualWrite;
 	}
 
-	public void setVirtualWrite(boolean isVirtualWrite)
+	public void setVirtualWrite(final boolean isVirtualWrite)
 	{
 		this.virtualWrite = isVirtualWrite;
 	}
@@ -461,7 +471,8 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 * @param interceptor
 	 * @return {@link Method}
 	 */
-	protected Method getInterceptMethod(final PropertyInterceptor interceptor)
+	// XXX:
+	public static Method getInterceptMethod(final PropertyInterceptor interceptor)
 	{
 		Method result = null;
 		final Method[] declaredMethods = interceptor.getClass().getDeclaredMethods();
@@ -494,10 +505,10 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 * <p/>
 	 * Result maps a property name to a {@link BidiPropertyConfig}.
 	 * </p>
-	 * Any property which keeps java bean standard is found and used for {@link BidiPropertyConfig} creation. For finding all
-	 * properties {@link Introspector} is used which returns general {@link PropertyDescriptor}. But read- and write methods
-	 * provided by {@link PropertyDescriptor} are only used as "suggestion" here and are getting post-processed to assure following
-	 * criteria:
+	 * Any property which keeps java bean standard is found and used for {@link BidiPropertyConfig} creation. For finding
+	 * all properties {@link Introspector} is used which returns general {@link PropertyDescriptor}. But read- and write
+	 * methods provided by {@link PropertyDescriptor} are only used as "suggestion" here and are getting post-processed
+	 * to assure following criteria:
 	 * <p/>
 	 * - no bridge or synthetic methods are allowed <br/>
 	 * - co-variant return types are handled correctly <br/>

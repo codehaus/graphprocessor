@@ -17,7 +17,7 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 	private static final BidiPropertyProcessorImpl DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessorImpl();
 
-	private DefaultBidiPropertyConfig targetProperty = null;
+	private BidiPropertyConfig targetProperty = null;
 	private boolean _isTypeCheckEnabled = false;
 	private boolean _isNode = false;
 
@@ -29,7 +29,7 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 		setProcessor(DEFAULT_PROPERTY_PROCESSOR);
 	}
 
-	public DefaultBidiPropertyConfig(final BidiNodeConfig node, final String sourceProperty, String targetProperty)
+	public DefaultBidiPropertyConfig(final BidiNodeConfig node, final String sourceProperty, final String targetProperty)
 	{
 		super(node, sourceProperty + "-" + targetProperty, sourceProperty);
 		this.targetProperty = new DefaultBidiPropertyConfig(node.getTargetNodeConfig(), targetProperty, this);
@@ -46,12 +46,12 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 	}
 
 
-	public DefaultBidiPropertyConfig getTargetProperty()
+	public BidiPropertyConfig getTargetProperty()
 	{
 		return this.targetProperty;
 	}
 
-	void setTargetProperty(final DefaultBidiPropertyConfig target)
+	void setTargetProperty(final BidiPropertyConfig target)
 	{
 		this.targetProperty = target;
 	}
@@ -70,7 +70,8 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 
 	/**
-	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed graph.
+	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed
+	 * graph.
 	 * 
 	 * @param complianceLevel
 	 *           various levels for error handling
@@ -93,7 +94,7 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 		// final Method writeMethod = getWriteMethod();
 
 		this.isInitialized = this.isVirtualRead() || this.isVirtualWrite();
-		boolean hasTarget = this.targetProperty != null && this.targetProperty.getWriteMethod() != null;
+		final boolean hasTarget = this.targetProperty != null && this.targetProperty.getWriteMethod() != null;
 
 		if (hasTarget)
 		{
@@ -154,9 +155,11 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 		}
 		else
 		{
+			// property is successfully initialized but still does not have a target
 			if (this.isInitialized)
 			{
-				BidiPropertyConfig propCfg = new VirtualPropertyConfig(this);
+				final BidiPropertyConfig propCfg = new VirtualPropertyConfig(this);
+				this.targetProperty = propCfg;
 				((DefaultBidiNodeConfig) this.nodeConfig.getTargetNodeConfig()).addPropertyConfig(propCfg);
 			}
 		}
@@ -255,8 +258,9 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 		String write = "";
 		if (writeInterceptor != null)
 		{
-			final Class writeConvReturnType = targetProperty.getInterceptMethod(writeInterceptor).getReturnType();
-			final Class writeConvParamtype = targetProperty.getInterceptMethod(writeInterceptor).getParameterTypes()[1];
+			final Method interceptMethod = AbstractBidiPropertyConfig.getInterceptMethod(writeInterceptor);
+			final Class writeConvReturnType = interceptMethod.getReturnType();
+			final Class writeConvParamtype = interceptMethod.getParameterTypes()[1];
 			write = " -> " + writeInterceptor.getClass().getSimpleName() + "(" + writeConvParamtype.getSimpleName() + ")" + ":"
 					+ writeConvReturnType.getSimpleName();
 		}
