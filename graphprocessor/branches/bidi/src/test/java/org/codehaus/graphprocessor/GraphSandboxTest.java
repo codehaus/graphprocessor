@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -23,7 +23,10 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
+import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
 import org.codehaus.graphprocessor.samples.misc.InDto1;
 import org.codehaus.graphprocessor.samples.misc.InDto2;
 import org.codehaus.graphprocessor.samples.usergraph.TuUserDTO;
@@ -57,6 +60,23 @@ public class GraphSandboxTest
 		final List result = graph.transform(list);
 		assertSame(result, result.get(3));
 
+	}
+
+	public void testBidiGraphConfig()
+	{
+		final BidiGraphConfig srcGraph = new DefaultBidiGraphConfig(TuUserDTO.class);
+		final BidiGraphConfig dstGraph = srcGraph.getTargetConfig();
+
+		// assert circular TuUser-NodeConfig
+		final BidiNodeConfig srcNodeCfg = srcGraph.getNodeConfig(TuUserDTO.class);
+		final BidiNodeConfig dstNodeCfg = dstGraph.getNodeConfig(TuUserModel.class);
+
+		// assert circular address-PropertyConfig
+		final BidiPropertyConfig srcPropCfg = srcNodeCfg.getPropertyConfigByName("mainAddress");
+		final BidiPropertyConfig dstPropCfg = dstNodeCfg.getPropertyConfigByName("mainAddress");
+
+		// do we want this?
+		assertSame(dstPropCfg, srcPropCfg.getTargetProperty());
 	}
 
 

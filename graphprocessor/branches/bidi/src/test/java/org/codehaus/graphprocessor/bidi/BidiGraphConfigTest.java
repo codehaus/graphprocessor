@@ -15,9 +15,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressModel;
@@ -25,6 +22,8 @@ import org.codehaus.graphprocessor.samples.usergraph.TuCountryDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuCountryModel;
 import org.codehaus.graphprocessor.samples.usergraph.TuUserDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuUserModel;
+import org.codehaus.graphprocessor.transform.BidiGraphTransformer;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -49,8 +48,14 @@ public class BidiGraphConfigTest
 		final BidiNodeConfig srcNodeCfg = srcGraph.getNodeConfig(TuUserDTO.class);
 		final BidiNodeConfig dstNodeCfg = dstGraph.getNodeConfig(TuUserModel.class);
 
-		assertNotSame(srcNodeCfg, srcNodeCfg.getTargetNodeConfig());
+		// circle: between source and destination graph of source and destination node
+		assertSame(srcGraph, srcNodeCfg.getGraphConfig());
+		assertSame(dstGraph, dstNodeCfg.getGraphConfig());
+
+		// circle: between source and destination node
 		assertSame(srcNodeCfg, srcNodeCfg.getTargetNodeConfig().getTargetNodeConfig());
+		assertSame(dstNodeCfg, srcNodeCfg.getTargetNodeConfig());
+		assertNotSame(srcNodeCfg, srcNodeCfg.getTargetNodeConfig());
 
 		// assert circular address-PropertyConfig
 		final BidiPropertyConfig srcPropCfg = srcNodeCfg.getPropertyConfigByName("mainAddress");
@@ -62,6 +67,25 @@ public class BidiGraphConfigTest
 		assertNull(srcNodeCfg.getPropertyConfigByName("owner"));
 		assertNotNull(dstNodeCfg.getPropertyConfigByName("owner"));
 		assertNull((dstNodeCfg.getPropertyConfigByName("owner")).getTargetProperty());
+	}
+
+	@Test
+	@Ignore
+	public void testBidiGraphTransformer()
+	{
+		BidiGraphTransformer bidiGraph = new BidiGraphTransformer(TuUserDTO.class);
+
+		BidiNodeConfig cfg1 = bidiGraph.createSourceContext().getGraphConfig().getNodeConfig(TuUserDTO.class);
+		BidiNodeConfig cfg2 = bidiGraph.createTargetContext().getGraphConfig().getNodeConfig(TuUserModel.class);
+
+		assertNotNull(cfg1);
+		assertNotNull(cfg2);
+
+		cfg1 = bidiGraph.getNodeConfig(TuUserDTO.class);
+
+		// for now this still fails
+		// how to deal with that?
+		cfg2 = bidiGraph.getNodeConfig(TuUserModel.class);
 
 	}
 
@@ -163,7 +187,7 @@ public class BidiGraphConfigTest
 
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		final BidiGraphConfigTest test = new BidiGraphConfigTest();
-		test.testBidiInitialization();
+		test.testBidiGraphConfig();
 	}
 
 
