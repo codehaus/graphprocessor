@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,14 +20,17 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.GraphConfig;
+import org.codehaus.graphprocessor.GraphConfiguration;
 import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.NodeConfig;
 
 
 
 /**
- * Manages runtime access to various {@link BidiNodeConfig} instances. {@link BidiGraphConfig} already provides access to
- * {@link BidiNodeConfig} instances but processing runtime adds dynamic behavior like different {@link BidiNodeConfig} instances
- * for same node types based on depth of current processing (distance) or current processed property.
+ * Manages runtime access to various {@link NodeConfig} instances. {@link GraphConfig} already provides access to
+ * {@link NodeConfig} instances but processing runtime adds dynamic behavior like different {@link NodeConfig} instances for same
+ * node types based on depth of current processing (distance) or current processed property.
  */
 public class GraphConfigurationImpl implements GraphConfiguration
 {
@@ -35,26 +38,26 @@ public class GraphConfigurationImpl implements GraphConfiguration
 	private static final Logger log = Logger.getLogger(GraphConfigurationImpl.class);
 
 	// configures custom NodeConfig instances which are used dependently on graph processing depth
-	private List<CachedClassLookupMap<BidiNodeConfig>> nodeConfigByDepth = null;
+	private List<CachedClassLookupMap<NodeConfig>> nodeConfigByDepth = null;
 
 	// base NodeConfig configuration
 	// private CachedClassLookupMap<NodeConfig> baseConfig = null;
-	private Map<Class<?>, BidiNodeConfig> baseConfig = null;
+	private Map<Class<?>, NodeConfig> baseConfig = null;
 
 
 	/**
-	 * Constructor. Creates a new configuration and uses passed Map of {@link BidiNodeConfig} instances as root configuration.
+	 * Constructor. Creates a new configuration and uses passed Map of {@link NodeConfig} instances as root configuration.
 	 * 
 	 * @param baseConfiguration
 	 */
 	// public GraphConfigurationImpl(final CachedClassLookupMap<NodeConfig> baseConfiguration)
-	public GraphConfigurationImpl(final Map<Class<?>, BidiNodeConfig> baseConfiguration)
+	public GraphConfigurationImpl(final Map<Class<?>, NodeConfig> baseConfiguration)
 	{
 		this.baseConfig = baseConfiguration;
-		this.nodeConfigByDepth = new ArrayList<CachedClassLookupMap<BidiNodeConfig>>();
+		this.nodeConfigByDepth = new ArrayList<CachedClassLookupMap<NodeConfig>>();
 	}
 
-	public CachedClassLookupMap<BidiNodeConfig> getAllNodeConfigs(final int distance)
+	public CachedClassLookupMap<NodeConfig> getAllNodeConfigs(final int distance)
 	{
 		// only distances above zero are valid
 		if (distance < 0)
@@ -65,48 +68,48 @@ public class GraphConfigurationImpl implements GraphConfiguration
 		// initially create lookup for "NodeConfig by processing depth" when not done
 		if (this.nodeConfigByDepth.isEmpty())
 		{
-			this.nodeConfigByDepth.add(new CachedClassLookupMap<BidiNodeConfig>(baseConfig));
+			this.nodeConfigByDepth.add(new CachedClassLookupMap<NodeConfig>(baseConfig));
 		}
 
 		// increase size of "NodeConfig by processing depth" stack when requested distance is greater
 		while (this.nodeConfigByDepth.size() < distance + 1)
 		{
-			this.nodeConfigByDepth.add(new CachedClassLookupMap<BidiNodeConfig>());
+			this.nodeConfigByDepth.add(new CachedClassLookupMap<NodeConfig>());
 		}
 
 		// retrieve lookup Map for requested distance
-		final CachedClassLookupMap<BidiNodeConfig> result = this.nodeConfigByDepth.get(distance);
+		final CachedClassLookupMap<NodeConfig> result = this.nodeConfigByDepth.get(distance);
 		return result;
 	}
 
 
 
 	@Override
-	public void addNodeConfig(final int distance, final BidiNodeConfig nodeConfig)
+	public void addNodeConfig(final int distance, final NodeConfig nodeConfig)
 	{
 		this.getAllNodeConfigs(distance).put(nodeConfig.getType(), nodeConfig);
 	}
 
 	@Override
-	public void addNodeConfig(final int distance, final Collection<BidiNodeConfig> nodeMappingList)
+	public void addNodeConfig(final int distance, final Collection<NodeConfig> nodeMappingList)
 	{
-		final CachedClassLookupMap<BidiNodeConfig> map = this.getAllNodeConfigs(distance);
-		for (final BidiNodeConfig nodeConfig : nodeMappingList)
+		final CachedClassLookupMap<NodeConfig> map = this.getAllNodeConfigs(distance);
+		for (final NodeConfig nodeConfig : nodeMappingList)
 		{
 			map.put(nodeConfig.getType(), nodeConfig);
 		}
 	}
 
 	@Override
-	public BidiNodeConfig getNodeConfig(final Class<?> type)
+	public NodeConfig getNodeConfig(final Class<?> type)
 	{
 		return getNodeConfig(0, type);
 	}
 
 	@Override
-	public BidiNodeConfig getNodeConfig(final int distance, final Class<?> type)
+	public NodeConfig getNodeConfig(final int distance, final Class<?> type)
 	{
-		final BidiNodeConfig result = this.getAllNodeConfigs(distance).get(type);
+		final NodeConfig result = this.getAllNodeConfigs(distance).get(type);
 		return result;
 	}
 

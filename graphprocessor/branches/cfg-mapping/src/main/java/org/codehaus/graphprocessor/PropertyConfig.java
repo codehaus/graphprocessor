@@ -1,11 +1,9 @@
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.codehaus.graphprocessor.PropertyFilter;
-import org.codehaus.graphprocessor.PropertyInterceptor;
 import org.codehaus.graphprocessor.transform.GraphTransformer;
 
 
@@ -13,36 +11,16 @@ import org.codehaus.graphprocessor.transform.GraphTransformer;
  * Configuration information for a GraphNode property.
  * <p/>
  * Note: This is similar to a {@link PropertyDescriptor} but whereas a {@link PropertyDescriptor} follows strongly java bean
- * standard a {@link BidiPropertyConfig} this implementation allows various "incompatible" settings and additionally provides
+ * standard a {@link PropertyConfig} this implementation allows various "incompatible" settings and additionally provides
  * {@link GraphTransformer} specific information like available {@link PropertyInterceptor}.
  */
-public interface BidiPropertyConfig
+public interface PropertyConfig
 {
+	NodeConfig getParentNode();
 
-
-	BidiPropertyConfig getTargetProperty();
-
-	BidiNodeConfig getNodeConfig();
-
-	boolean isNode();
-
-	String toExtString();
-
-
-	List<BidiNodeConfig> getNewNodeConfigs();
+	List<NodeConfig> getChildNodeConfig();
 
 	List<PropertyFilter> getPropertyFilters();
-
-	BidiPropertyProcessor getProcessor();
-
-	/**
-	 * Returns an ID which is unique for the Node which this property belongs too.
-	 * <p/>
-	 * In general this is the property name but this is not guaranteed.
-	 * 
-	 * @return property id
-	 */
-	String getId();
 
 	/**
 	 * Returns the name of this property.
@@ -83,7 +61,7 @@ public interface BidiPropertyConfig
 	 * Returns the read-value type.
 	 * <p/>
 	 * Type is either return type of read-method or if an interceptor is assigned the return type of
-	 * {@link PropertyInterceptor#intercept(BidiPropertyContext, Object)}
+	 * {@link PropertyInterceptor#intercept(PropertyContext, Object)}
 	 * 
 	 * @return read-value type
 	 */
@@ -93,7 +71,7 @@ public interface BidiPropertyConfig
 	 * Returns the write-value type
 	 * <p/>
 	 * Type is either return type of write-method or if an interceptor is assigned the return type of
-	 * {@link PropertyInterceptor#intercept(BidiPropertyContext, Object)}
+	 * {@link PropertyInterceptor#intercept(PropertyContext, Object)}
 	 * 
 	 * @return write-value type
 	 */
@@ -121,8 +99,6 @@ public interface BidiPropertyConfig
 	boolean isVirtualRead();
 
 	boolean isVirtualWrite();
-
-	// boolean isNode();
 
 
 }

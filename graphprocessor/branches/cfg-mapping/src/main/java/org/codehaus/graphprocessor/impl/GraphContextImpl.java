@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,20 +22,19 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.GraphConfig;
+import org.codehaus.graphprocessor.GraphConfiguration;
+import org.codehaus.graphprocessor.GraphContext;
+import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.PropertyFilter;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiGraphContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.GraphConfiguration;
-import org.codehaus.graphprocessor.bidi.GraphConfigurationImpl;
 
 
 
 /**
  * Context which is used for and during the process of transforming one object graph into another one.
  */
-public class GraphContextImpl implements BidiGraphContext
+public class GraphContextImpl implements GraphContext
 {
 	private static final Logger log = Logger.getLogger(GraphContextImpl.class);
 
@@ -46,7 +45,7 @@ public class GraphContextImpl implements BidiGraphContext
 
 	protected GraphConfigurationImpl graphConfigImpl = null;
 
-	private BidiGraphConfig graphConfig = null;
+	private GraphConfig graphConfig = null;
 
 	// TODO; currently used as unsafe node cache in (ID->node)
 	protected Map attributes = null;
@@ -62,11 +61,8 @@ public class GraphContextImpl implements BidiGraphContext
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param objGraph
-	 *           {@link BidiGraphConfig}
 	 */
-	public GraphContextImpl(final BidiGraphConfig objGraph)
+	public GraphContextImpl(final GraphConfig objGraph)
 	{
 
 		this.graphConfig = objGraph;
@@ -147,12 +143,7 @@ public class GraphContextImpl implements BidiGraphContext
 	}
 
 
-	/**
-	 * Returns the {@link BidiGraphConfig} which this context belongs to.
-	 * 
-	 * @return {@link BidiGraphConfig}
-	 */
-	public BidiGraphConfig getGraphConfig()
+	public GraphConfig getGraphConfig()
 	{
 		return this.graphConfig;
 	}
@@ -176,24 +167,24 @@ public class GraphContextImpl implements BidiGraphContext
 
 
 	/**
-	 * Creates an initial {@link BidiNodeContext} (root node context)
+	 * Creates an initial {@link NodeContext} (root node context)
 	 * 
 	 * @param rootNodeLookup
 	 * @param nodeMapping
 	 * @param source
-	 * @return {@link BidiNodeContext}
+	 * @return {@link NodeContext}
 	 */
-	public BidiNodeContext createRootNodeContext(final CachedClassLookupMap<BidiNodeConfig> rootNodeLookup,
-			final AbstractBidiNodeConfig nodeMapping, final Object source)
+	public NodeContext createRootNodeContext(final CachedClassLookupMap<NodeConfig> rootNodeLookup,
+			final AbstractNodeConfig nodeMapping, final Object source)
 	{
-		BidiNodeContext result = null;
+		NodeContext result = null;
 
 		// configured nodeLookup for distance 1
 		// final CachedClassLookupMap<NodeMapping> add = this.graphConfigImpl.getAllNodeMappings(1);
-		final CachedClassLookupMap<BidiNodeConfig> add = this.graphConfigImpl.getAllNodeConfigs(1);
+		final CachedClassLookupMap<NodeConfig> add = this.graphConfigImpl.getAllNodeConfigs(1);
 
 		// child nodes lookup is a merged result of current used node lookup and configured node lookup for next processing distance
-		final CachedClassLookupMap<BidiNodeConfig> childNodesLookup = this.buildChildNodeLookup(rootNodeLookup, add);
+		final CachedClassLookupMap<NodeConfig> childNodesLookup = this.buildChildNodeLookup(rootNodeLookup, add);
 
 		this.setRuntimeNodeMappings(0, rootNodeLookup);
 		this.setRuntimeNodeMappings(1, childNodesLookup);
@@ -220,7 +211,7 @@ public class GraphContextImpl implements BidiGraphContext
 
 
 
-	private final Map<Integer, CachedClassLookupMap<BidiNodeConfig>> runtimeNodeMappings = new HashMap<Integer, CachedClassLookupMap<BidiNodeConfig>>();
+	private final Map<Integer, CachedClassLookupMap<NodeConfig>> runtimeNodeMappings = new HashMap<Integer, CachedClassLookupMap<NodeConfig>>();
 
 	/**
 	 * Returns an already calculated {@link CachedClassLookupMap}.
@@ -228,12 +219,12 @@ public class GraphContextImpl implements BidiGraphContext
 	 * @param distance
 	 * @return {@link CachedClassLookupMap}
 	 */
-	protected CachedClassLookupMap<BidiNodeConfig> getRuntimeNodeMappings(final int distance)
+	protected CachedClassLookupMap<NodeConfig> getRuntimeNodeMappings(final int distance)
 	{
 		return this.runtimeNodeMappings.get(Integer.valueOf(distance));
 	}
 
-	protected void setRuntimeNodeMappings(final int distance, final CachedClassLookupMap<BidiNodeConfig> nodeLookup)
+	protected void setRuntimeNodeMappings(final int distance, final CachedClassLookupMap<NodeConfig> nodeLookup)
 	{
 		this.runtimeNodeMappings.put(Integer.valueOf(distance), nodeLookup);
 	}
@@ -241,17 +232,17 @@ public class GraphContextImpl implements BidiGraphContext
 
 
 
-	protected CachedClassLookupMap<BidiNodeConfig> buildChildNodeLookup(final CachedClassLookupMap<BidiNodeConfig> base,
-			final CachedClassLookupMap<BidiNodeConfig> add)
+	protected CachedClassLookupMap<NodeConfig> buildChildNodeLookup(final CachedClassLookupMap<NodeConfig> base,
+			final CachedClassLookupMap<NodeConfig> add)
 	{
 		// by default result is same instance as base
-		CachedClassLookupMap<BidiNodeConfig> result = base;
+		CachedClassLookupMap<NodeConfig> result = base;
 
 		// merge only when 'add' is not same as 'base'
 		if (base != add)
 		{
 			// take static configuration
-			final Collection<BidiNodeConfig> _add = add.getStaticMap().values();
+			final Collection<NodeConfig> _add = add.getStaticMap().values();
 			// and merge with 'base'
 			result = buildChildNodeLookup(base, _add);
 		}
@@ -260,21 +251,21 @@ public class GraphContextImpl implements BidiGraphContext
 
 
 
-	protected CachedClassLookupMap<BidiNodeConfig> buildChildNodeLookup(final CachedClassLookupMap<BidiNodeConfig> base,
-			final Collection<BidiNodeConfig> add)
+	protected CachedClassLookupMap<NodeConfig> buildChildNodeLookup(final CachedClassLookupMap<NodeConfig> base,
+			final Collection<NodeConfig> add)
 	{
 		// by default result is same instance as base
-		CachedClassLookupMap<BidiNodeConfig> result = base;
+		CachedClassLookupMap<NodeConfig> result = base;
 
 		// merge only when collection is not empty...
 		if (add != null && !add.isEmpty())
 		{
 			// ... create a new result instance
-			result = new CachedClassLookupMap<BidiNodeConfig>();
+			result = new CachedClassLookupMap<NodeConfig>();
 			// ... all static elements (no elements which were dynamically found) of base
 			result.putAll(base.getStaticMap());
 			// ... all passed NodeConfig elements
-			for (final BidiNodeConfig nodeCfg : add)
+			for (final NodeConfig nodeCfg : add)
 			{
 				result.put(nodeCfg.getType(), nodeCfg);
 			}

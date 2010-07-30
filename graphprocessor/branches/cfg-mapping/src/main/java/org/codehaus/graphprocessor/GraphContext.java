@@ -11,21 +11,20 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor;
 
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.graphprocessor.PropertyFilter;
 
 
 /**
  * Provides runtime information about current graph transformation process.
  * <p/>
- * Additionally allows various customizations/modification which differ from globally {@link BidiGraphConfig} configuration and
- * are used only for the transformation process which this context gets passed too.
+ * Additionally allows various customizations/modification which differ from globally {@link GraphConfig} configuration and are
+ * used only for the transformation process which this context gets passed too.
  */
-public interface BidiGraphContext
+public interface GraphContext
 {
 	/**
 	 * Returns highest found distance which was detected for all processed nodes up to currently processed one.
@@ -34,12 +33,7 @@ public interface BidiGraphContext
 	 */
 	public int getMaxDistance();
 
-	/**
-	 * Returns {@link BidiGraphConfig} which this context is used for.
-	 * 
-	 * @return {@link BidiGraphConfig}
-	 */
-	public BidiGraphConfig getGraphConfig();
+	public GraphConfig getGraphConfig();
 
 
 	/**

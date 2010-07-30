@@ -17,28 +17,28 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.GraphConfig;
+import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.impl.DefaultNodeConfig;
 
 
 
-public class BidiCollectionNodeConfig extends DefaultBidiNodeConfig
+public class BidiCollectionNodeConfig extends DefaultNodeConfig
 {
-	//private static final AbstractBidiNodeProcessor DEFAULT_NODE_PROCESSOR = new BidiCollectionNodeProcessor();
+	// private static final AbstractBidiNodeProcessor DEFAULT_NODE_PROCESSOR = new BidiCollectionNodeProcessor();
 
-	public BidiCollectionNodeConfig(final BidiGraphConfig graphConfig)
+	public BidiCollectionNodeConfig(final GraphConfig graphConfig)
 	{
 		super(graphConfig);
 		setType(Collection.class);
-		//setProcessor(DEFAULT_NODE_PROCESSOR);
+		// setProcessor(DEFAULT_NODE_PROCESSOR);
 
 		setVirtual(true);
 		setInitialized(true);
 	}
 
 	@Override
-	public Map<String, BidiPropertyConfig> getProperties()
+	public Map<String, PropertyConfig> getProperties()
 	{
 		return Collections.EMPTY_MAP;
 	}
@@ -50,17 +50,5 @@ public class BidiCollectionNodeConfig extends DefaultBidiNodeConfig
 	{
 		return true;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.bidi.BidiNodeConfig#getTargetNodeConfig()
-	 */
-	@Override
-	public BidiNodeConfig getTargetNodeConfig()
-	{
-		return this;
-	}
-
 
 }

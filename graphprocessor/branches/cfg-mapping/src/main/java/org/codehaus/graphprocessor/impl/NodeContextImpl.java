@@ -11,30 +11,29 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
+import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyListener;
-import org.codehaus.graphprocessor.bidi.BidiGraphContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+import org.codehaus.graphprocessor.PropertyProcessingUnit;
 
 
 
 
-/**
- * See specification of {@link BidiNodeContext}.
- */
-public class NodeContextImpl implements BidiNodeContext
+public class NodeContextImpl implements NodeContext
 {
-	private AbstractBidiNodeConfig nodeMapping = null;
+	private AbstractNodeConfig nodeMapping = null;
 	private Object sourceNodeValue = null;
 	private Object targetNodeValue = null;
 
@@ -43,7 +42,7 @@ public class NodeContextImpl implements BidiNodeContext
 
 	private int distance = 0;
 	private int virtualDistance = 0;
-	private CachedClassLookupMap<BidiNodeConfig> childNodeLookup = null;
+	private CachedClassLookupMap<NodeConfig> childNodeLookup = null;
 
 
 	/**
@@ -56,8 +55,8 @@ public class NodeContextImpl implements BidiNodeContext
 	 * @param source
 	 */
 	protected NodeContextImpl(final GraphContextImpl graphCtx, final PropertyContextImpl propertyCtx,
-			final AbstractBidiNodeConfig nodeMapping, final CachedClassLookupMap<BidiNodeConfig> nodeMappingsMap,
-			final int distance, final int virtualDistance, final Object source)
+			final AbstractNodeConfig nodeMapping, final CachedClassLookupMap<NodeConfig> nodeMappingsMap, final int distance,
+			final int virtualDistance, final Object source)
 	{
 		super();
 		this.graphCtx = graphCtx;
@@ -66,7 +65,7 @@ public class NodeContextImpl implements BidiNodeContext
 		{
 			if (propertyCtx.getGraphContext() != this.graphCtx)
 			{
-				throw new GraphException(BidiGraphContext.class.getSimpleName() + " of passed property is not same as of this node");
+				throw new GraphException(GraphContext.class.getSimpleName() + " of passed property is not same as of this node");
 			}
 		}
 		this.nodeMapping = nodeMapping;
@@ -96,12 +95,10 @@ public class NodeContextImpl implements BidiNodeContext
 
 
 
-	/**
-	 * @return the nodeConfig
-	 */
-	public AbstractBidiNodeConfig getNodeConfig()
+	@Override
+	public NodeProcessingUnit getProcessingUnit()
 	{
-		return nodeMapping;
+		return null;
 	}
 
 
@@ -135,29 +132,20 @@ public class NodeContextImpl implements BidiNodeContext
 	 * @param targetNode
 	 *           the targetNode to set
 	 */
-	protected void setTargetNodeValue(final Object targetNode)
+	public void setTargetNodeValue(final Object targetNode)
 	{
 		this.targetNodeValue = targetNode;
 	}
 
 
 
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * This implementation of {@link BidiNodeContext} returns always a {@link PropertyContextImpl} type.
-	 */
+
 	@Override
 	public PropertyContextImpl getParentContext()
 	{
 		return this.parentPropertyCtx;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * This implementation of {@link BidiNodeContext} returns always a {@link GraphContextImpl} type.
-	 */
 	@Override
 	public GraphContextImpl getGraphContext()
 	{
@@ -169,11 +157,11 @@ public class NodeContextImpl implements BidiNodeContext
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeContext#getPath()
 	 */
 	@Override
-	public List<BidiNodeContext> getProcessingPath()
+	public List<NodeContext> getProcessingPath()
 	{
-		final List<BidiNodeContext> path = new ArrayList<BidiNodeContext>();
+		final List<NodeContext> path = new ArrayList<NodeContext>();
 
-		BidiNodeContext nodeCtx = this;
+		NodeContext nodeCtx = this;
 
 		while (nodeCtx != null)
 		{
@@ -192,25 +180,28 @@ public class NodeContextImpl implements BidiNodeContext
 		return path;
 	}
 
-	protected CachedClassLookupMap<BidiNodeConfig> getChildNodeLookup()
+	public CachedClassLookupMap<NodeConfig> getChildNodeLookup()
 	{
 		return this.childNodeLookup;
 	}
 
 
-	protected PropertyContextImpl createChildPropertyContext(final BidiPropertyConfig propertyConfig)
+	public PropertyContextImpl createChildPropertyContext(final PropertyProcessingUnit processingUnit)
 	{
-		CachedClassLookupMap<BidiNodeConfig> nodeConfig = this.childNodeLookup;
-		if (propertyConfig != null)
+		CachedClassLookupMap<NodeConfig> nodeConfigMap = this.childNodeLookup;
+
+		if (processingUnit != null)
 		{
+			final PropertyConfig propertyConfig = processingUnit.getPropertyConfig();
+
 			// create node lookup for property childs based on:
-			final List<BidiNodeConfig> merge = propertyConfig.getNewNodeConfigs();
-			nodeConfig = this.graphCtx.buildChildNodeLookup(nodeConfig, merge);
+			final List<NodeConfig> merge = propertyConfig.getChildNodeConfig();
+			nodeConfigMap = this.graphCtx.buildChildNodeLookup(nodeConfigMap, merge);
 		}
 
-		final PropertyContextImpl result = new PropertyContextImpl(this.graphCtx, this, propertyConfig, nodeConfig);
+		final PropertyContextImpl result = new PropertyContextImpl(this.graphCtx, this, processingUnit, nodeConfigMap);
 
-		PropertyListener<BidiPropertyContext> listener = graphCtx.getGraphConfig().getPropertyListener();
+		PropertyListener<PropertyContext> listener = graphCtx.getGraphConfig().getPropertyListener();
 		if (listener != null)
 		{
 			listener.propertyContextCreated(result);

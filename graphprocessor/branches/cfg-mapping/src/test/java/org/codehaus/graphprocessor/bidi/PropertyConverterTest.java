@@ -22,7 +22,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.impl.BidiPropertyProcessorImpl;
 import org.codehaus.graphprocessor.samples.misc.GraphPropSource;
 import org.codehaus.graphprocessor.samples.misc.GraphPropTarget;
 import org.codehaus.graphprocessor.transform.BidiGraphTransformer;
@@ -38,7 +37,7 @@ public class PropertyConverterTest
 	{
 		// we have to switch off logging in order to avoid continuous
 		// build errors
-		final Logger logger = Logger.getLogger(BidiPropertyProcessorImpl.class);
+		final Logger logger = Logger.getLogger(BidiPropertyProcessor.class);
 		final Level level = logger.getLevel();
 		try
 		{

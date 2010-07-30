@@ -14,24 +14,27 @@
 package org.codehaus.graphprocessor.bidi;
 
 import org.apache.log4j.Logger;
+import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeListener;
-import org.codehaus.graphprocessor.bidi.impl.NodeContextImpl;
+import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.impl.NodeContextImpl;
 
 
 
 
 
 /**
- * Abstract base implementation for a {@link BidiNodeProcessor}.
+ * Abstract base implementation for a {@link NodeProcessor}.
  */
-public abstract class AbstractBidiNodeProcessor implements BidiNodeProcessor
+public abstract class AbstractNodeProcessor implements NodeProcessor
 {
-	private static final Logger log = Logger.getLogger(AbstractBidiNodeProcessor.class);
+	private static final Logger log = Logger.getLogger(AbstractNodeProcessor.class);
 
 
 
-	public <T extends Object> T process(final BidiNodeContext nodeCtx, final Object source, final T target)
+	public <T extends Object> T process(final NodeContext nodeCtx, final Object source, final T target)
 	{
 		// instance check
 		if (!(nodeCtx instanceof NodeContextImpl))
@@ -49,10 +52,10 @@ public abstract class AbstractBidiNodeProcessor implements BidiNodeProcessor
 	public abstract <T> T process(final NodeContextImpl nodeCtx, final Object source, final T target);
 
 
-	protected void notifyNodeCreatedListener(BidiNodeContext nodeCtx, Object node)
+	protected void notifyNodeCreatedListener(NodeContext nodeCtx, Object node)
 	{
-		BidiGraphConfig graphCfg = nodeCtx.getGraphContext().getGraphConfig();
-		NodeListener<BidiNodeContext> listener = graphCfg.getNodeListener();
+		GraphConfig graphCfg = nodeCtx.getGraphContext().getGraphConfig();
+		NodeListener<NodeContext> listener = graphCfg.getNodeListener();
 
 		if (listener != null)
 		{

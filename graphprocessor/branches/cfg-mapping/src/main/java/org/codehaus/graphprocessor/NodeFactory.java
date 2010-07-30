@@ -13,19 +13,18 @@
  */
 package org.codehaus.graphprocessor;
 
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 
 
 /**
- * For each node type a custom factory can be configured which is taken for node transformation. The factory influences
- * further graph processing in various ways.
+ * For each node type a custom factory can be configured which is taken for node transformation. The factory influences further
+ * graph processing in various ways.
  * <ul>
  * <li>When factory returns null, default transformation process takes place (create configured target node)</li>
- * <li>When factory returns not null, returned value is taken as target node on which source graph properties are
- * getting copied into</li>
- * <li>TODO: When factory return not null and calls /here context method call/ no additional source node properties are
- * copied, transformation of current subgraph gets marked finished</li>
+ * <li>When factory returns not null, returned value is taken as target node on which source graph properties are getting copied
+ * into</li>
+ * <li>TODO: When factory return not null and calls /here context method call/ no additional source node properties are copied,
+ * transformation of current subgraph gets marked finished</li>
  * </ul>
  * 
  * @param <S>
@@ -39,11 +38,11 @@ public interface NodeFactory<S, T>
 	 * Tries to find a target value for a passed source value. Null permitted.
 	 * 
 	 * @param ctx
-	 *           {@link BidiNodeContext}
+	 *           {@link NodeContext}
 	 * @param srcValue
 	 *           the source node
 	 * @return node value or 'null'
 	 */
-	public T getValue(BidiNodeContext ctx, S srcValue);
+	public T getValue(NodeContext ctx, S srcValue);
 
 }

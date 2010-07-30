@@ -28,7 +28,7 @@ import org.codehaus.graphprocessor.basic.BasicNodeFilter;
 import org.codehaus.graphprocessor.basic.NullPropertyFilter;
 import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.impl.GraphContextImpl;
+import org.codehaus.graphprocessor.impl.GraphContextImpl;
 import org.codehaus.graphprocessor.samples.productgraph.TpProductDTO;
 import org.codehaus.graphprocessor.samples.productgraph.TpProductModel;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;

@@ -21,14 +21,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.graphprocessor.bidi.AbstractBidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.bidi.AbstractNodeProcessor;
+import org.codehaus.graphprocessor.impl.AbstractNodeConfig;
+import org.codehaus.graphprocessor.impl.BidiPropertyProcessingUnit;
+import org.codehaus.graphprocessor.impl.NodeContextImpl;
+import org.codehaus.graphprocessor.impl.PropertyContextImpl;
 
 
 
-public class BidiCollectionNodeProcessor extends AbstractBidiNodeProcessor
+public class BidiCollectionNodeProcessor extends AbstractNodeProcessor
 {
 	private static final Logger log = Logger.getLogger(BidiCollectionNodeProcessor.class);
 
@@ -51,14 +55,13 @@ public class BidiCollectionNodeProcessor extends AbstractBidiNodeProcessor
 		// process each element of source collection separately
 		for (Object sourceElement : (Collection<?>) source)
 		{
-			final AbstractBidiNodeConfig nodeConfig = (AbstractBidiNodeConfig) nodeCtx.getChildNodeLookup().get(
-					sourceElement.getClass());
+			final AbstractNodeConfig nodeConfig = (AbstractNodeConfig) nodeCtx.getChildNodeLookup().get(sourceElement.getClass());
 
 			// if so, start node processing
 			if (nodeConfig != null)
 			{
-				final BidiNodeContext childNodeCtx = childPropCtx.createChildNodeContext(nodeConfig, sourceElement);
-				final BidiNodeProcessor nodeProc = nodeConfig.getProcessor();
+				final NodeContext childNodeCtx = childPropCtx.createChildNodeContext(nodeConfig, sourceElement);
+				final NodeProcessor nodeProc = childNodeCtx.getProcessingUnit().getProcessor();
 				sourceElement = nodeProc.process(childNodeCtx, sourceElement, null);
 			}
 
@@ -79,8 +82,12 @@ public class BidiCollectionNodeProcessor extends AbstractBidiNodeProcessor
 		// if available: contract is write method parameter type
 		if (nodeCtx.getParentContext() != null)
 		{
-			BidiPropertyConfig propConfig = nodeCtx.getParentContext().getPropertyConfig();
-			contract = propConfig.getTargetProperty().getWriteMethod().getParameterTypes()[0];
+			// PropertyConfig propConfig = nodeCtx.getParentContext().getProcessingUnit().getPropertyConfig();
+			// contract = propConfig.getTargetProperty().getWriteMethod().getParameterTypes()[0];
+
+			PropertyConfig targetPropCfg = ((BidiPropertyProcessingUnit) nodeCtx.getParentContext().getProcessingUnit())
+					.getTargetProperty();
+			contract = targetPropCfg.getWriteMethod().getParameterTypes()[0];
 		}
 
 		// result value starts with contract type

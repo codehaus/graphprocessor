@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor.impl;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -18,16 +18,14 @@ import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphProperty;
 import org.codehaus.graphprocessor.GraphPropertyInterceptor;
-import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyFilter;
 import org.codehaus.graphprocessor.PropertyInterceptor;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
 
 
 
-public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, Initializable
+public abstract class AbstractPropertyConfig implements PropertyConfig
 {
 
 	// this is the name of the method defined by PropertyInterceptor interface
@@ -38,7 +36,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 		INTERCEPT_METHOD_NAME = PropertyInterceptor.class.getDeclaredMethods()[0].getName();
 	}
 
-	private static final Logger log = Logger.getLogger(AbstractBidiPropertyConfig.class);
+	private static final Logger log = Logger.getLogger(AbstractPropertyConfig.class);
 
 	// PropertyConfig creation
 	// - uses a global (static) lookup cache (yes, static is intended here)
@@ -52,14 +50,11 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	private static Pattern BEAN_SETTER = Pattern.compile("set(.*)");
 
 
-	protected boolean isInitialized = false;
-	protected BidiNodeConfig nodeConfig = null;
+	protected NodeConfig nodeConfig = null;
 	private List<PropertyFilter> propertyFilters = Collections.EMPTY_LIST;
-	private BidiPropertyProcessor propertyProcessor = null;
-	private List<BidiNodeConfig> nodeMappingList = Collections.EMPTY_LIST;
+	private List<NodeConfig> nodeMappingList = Collections.EMPTY_LIST;
 
 
-	private String id = null;
 	private String name = null;
 	private Method readMethod = null;
 	private Method writeMethod = null;
@@ -75,10 +70,9 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	private boolean virtualWrite = false;
 
 
-	public AbstractBidiPropertyConfig(final BidiNodeConfig nodeConfig, final String id, final String name)
+	public AbstractPropertyConfig(final NodeConfig nodeConfig, final String name)
 	{
 		this.nodeConfig = nodeConfig;
-		this.id = id;
 		this.name = name;
 
 		final Map<String, Method[]> allProps = getPropertiesFor(nodeConfig.getType());
@@ -97,18 +91,11 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 		}
 		else
 		{
-			log.debug("Property " + nodeConfig.getType() + "." + id + " not available");
+			log.debug("Property " + nodeConfig.getType() + "." + name + " not available");
 		}
 
 
 	}
-
-	@Override
-	public String getId()
-	{
-		return this.id;
-	}
-
 
 	/**
 	 * @return the name
@@ -128,34 +115,14 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	}
 
 
-	public BidiNodeConfig getNodeConfig()
+	@Override
+	public NodeConfig getParentNode()
 	{
 		return this.nodeConfig;
 	}
 
 
-	/**
-	 * @return the propertyProcessor
-	 */
-	public BidiPropertyProcessor getProcessor()
-	{
-		if (this.propertyProcessor == null)
-		{
-			this.propertyProcessor = getNodeConfig().getPropertyProcessor(Object.class);
-		}
-		return propertyProcessor;
-	}
-
-	/**
-	 * @param propertyProcessor
-	 *           the propertyProcessor to set
-	 */
-	public void setProcessor(final BidiPropertyProcessor propertyProcessor)
-	{
-		this.propertyProcessor = propertyProcessor;
-	}
-
-	public List<BidiNodeConfig> getNewNodeConfigs()
+	public List<NodeConfig> getChildNodeConfig()
 	{
 		return nodeMappingList;
 	}
@@ -164,7 +131,7 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	 * @param nodeConfig
 	 *           the nodeConfig to set
 	 */
-	public void setNewNodeMappings(final List<BidiNodeConfig> nodeConfig)
+	public void setChildNodeConfig(final List<NodeConfig> nodeConfig)
 	{
 		this.nodeMappingList = nodeConfig;
 	}
@@ -188,25 +155,6 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 		this.propertyFilters = propertyFilters;
 	}
 
-	public boolean isInitialized()
-	{
-		return this.isInitialized;
-	}
-
-	public void setInitialized(final boolean initialized)
-	{
-		this.isInitialized = initialized;
-	}
-
-	/**
-	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed
-	 * graph.
-	 * 
-	 * @param complianceLevel
-	 *           various levels for error handling
-	 * @return true when compiling was successful
-	 */
-	public abstract boolean initialize(final int complianceLevel);
 
 	/**
 	 * @return the readMethod
@@ -264,7 +212,6 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#getReadInterceptor()
 	 */
 	public PropertyInterceptor getReadInterceptor()
@@ -320,7 +267,6 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#isTypeCheckEnabled()
 	 */
 	@Override
@@ -331,7 +277,6 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#isWriteTypeCheckEnabled()
 	 */
 	@Override
@@ -342,7 +287,6 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#getReadType()
 	 */
 	@Override
@@ -353,7 +297,6 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyConfig#getWriteType()
 	 */
 	@Override
@@ -503,12 +446,12 @@ public abstract class AbstractBidiPropertyConfig implements BidiPropertyConfig, 
 	/**
 	 * Creates a lookup map containing all properties of passed type.
 	 * <p/>
-	 * Result maps a property name to a {@link BidiPropertyConfig}.
+	 * Result maps a property name to a {@link PropertyConfig}.
 	 * </p>
-	 * Any property which keeps java bean standard is found and used for {@link BidiPropertyConfig} creation. For finding
-	 * all properties {@link Introspector} is used which returns general {@link PropertyDescriptor}. But read- and write
-	 * methods provided by {@link PropertyDescriptor} are only used as "suggestion" here and are getting post-processed
-	 * to assure following criteria:
+	 * Any property which keeps java bean standard is found and used for {@link PropertyConfig} creation. For finding all
+	 * properties {@link Introspector} is used which returns general {@link PropertyDescriptor}. But read- and write methods
+	 * provided by {@link PropertyDescriptor} are only used as "suggestion" here and are getting post-processed to assure following
+	 * criteria:
 	 * <p/>
 	 * - no bridge or synthetic methods are allowed <br/>
 	 * - co-variant return types are handled correctly <br/>

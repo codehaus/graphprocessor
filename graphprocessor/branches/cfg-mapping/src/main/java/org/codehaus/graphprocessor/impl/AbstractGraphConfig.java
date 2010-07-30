@@ -1,4 +1,4 @@
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor.impl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -11,66 +11,68 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.GraphConfig;
+import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphListener;
 import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeListener;
+import org.codehaus.graphprocessor.NodeProcessor;
+import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyListener;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiGraphContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
+import org.codehaus.graphprocessor.PropertyProcessor;
 import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
 import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
+import org.codehaus.graphprocessor.bidi.impl.BidiCollectionNodeProcessor;
 
 
 
 
-public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initializable
+public abstract class AbstractGraphConfig implements GraphConfig, Initializable
 {
-	private static final BidiPropertyProcessor DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessorImpl();
-	private static final BidiNodeProcessor DEFAULT_NODE_PROCESSOR = new BidiNodeProcessorImpl();
-	private static final BidiNodeProcessor DEFAULT_COLLECTIONNODE_PROCESSOR = new BidiCollectionNodeProcessor();
+	private static final PropertyProcessor DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessor();
+	private static final NodeProcessor DEFAULT_NODE_PROCESSOR = new BidiNodeProcessor();
+	private static final NodeProcessor DEFAULT_COLLECTIONNODE_PROCESSOR = new BidiCollectionNodeProcessor();
 
-	private static final Logger log = Logger.getLogger(AbstractBidiGraphConfig.class);
+	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
 
 	private boolean _isInitialized = false;
-	private GraphListener<BidiGraphContext> graphListener = null;
-	private NodeListener<BidiNodeContext> nodeListener = null;
-	private PropertyListener<BidiPropertyContext> propertyListener = null;
+	private GraphListener<GraphContext> graphListener = null;
+	private NodeListener<NodeContext> nodeListener = null;
+	private PropertyListener<PropertyContext> propertyListener = null;
 
-	protected final CachedClassLookupMap<BidiNodeConfig> nodeLookupMap;
-	private final Map<Class<?>, BidiNodeConfig> inmutableNodeLookup;
+	protected final CachedClassLookupMap<NodeConfig> nodeLookupMap;
+	private final Map<Class<?>, NodeConfig> inmutableNodeLookup;
 
-	protected final CachedClassLookupMap<BidiNodeProcessor> nodeProcessorMap;
-	private final CachedClassLookupMap<BidiPropertyProcessor> propertyProcessorMap;
+	protected final CachedClassLookupMap<NodeProcessor> nodeProcessorMap;
+	private final CachedClassLookupMap<PropertyProcessor> propertyProcessorMap;
 
 
-	public AbstractBidiGraphConfig()
+	public AbstractGraphConfig()
 	{
-		this.nodeLookupMap = new CachedClassLookupMap<BidiNodeConfig>();
+		this.nodeLookupMap = new CachedClassLookupMap<NodeConfig>();
 		this.inmutableNodeLookup = Collections.unmodifiableMap(this.nodeLookupMap.getStaticMap());
 
-		this.nodeProcessorMap = new CachedClassLookupMap<BidiNodeProcessor>();
-		this.propertyProcessorMap = new CachedClassLookupMap<BidiPropertyProcessor>();
+		this.nodeProcessorMap = new CachedClassLookupMap<NodeProcessor>();
+		this.propertyProcessorMap = new CachedClassLookupMap<PropertyProcessor>();
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodeProcessor(java.lang.Class)
 	 */
 	@Override
-	public BidiNodeProcessor getDefaultNodeProcessor(final Class nodeType)
+	public NodeProcessor getNodeProcessor(final Class nodeType)
 	{
 		return nodeProcessorMap.get(nodeType);
 	}
 
-	public void setDefaultNodeProcessor(final Class nodeType, final BidiNodeProcessor processor)
+	public void setDefaultNodeProcessor(final Class nodeType, final NodeProcessor processor)
 	{
 		this.nodeProcessorMap.put(nodeType, processor);
 	}
@@ -78,11 +80,10 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
-	public BidiPropertyProcessor getDefaultPropertyProcessor(final Class propertyType)
+	public PropertyProcessor getPropertyProcessor(final Class propertyType)
 	{
 		return propertyProcessorMap.get(propertyType);
 	}
@@ -100,14 +101,14 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	public boolean initialize(final int complianceLevel)
 	{
 		boolean success = this.initializeGraph();
-		success = success | ((AbstractBidiGraphConfig) getTargetConfig()).initializeGraph();
+		success = success | ((AbstractGraphConfig) getTargetConfig()).initializeGraph();
 
 		if (success)
 		{
 			success = this.initializeNodes();
 		}
 		setInitialized(success);
-		((AbstractBidiGraphConfig) getTargetConfig()).setInitialized(success);
+		((AbstractGraphConfig) getTargetConfig()).setInitialized(success);
 
 		return success;
 	}
@@ -132,7 +133,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	{
 		boolean isInitialized = true;
 
-		for (final BidiNodeConfig nodeCfg : getNodes().values())
+		for (final NodeConfig nodeCfg : getNodes().values())
 		{
 			if (nodeCfg instanceof Initializable)
 			{
@@ -140,7 +141,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 				isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
 			}
 
-			final BidiNodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
+			final NodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
 			if (targetNode instanceof Initializable)
 			{
 				// binary AND; no short-circuit
@@ -150,75 +151,74 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 		return isInitialized;
 	}
 
-	public GraphListener<BidiGraphContext> getGraphListener()
+	public GraphListener<GraphContext> getGraphListener()
 	{
 		return graphListener;
 	}
 
-	public void setGraphListener(final GraphListener<BidiGraphContext> graphCtxListener)
+	public void setGraphListener(final GraphListener<GraphContext> graphCtxListener)
 	{
 		this.graphListener = graphCtxListener;
 	}
 
-	public PropertyListener<BidiPropertyContext> getPropertyListener()
+	public PropertyListener<PropertyContext> getPropertyListener()
 	{
 		return propertyListener;
 	}
 
-	public void setPropertyListener(final PropertyListener<BidiPropertyContext> propertyCtxListener)
+	public void setPropertyListener(final PropertyListener<PropertyContext> propertyCtxListener)
 	{
 		this.propertyListener = propertyCtxListener;
 	}
 
 
-	public NodeListener<BidiNodeContext> getNodeListener()
+	public NodeListener<NodeContext> getNodeListener()
 	{
 		return nodeListener;
 	}
 
-	public void setNodeListener(final NodeListener<BidiNodeContext> nodeCtxListener)
+	public void setNodeListener(final NodeListener<NodeContext> nodeCtxListener)
 	{
 		this.nodeListener = nodeCtxListener;
 	}
 
 
-	public CachedClassLookupMap<BidiPropertyProcessor> getPropertyProcessorMap()
+	public CachedClassLookupMap<PropertyProcessor> getPropertyProcessorMap()
 	{
 		return propertyProcessorMap;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.GraphConfig#getNodes()
 	 */
 	@Override
-	public Map<Class<?>, BidiNodeConfig> getNodes()
+	public Map<Class<?>, NodeConfig> getNodes()
 	{
 		// return (Map) this.nodeLookupMap.getStaticMap();
 		return this.inmutableNodeLookup;
 	}
 
 	@Override
-	public BidiNodeConfig getNodeConfig(final Class node)
+	public NodeConfig getNodeConfig(final Class node)
 	{
 		return getNodes().get(node);
 	}
 
 	@Override
-	public BidiNodeConfig getAssignableNodeConfig(final Class nodeType)
+	public NodeConfig getAssignableNodeConfig(final Class nodeType)
 	{
 		return this.nodeLookupMap.get(nodeType);
 	}
 
-	public void addNode(final BidiNodeConfig nodeConfig)
+	public void addNode(final NodeConfig nodeConfig)
 	{
 		this.nodeLookupMap.put(nodeConfig.getType(), nodeConfig);
 	}
 
-	public BidiNodeConfig addNode(final Class node)
+	public NodeConfig addNode(final Class node)
 	{
-		final BidiNodeConfig result = this.createNodeConfig(node);
+		final NodeConfig result = this.createNodeConfig(node);
 		this.addNode(result);
 		return result;
 	}
@@ -234,7 +234,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 			throw new GraphException(nodeClass.getName() + " is not annotated with " + GraphNode.class.getSimpleName());
 		}
 
-		final Map<Class, BidiNodeConfig> result = new LinkedHashMap<Class, BidiNodeConfig>();
+		final Map<Class, NodeConfig> result = new LinkedHashMap<Class, NodeConfig>();
 
 		log.debug("Start introspecting (sub)graph " + nodeClass + "...");
 
@@ -262,7 +262,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 	 * @param node
 	 *           start node
 	 */
-	private void findAndAddChildNodes(final Class node, final Map<Class, BidiNodeConfig> newNodes)
+	private void findAndAddChildNodes(final Class node, final Map<Class, NodeConfig> newNodes)
 	{
 		// only process node type if not already done
 		if (!this.getNodes().containsKey(node))
@@ -274,7 +274,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 				final GraphNode graphNode = (GraphNode) node.getAnnotation(GraphNode.class);
 
 				// create a NodeConfig
-				final BidiNodeConfig cfg = this.addNode(node);
+				final NodeConfig cfg = this.addNode(node);
 				newNodes.put(node, cfg);
 
 				// Recursive processing of child nodes
@@ -293,8 +293,8 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 
 				// strategy 2: child nodes are detected from available property types (getters)
 				// (with support for typed collections)
-				final Collection<BidiPropertyConfig> pCfgList = cfg.getProperties().values();
-				for (final BidiPropertyConfig pCfg : pCfgList)
+				final Collection<PropertyConfig> pCfgList = cfg.getProperties().values();
+				for (final PropertyConfig pCfg : pCfgList)
 				{
 					Class<?> childNodeCandidate = pCfg.getReadType();
 
@@ -348,7 +348,7 @@ public abstract class AbstractBidiGraphConfig implements BidiGraphConfig, Initia
 
 
 
-	protected abstract BidiNodeConfig createNodeConfig(Class node);
+	protected abstract NodeConfig createNodeConfig(Class node);
 
 
 }

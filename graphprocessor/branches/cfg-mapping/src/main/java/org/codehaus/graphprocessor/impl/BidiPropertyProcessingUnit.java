@@ -1,81 +1,38 @@
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor.impl;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyInterceptor;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
+import org.codehaus.graphprocessor.PropertyProcessor;
 
 
-
-public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implements BidiPropertyConfig
+public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 {
-	private static final Logger log = Logger.getLogger(DefaultBidiPropertyConfig.class);
+	private static final Logger log = Logger.getLogger(BidiPropertyProcessingUnit.class);
 
-	private static final BidiPropertyProcessorImpl DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessorImpl();
+	private final PropertyConfig targetProperty;
 
-	private BidiPropertyConfig targetProperty = null;
-	private boolean _isTypeCheckEnabled = false;
-	private boolean _isNode = false;
-
-
-	public DefaultBidiPropertyConfig(final BidiNodeConfig node, final String sourceProperty)
+	public BidiPropertyProcessingUnit(PropertyProcessor processor, PropertyConfig sourceProperty, PropertyConfig targetProperty)
 	{
-		super(node, sourceProperty + "-" + sourceProperty, sourceProperty);
-		this.targetProperty = new DefaultBidiPropertyConfig(node.getTargetNodeConfig(), sourceProperty, this);
-		setProcessor(DEFAULT_PROPERTY_PROCESSOR);
+		super(processor, sourceProperty);
+		this.targetProperty = targetProperty;
 	}
 
-	public DefaultBidiPropertyConfig(final BidiNodeConfig node, final String sourceProperty, final String targetProperty)
-	{
-		super(node, sourceProperty + "-" + targetProperty, sourceProperty);
-		this.targetProperty = new DefaultBidiPropertyConfig(node.getTargetNodeConfig(), targetProperty, this);
-		setProcessor(DEFAULT_PROPERTY_PROCESSOR);
-	}
-
-
-	/**
-	 * Internal private Constructor. <br/>
-	 * Is only used to create the target PropertyConfig from within a source PropertyConfig.
-	 * 
-	 * @param node
-	 * @param sourceProperty
-	 * @param target
-	 */
-	private DefaultBidiPropertyConfig(final BidiNodeConfig node, final String sourceProperty,
-			final DefaultBidiPropertyConfig target)
-	{
-		super(node, sourceProperty + "-" + target.getName(), sourceProperty);
-		this.targetProperty = target;
-		setProcessor(target.getProcessor());
-	}
-
-
-	public BidiPropertyConfig getTargetProperty()
+	public PropertyConfig getTargetProperty()
 	{
 		return this.targetProperty;
 	}
 
-	void setTargetProperty(final BidiPropertyConfig target)
-	{
-		this.targetProperty = target;
-	}
-
 	@Override
-	public BidiNodeConfig getNodeConfig()
+	public String getId()
 	{
-		return super.getNodeConfig();
+		return getPropertyConfig().getName() + "-" + targetProperty.getName();
 	}
-
-
-	public boolean isNode()
-	{
-		return this._isNode;
-	}
-
 
 	/**
 	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed graph.
@@ -87,20 +44,10 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 	@Override
 	public boolean initialize(final int complianceLevel)
 	{
-		// // read-write PropertyConfig must be compiled in case this PropertyMapping was created with
-		// // read/write property names (and no concrete read/write methods)
-		// if (!this.isPropertyCfgInitialized)
-		// {
-		// final PropertyConfig pRead = nodeMapping.getSourceConfig().getProperties().get(this.readPropertyConfig.getName());
-		// final PropertyConfig pWrite = nodeMapping.getTargetConfig().getProperties().get(this.writePropertyConfig.getName());
-		// this.readPropertyConfig.mergeWith(pRead);
-		// this.writePropertyConfig.mergeWith(pWrite);
-		// this.isPropertyCfgInitialized = true;
-		// }
-		//
-		// final Method writeMethod = getWriteMethod();
+		PropertyConfig sourceProperty = getPropertyConfig();
 
-		this.isInitialized = this.isVirtualRead() || this.isVirtualWrite();
+
+		this.isInitialized = sourceProperty.isVirtualRead() || sourceProperty.isVirtualWrite();
 		final boolean hasTarget = this.targetProperty != null && this.targetProperty.getWriteMethod() != null;
 
 		if (hasTarget)
@@ -110,14 +57,15 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 			// read-property of source node type must provide read-method access
 			// write-property of target node type must provide write-method access
-			if (!isInitialized && getReadMethod() != null)
+			if (!isInitialized && sourceProperty.getReadMethod() != null)
 			{
 				// type check (source read-type vs. target write type) is only enabled when
 				// both, read- and write type check is enabled
-				this._isTypeCheckEnabled = this.isReadTypeCheckEnabled() && this.targetProperty.isWriteTypeCheckEnabled();
+				isTypeCheckEnabled = sourceProperty.isReadTypeCheckEnabled() && targetProperty.isWriteTypeCheckEnabled();
 
 				// ... having a NodeConfig for read-method return type: success
-				final BidiNodeConfig nodeCfg = getNodeConfig().getGraphConfig().getAssignableNodeConfig(getReadType());
+				Class sourceReadType = sourceProperty.getReadType();
+				final NodeConfig nodeCfg = sourceProperty.getParentNode().getParentGraph().getAssignableNodeConfig(sourceReadType);
 				if (nodeCfg != null)
 				{
 					// XXX: special handling for collections
@@ -125,64 +73,63 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 					// automatically)
 					if (Collection.class.isAssignableFrom(targetProperty.getWriteType()))
 					{
-						this._isNode = true;
+						isNode = true;
 						this.isInitialized = true;
 					}
 					else
 					{
-						final Class readType = nodeCfg.getTargetNodeConfig().getType();
-						final Class writeType = targetProperty.getWriteType();
+						final Class targetReadType = targetProperty.getReadType();
+						final Class targetWriteType = targetProperty.getWriteType();
 
 						// compiled successfully if read and write type are compatible
 						// (including possible read/write interceptors)
-						this.isInitialized = writeType.isAssignableFrom(readType);
+						this.isInitialized = targetWriteType.isAssignableFrom(targetReadType);
 
-						if (!this.isInitialized && !this._isTypeCheckEnabled)
+						if (!this.isInitialized && !isTypeCheckEnabled)
 						{
-							this.isInitialized = readType.isAssignableFrom(writeType);
+							this.isInitialized = targetReadType.isAssignableFrom(targetWriteType);
 						}
-						this._isNode = true;
+						isNode = true;
 					}
 				}
 				else
 				{
-					final Class readType = getReadType();
-					final Class writeType = targetProperty.getWriteType();
+					final Class targetWriteType = targetProperty.getWriteType();
 
 					// compiled successfully if read and write type are compatible
 					// (including possible read/write interceptors)
-					this.isInitialized = writeType.isAssignableFrom(readType);
+					this.isInitialized = targetWriteType.isAssignableFrom(sourceReadType);
 
-					if (!this.isInitialized && !this._isTypeCheckEnabled)
+					if (!this.isInitialized && !isTypeCheckEnabled)
 					{
-						this.isInitialized = readType.isAssignableFrom(writeType);
+						this.isInitialized = sourceReadType.isAssignableFrom(targetWriteType);
 					}
 				}
 			}
 		}
-		else
-		{
-			// property is successfully initialized but still does not have a target
-			if (this.isInitialized)
-			{
-				final BidiPropertyConfig propCfg = new VirtualPropertyConfig(this);
-				this.targetProperty = propCfg;
-				((DefaultBidiNodeConfig) this.nodeConfig.getTargetNodeConfig()).addPropertyConfig(propCfg);
-			}
-		}
+		// else
+		// {
+		// // property is successfully initialized but still does not have a target
+		// if (this.isInitialized)
+		// {
+		// final PropertyConfig propCfg = new VirtualPropertyConfig(this);
+		// this.targetProperty = propCfg;
+		// ((DefaultNodeConfig) this.nodeConfig.getTargetNodeConfig()).addPropertyConfig(propCfg);
+		// }
+		// }
 
 
 		// debug
-		if (log.isDebugEnabled() && getNodeConfig().isDebugEnabled())
+		if (log.isDebugEnabled() && sourceProperty.getParentNode().isDebugEnabled())
 		{
 			final String action = this.isInitialized ? "Take " : "Skip ";
 			final String logMsg = action + toExtString();
 			log.debug(logMsg);
 
-			if (isInitialized && !hasTarget)
-			{
-				log.debug("TAKE VIRTUALLY " + this.nodeConfig.getTargetNodeConfig().getType().getSimpleName() + "#" + this.getName());
-			}
+			// if (isInitialized && !hasTarget)
+			// {
+			// log.debug("TAKE VIRTUALLY " + this.nodeConfig.getTargetNodeConfig().getType().getSimpleName() + "#" + this.getName());
+			// }
 		}
 
 		// error handling in case compilation fails
@@ -217,13 +164,14 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 	 * 
 	 * @return String representation
 	 */
-	@Override
 	public String toExtString()
 	{
+		PropertyConfig sourceProp = getPropertyConfig();
+
 		// read-information
-		final String readPropName = this.getName();
-		final Class readType = this.getReadType();
-		final Method readMethod = this.getReadMethod();
+		final String readPropName = sourceProp.getName();
+		final Class readType = sourceProp.getReadType();
+		final Method readMethod = sourceProp.getReadMethod();
 
 		// write-information
 		String writePropName = "[...]";
@@ -242,20 +190,20 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 		// create read-information part for final log message
 		String read = "";
-		if (isVirtualRead())
+		if (sourceProp.isVirtualRead())
 		{
-			read = getNodeConfig().getType().getSimpleName() + "#[virtual]";
+			read = sourceProp.getParentNode().getType().getSimpleName() + "#[virtual]";
 		}
 		else
 		{
-			read = getNodeConfig().getType().getSimpleName() + "#" + readPropName;
+			read = sourceProp.getParentNode().getType().getSimpleName() + "#" + readPropName;
 			if (readMethod != null)
 			{
 				read = read + ":" + readMethod.getReturnType().getSimpleName();
 			}
 			read = read + " -> ";
 		}
-		final PropertyInterceptor readInterceptor = this.getReadInterceptor();
+		final PropertyInterceptor readInterceptor = sourceProp.getReadInterceptor();
 		if (readInterceptor != null)
 		{
 			read = read + readInterceptor.getClass().getSimpleName() + ":" + readType.getSimpleName() + " -> ";
@@ -265,14 +213,14 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 		String write = "";
 		if (writeInterceptor != null)
 		{
-			final Method interceptMethod = AbstractBidiPropertyConfig.getInterceptMethod(writeInterceptor);
+			final Method interceptMethod = AbstractPropertyConfig.getInterceptMethod(writeInterceptor);
 			final Class writeConvReturnType = interceptMethod.getReturnType();
 			final Class writeConvParamtype = interceptMethod.getParameterTypes()[1];
 			write = " -> " + writeInterceptor.getClass().getSimpleName() + "(" + writeConvParamtype.getSimpleName() + ")" + ":"
 					+ writeConvReturnType.getSimpleName();
 		}
 
-		write = write + " -> " + getNodeConfig().getTargetNodeConfig().getType().getSimpleName() + "#" + writePropName;
+		write = write + " -> " + targetProperty.getParentNode().getType().getSimpleName() + "#" + writePropName;
 		if (writeMethod != null)
 		{
 			write = write + "(" + writeMethod.getParameterTypes()[0].getSimpleName() + ")";
@@ -280,14 +228,14 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 
 
-		final BidiNodeConfig nodeCfg = (readType != null) ? getNodeConfig().getGraphConfig().getNodeConfig(readType) : null;
-		final String transformed = (nodeCfg != null) ? "[" + (nodeCfg).getTargetNodeConfig().getType().getSimpleName() + "]" : "[]";
+		final NodeConfig nodeCfg = (readType != null) ? sourceProp.getParentNode().getParentGraph().getNodeConfig(readType) : null;
+		final String transformed = (nodeCfg != null) ? "[" + targetProperty.getParentNode().getType().getSimpleName() + "]" : "[]";
 
 
 		// add enabled/disabled flags ...
 		String flags = "";
 		// ... typecheck
-		if (!_isTypeCheckEnabled)
+		if (!isTypeCheckEnabled)
 		{
 			flags = flags + " typecheck off";
 		}
@@ -317,7 +265,7 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 			if (readMethod != null && writeMethod != null)
 			{
-				final String fromType = nodeCfg == null ? readType.getSimpleName() : (nodeCfg).getTargetNodeConfig().getType()
+				final String fromType = nodeCfg == null ? readType.getSimpleName() : targetProperty.getParentNode().getType()
 						.getSimpleName();
 				// ... read/write type not compatible (no node)
 				conflicts = conflicts + "read<->write type mismatch (" + fromType + "<->" + writeType.getSimpleName();
@@ -335,5 +283,6 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 		return logMsg;
 	}
+
 
 }

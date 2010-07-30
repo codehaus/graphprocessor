@@ -13,10 +13,9 @@
  */
 package org.codehaus.graphprocessor;
 
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 
 public interface NodeValueCreatedListener
 {
-	void performCreated(BidiNodeContext nodeCtx, Object created);
+	void performCreated(NodeContext nodeCtx, Object created);
 
 }

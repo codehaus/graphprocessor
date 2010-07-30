@@ -10,11 +10,11 @@ import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiGraphProcessor;
 import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.GraphConfigurationImpl;
 import org.codehaus.graphprocessor.bidi.impl.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.BidiCollectionNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.impl.GraphContextImpl;
+import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
+import org.codehaus.graphprocessor.impl.GraphContextImpl;
 
 
 

@@ -29,7 +29,7 @@ import org.apache.log4j.PatternLayout;
 import org.codehaus.graphprocessor.bidi.impl.AbstractBidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.impl.GraphContextImpl;
+import org.codehaus.graphprocessor.impl.GraphContextImpl;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuAddressModel;
 import org.codehaus.graphprocessor.samples.usergraph.TuUserDTO;

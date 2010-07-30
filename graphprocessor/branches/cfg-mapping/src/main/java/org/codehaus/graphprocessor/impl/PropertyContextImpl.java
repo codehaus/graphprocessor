@@ -1,33 +1,31 @@
-package org.codehaus.graphprocessor.bidi.impl;
+package org.codehaus.graphprocessor.impl;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.GraphContext;
+import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeListener;
-import org.codehaus.graphprocessor.bidi.BidiGraphContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.PropertyContext;
+import org.codehaus.graphprocessor.PropertyProcessingUnit;
 
 
 
-/**
- * See specification of {@link BidiPropertyContext}
- */
-public class PropertyContextImpl implements BidiPropertyContext
+public class PropertyContextImpl implements PropertyContext
 {
 	private static final Logger log = Logger.getLogger(PropertyContextImpl.class);
 
-	private BidiPropertyConfig propertyConfig = null;
+	private PropertyProcessingUnit processorUnit = null;
 	private GraphContextImpl graphCtx = null;
 	private NodeContextImpl parentNodeCtx = null;
-	private CachedClassLookupMap<BidiNodeConfig> childNodeLookup = null;
+	private CachedClassLookupMap<NodeConfig> childNodeLookup = null;
 
 
 	protected PropertyContextImpl(final GraphContextImpl graphCtx, final NodeContextImpl nodeCtx,
-			final BidiPropertyConfig propertyMapping, final CachedClassLookupMap<BidiNodeConfig> nodeLookup)
+			final PropertyProcessingUnit proccessorUnit, final CachedClassLookupMap<NodeConfig> nodeLookup)
 	{
-		this.propertyConfig = propertyMapping;
+		this.processorUnit = proccessorUnit;
 		this.graphCtx = graphCtx;
 		this.parentNodeCtx = nodeCtx;
 		this.childNodeLookup = nodeLookup;
@@ -35,21 +33,21 @@ public class PropertyContextImpl implements BidiPropertyContext
 
 
 	@Override
-	public BidiGraphContext getGraphContext()
+	public GraphContext getGraphContext()
 	{
 		return this.graphCtx;
 	}
 
-
-
 	@Override
-	public BidiPropertyConfig getPropertyConfig()
+	public PropertyProcessingUnit getProcessingUnit()
 	{
-		return this.propertyConfig;
+		return this.processorUnit;
 	}
 
+
+
 	@Override
-	public BidiNodeContext getParentContext()
+	public NodeContext getParentContext()
 	{
 		return this.parentNodeCtx;
 	}
@@ -59,13 +57,13 @@ public class PropertyContextImpl implements BidiPropertyContext
 	 * (non-Javadoc)
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyContext#getNodeMappingsMap()
 	 */
-	protected CachedClassLookupMap<BidiNodeConfig> getChildNodeLookup()
+	public CachedClassLookupMap<NodeConfig> getChildNodeLookup()
 	{
 		return this.childNodeLookup;
 	}
 
 
-	protected NodeContextImpl createChildNodeContext(final AbstractBidiNodeConfig nodeConfig, final Object source)
+	public NodeContextImpl createChildNodeContext(final AbstractNodeConfig nodeConfig, final Object source)
 	{
 		final int distance = this.parentNodeCtx.getRealDistance() + 1;
 		final int virtualDist = nodeConfig.isVirtual() ? this.parentNodeCtx.getDistance() : this.parentNodeCtx.getDistance() + 1;
@@ -77,13 +75,13 @@ public class PropertyContextImpl implements BidiPropertyContext
 		}
 
 		// TODO: use childNode
-		CachedClassLookupMap<BidiNodeConfig> nodeLookup = this.graphCtx.getRuntimeNodeMappings(distance);
+		CachedClassLookupMap<NodeConfig> nodeLookup = this.graphCtx.getRuntimeNodeMappings(distance);
 
 		if (nodeLookup == null)
 		{
 			// ...nodeLookup from this property
-			final CachedClassLookupMap<BidiNodeConfig> base = this.getChildNodeLookup();
-			final CachedClassLookupMap<BidiNodeConfig> merge = this.graphCtx.graphConfigImpl.getAllNodeConfigs(distance);
+			final CachedClassLookupMap<NodeConfig> base = this.getChildNodeLookup();
+			final CachedClassLookupMap<NodeConfig> merge = this.graphCtx.graphConfigImpl.getAllNodeConfigs(distance);
 
 			// ...build
 			nodeLookup = this.graphCtx.buildChildNodeLookup(base, merge);
@@ -98,7 +96,7 @@ public class PropertyContextImpl implements BidiPropertyContext
 		final NodeContextImpl result = new NodeContextImpl(this.graphCtx, this, nodeConfig, nodeLookup, distance, virtualDist,
 				source);
 
-		NodeListener<BidiNodeContext> listener = graphCtx.getGraphConfig().getNodeListener();
+		NodeListener<NodeContext> listener = graphCtx.getGraphConfig().getNodeListener();
 		if (listener != null)
 		{
 			listener.nodeContextCreated(result);
@@ -108,22 +106,24 @@ public class PropertyContextImpl implements BidiPropertyContext
 		return result;
 	}
 
-	protected String createSourcePathString()
+	public String createSourcePathString()
 	{
 		String result = this.parentNodeCtx.createSourcePathString();
-		if (getPropertyConfig() != null)
+		PropertyConfig cfg = getProcessingUnit().getPropertyConfig();
+		if (cfg != null)
 		{
-			result = result + ">" + getPropertyConfig().getName();
+			result = result + ">" + cfg.getName();
 		}
 		return result;
 	}
 
-	protected String createTargetPathString()
+	public String createTargetPathString()
 	{
 		String result = this.parentNodeCtx.createTargetPathString();
-		if (getPropertyConfig() != null)
+		PropertyConfig cfg = getProcessingUnit().getPropertyConfig();
+		if (cfg != null)
 		{
-			result = result + ">" + getPropertyConfig().getName();
+			result = result + ">" + cfg.getName();
 		}
 		return result;
 	}
