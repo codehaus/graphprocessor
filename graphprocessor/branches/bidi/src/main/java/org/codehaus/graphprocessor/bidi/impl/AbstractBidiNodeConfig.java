@@ -79,8 +79,8 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 	 * Initializes each {@link BidiPropertyConfig} of this node.
 	 * <p/>
 	 * If {@link BidiPropertyConfig} is already initialized, it gets skipped.<br/>
-	 * If {@link BidiPropertyConfig} is not initialized, their initializer method gets called. If initialization fails,
-	 * property gets removed from that node.
+	 * If {@link BidiPropertyConfig} is not initialized, their initializer method gets called. If initialization fails, property
+	 * gets removed from that node.
 	 * 
 	 * @return true when initialization succeeds
 	 */
@@ -143,7 +143,6 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getPropertyProcessor(java.lang.Class)
 	 */
 	@Override
@@ -217,7 +216,12 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 			// final Map<String, PropertyConfig> cfgMap = this.getProperties();
 			for (int i = 0; i < uidPropnames.length; i++)
 			{
-				final BidiPropertyConfig propCfg = this.getPropertyConfigByName(uidPropnames[i]);
+				BidiPropertyConfig propCfg = this.getPropertyConfigByName(uidPropnames[i]);
+
+				if (propCfg == null)
+				{
+					propCfg = getTargetNodeConfig().getPropertyConfigByName(uidPropnames[i]).getTargetProperty();
+				}
 
 				if (propCfg == null)
 				{
@@ -233,7 +237,6 @@ public abstract class AbstractBidiNodeConfig implements BidiNodeConfig, Initiali
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.NodeConfig#getProperties()
 	 */
 	@Override

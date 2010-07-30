@@ -64,6 +64,7 @@ public class BidiGraphConfigTest
 		assertNotSame(srcPropCfg, srcPropCfg.getTargetProperty());
 		assertSame(srcPropCfg, srcPropCfg.getTargetProperty().getTargetProperty());
 
+
 		assertNull(srcNodeCfg.getPropertyConfigByName("owner"));
 		assertNotNull(dstNodeCfg.getPropertyConfigByName("owner"));
 		assertNull((dstNodeCfg.getPropertyConfigByName("owner")).getTargetProperty());

@@ -29,6 +29,8 @@ import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
 import org.codehaus.graphprocessor.samples.misc.InDto1;
 import org.codehaus.graphprocessor.samples.misc.InDto2;
+import org.codehaus.graphprocessor.samples.misc.TestDTO;
+import org.codehaus.graphprocessor.samples.misc.TestModel;
 import org.codehaus.graphprocessor.samples.usergraph.TuUserDTO;
 import org.codehaus.graphprocessor.samples.usergraph.TuUserModel;
 import org.codehaus.graphprocessor.transform.BidiGraphTransformer;
@@ -110,6 +112,22 @@ public class GraphSandboxTest
 		assertEquals(InDto2.class, nodeCfg2.getType().getClass());
 	}
 
+	public void testInterceptor()
+	{
+		BidiGraphTransformer graph = new BidiGraphTransformer(TestDTO.class);
+
+		BidiNodeConfig cfg = graph.getNodeConfig(TestDTO.class);
+		BidiPropertyConfig[] uidProps = cfg.getUidProperties();
+
+		TestDTO dto = new TestDTO();
+		dto.setName("name");
+		dto.setPk(Long.valueOf(10));
+
+		graph.transform(dto, new TestModel());
+
+		System.out.print(uidProps);
+	}
+
 	// public void testManualChanges()
 	// {
 	// // final BidiGraphTransformer graph = new BidiGraphTransformer(ProductFeatureDTO.class);
@@ -138,6 +156,7 @@ public class GraphSandboxTest
 
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 		final GraphSandboxTest test = new GraphSandboxTest();
+		test.testInterceptor();
 		// test.testManualChanges();
 	}
 }

@@ -26,9 +26,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.BidiGraphContext;
 import org.codehaus.graphprocessor.bidi.impl.AbstractBidiPropertyConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.DefaultBidiPropertyConfig;
@@ -97,7 +94,7 @@ public class CustomNodeConfigsTest
 		// reconfigure graph
 		cfg.removePropertyConfigByName("propertyId");
 		prop = new DefaultBidiPropertyConfig(cfg, "firstname");
-		prop.getTargetProperty().setWriteInterceptor(new ToUppercaseConverter());
+		((DefaultBidiPropertyConfig) prop.getTargetProperty()).setWriteInterceptor(new ToUppercaseConverter());
 		prop.initialize(AbstractBidiPropertyConfig.COMPLIANCE_LEVEL_HIGH);
 		cfg.addPropertyConfig(prop);
 

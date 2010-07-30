@@ -37,6 +37,14 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 	}
 
 
+	/**
+	 * Internal private Constructor. <br/>
+	 * Is only used to create the target PropertyConfig from within a source PropertyConfig.
+	 * 
+	 * @param node
+	 * @param sourceProperty
+	 * @param target
+	 */
 	private DefaultBidiPropertyConfig(final BidiNodeConfig node, final String sourceProperty,
 			final DefaultBidiPropertyConfig target)
 	{
@@ -70,8 +78,7 @@ public class DefaultBidiPropertyConfig extends AbstractBidiPropertyConfig implem
 
 
 	/**
-	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed
-	 * graph.
+	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed graph.
 	 * 
 	 * @param complianceLevel
 	 *           various levels for error handling
