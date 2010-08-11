@@ -1,21 +1,26 @@
 package org.codehaus.graphprocessor.impl;
 
+import java.util.Collection;
+
+import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphProcessingUnit;
 import org.codehaus.graphprocessor.GraphProcessor;
+import org.codehaus.graphprocessor.Initializable;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 
 
-public class GraphProcessingUnitImpl implements GraphProcessingUnit
+public class GraphProcessingUnitImpl extends AbstractProcessingUnit implements GraphProcessingUnit, Initializable
 {
 	private final GraphProcessor processor;
 	private final GraphConfig config;
-
-	protected boolean isInitialized = false;
+	private final CachedClassLookupMap<NodeProcessingUnit> nodeProcessingUnits;
 
 	public GraphProcessingUnitImpl(GraphProcessor processor, GraphConfig config)
 	{
 		this.config = config;
 		this.processor = processor;
+		this.nodeProcessingUnits = new CachedClassLookupMap<NodeProcessingUnit>();
 	}
 
 	@Override
@@ -29,15 +34,20 @@ public class GraphProcessingUnitImpl implements GraphProcessingUnit
 		return processor;
 	}
 
-	public boolean initialize(final int complianceLevel)
+	protected void addNodeProcessingUnit(NodeProcessingUnit unit)
 	{
-		isInitialized = true;
-		return true;
+		nodeProcessingUnits.put(unit.getNodeConfig().getType(), unit);
 	}
 
-	public boolean isInitialized()
+	protected NodeProcessingUnit findNodeProcessingUnit(Class type)
 	{
-		return isInitialized;
+		return this.nodeProcessingUnits.get(type);
+	}
+
+	@Override
+	public Collection<? extends AbstractProcessingUnit> getChildProcessingUnits()
+	{
+		return nodeProcessingUnits.values();
 	}
 
 

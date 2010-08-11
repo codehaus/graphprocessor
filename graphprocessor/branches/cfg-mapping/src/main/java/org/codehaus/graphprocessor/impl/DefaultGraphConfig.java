@@ -2,7 +2,6 @@ package org.codehaus.graphprocessor.impl;
 
 import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeConfig;
 
 
 public class DefaultGraphConfig extends AbstractGraphConfig implements GraphConfig
@@ -25,15 +24,6 @@ public class DefaultGraphConfig extends AbstractGraphConfig implements GraphConf
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.impl.DefaultGraphConfig#createNodeConfig(java.lang. Class)
-	 */
-	@Override
-	protected NodeConfig createNodeConfig(final Class node)
-	{
-		return new DefaultNodeConfig(this, node);
-	}
 
 	// /*
 	// * (non-Javadoc)

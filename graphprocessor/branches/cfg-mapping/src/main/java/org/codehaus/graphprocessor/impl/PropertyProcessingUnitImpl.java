@@ -1,17 +1,18 @@
 package org.codehaus.graphprocessor.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyProcessingUnit;
 import org.codehaus.graphprocessor.PropertyProcessor;
 
 
-public class PropertyProcessingUnitImpl implements PropertyProcessingUnit
+public class PropertyProcessingUnitImpl extends AbstractProcessingUnit implements PropertyProcessingUnit
 {
 	private final PropertyConfig property;
 	private PropertyProcessor processor;
-	protected boolean isInitialized = false;
-	protected boolean isNode;
-	protected boolean isTypeCheckEnabled = false;
+	private boolean isNodeProcessing;
 
 	public PropertyProcessingUnitImpl(PropertyProcessor processor, PropertyConfig property)
 	{
@@ -42,24 +43,19 @@ public class PropertyProcessingUnitImpl implements PropertyProcessingUnit
 	@Override
 	public boolean isNode()
 	{
-		return isNode;
+		return isNodeProcessing;
 	}
+
+	public void setNode(boolean value)
+	{
+		isNodeProcessing = value;
+	}
+
 
 	@Override
-	public boolean isTypeCheckEnabled()
+	public Collection<? extends AbstractProcessingUnit> getChildProcessingUnits()
 	{
-		return isTypeCheckEnabled;
-	}
-
-	public boolean initialize(final int complianceLevel)
-	{
-		isInitialized = true;
-		return true;
-	}
-
-	public boolean isInitialized()
-	{
-		return isInitialized;
+		return Collections.EMPTY_LIST;
 	}
 
 	public String getId()

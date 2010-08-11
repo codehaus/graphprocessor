@@ -15,7 +15,9 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 {
 	private static final Logger log = Logger.getLogger(BidiPropertyProcessingUnit.class);
 
+	// TODO: make as BidiProeprtyProcessingUNit
 	private final PropertyConfig targetProperty;
+	private boolean isTypeCheckEnabled;
 
 	public BidiPropertyProcessingUnit(PropertyProcessor processor, PropertyConfig sourceProperty, PropertyConfig targetProperty)
 	{
@@ -34,6 +36,16 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 		return getPropertyConfig().getName() + "-" + targetProperty.getName();
 	}
 
+	public boolean isTypeCheckEnabled()
+	{
+		return isTypeCheckEnabled;
+	}
+
+	public void setTypeCheckEnabled(boolean value)
+	{
+		isTypeCheckEnabled = value;
+	}
+
 	/**
 	 * Compiles configuration settings by assuming this property belongs to passed node which itself belongs to passed graph.
 	 * 
@@ -47,7 +59,8 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 		PropertyConfig sourceProperty = getPropertyConfig();
 
 
-		this.isInitialized = sourceProperty.isVirtualRead() || sourceProperty.isVirtualWrite();
+		boolean isInitialized = sourceProperty.isVirtualRead() || sourceProperty.isVirtualWrite();
+
 		final boolean hasTarget = this.targetProperty != null && this.targetProperty.getWriteMethod() != null;
 
 		if (hasTarget)
@@ -73,8 +86,8 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 					// automatically)
 					if (Collection.class.isAssignableFrom(targetProperty.getWriteType()))
 					{
-						isNode = true;
-						this.isInitialized = true;
+						setNode(true);
+						isInitialized = true;
 					}
 					else
 					{
@@ -83,13 +96,13 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 
 						// compiled successfully if read and write type are compatible
 						// (including possible read/write interceptors)
-						this.isInitialized = targetWriteType.isAssignableFrom(targetReadType);
+						isInitialized = targetWriteType.isAssignableFrom(targetReadType);
 
-						if (!this.isInitialized && !isTypeCheckEnabled)
+						if (!isInitialized && !isTypeCheckEnabled)
 						{
-							this.isInitialized = targetReadType.isAssignableFrom(targetWriteType);
+							isInitialized = targetReadType.isAssignableFrom(targetWriteType);
 						}
-						isNode = true;
+						setNode(true);
 					}
 				}
 				else
@@ -98,31 +111,21 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 
 					// compiled successfully if read and write type are compatible
 					// (including possible read/write interceptors)
-					this.isInitialized = targetWriteType.isAssignableFrom(sourceReadType);
+					isInitialized = targetWriteType.isAssignableFrom(sourceReadType);
 
-					if (!this.isInitialized && !isTypeCheckEnabled)
+					if (!isInitialized && !isTypeCheckEnabled)
 					{
-						this.isInitialized = sourceReadType.isAssignableFrom(targetWriteType);
+						isInitialized = sourceReadType.isAssignableFrom(targetWriteType);
 					}
 				}
 			}
 		}
-		// else
-		// {
-		// // property is successfully initialized but still does not have a target
-		// if (this.isInitialized)
-		// {
-		// final PropertyConfig propCfg = new VirtualPropertyConfig(this);
-		// this.targetProperty = propCfg;
-		// ((DefaultNodeConfig) this.nodeConfig.getTargetNodeConfig()).addPropertyConfig(propCfg);
-		// }
-		// }
 
 
 		// debug
 		if (log.isDebugEnabled() && sourceProperty.getParentNode().isDebugEnabled())
 		{
-			final String action = this.isInitialized ? "Take " : "Skip ";
+			final String action = isInitialized ? "Take " : "Skip ";
 			final String logMsg = action + toExtString();
 			log.debug(logMsg);
 
@@ -145,6 +148,8 @@ public class BidiPropertyProcessingUnit extends PropertyProcessingUnitImpl
 				log.error(" Invalid " + logMsg);
 			}
 		}
+
+		setInitialized(isInitialized);
 
 		return isInitialized;
 	}

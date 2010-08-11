@@ -10,12 +10,11 @@ import org.codehaus.graphprocessor.NodeProcessor;
 import org.codehaus.graphprocessor.PropertyProcessingUnit;
 
 
-public class NodeProcessingUnitImpl implements NodeProcessingUnit
+public class NodeProcessingUnitImpl extends AbstractProcessingUnit implements NodeProcessingUnit
 {
 	private final NodeProcessor processor;
 	private final NodeConfig node;
 
-	protected boolean isInitialized = false;
 	protected Map<String, PropertyProcessingUnit> childPropertyUnits;
 
 
@@ -38,9 +37,10 @@ public class NodeProcessingUnitImpl implements NodeProcessingUnit
 		return processor;
 	}
 
-	public Collection<PropertyProcessingUnit> getChildPropertyProcessingUnits()
+	@Override
+	public Collection<? extends AbstractProcessingUnit> getChildProcessingUnits()
 	{
-		return this.childPropertyUnits.values();
+		return (Collection) this.childPropertyUnits.values();
 	}
 
 	public PropertyProcessingUnit getPropertyProcessingUnit(String id)
@@ -48,17 +48,6 @@ public class NodeProcessingUnitImpl implements NodeProcessingUnit
 		return this.childPropertyUnits.get(id);
 	}
 
-
-	public boolean initialize(final int complianceLevel)
-	{
-		isInitialized = true;
-		return true;
-	}
-
-	public boolean isInitialized()
-	{
-		return isInitialized;
-	}
 
 
 }

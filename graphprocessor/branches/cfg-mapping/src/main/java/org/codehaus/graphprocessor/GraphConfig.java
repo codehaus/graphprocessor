@@ -79,4 +79,6 @@ public interface GraphConfig
 
 	PropertyListener<PropertyContext> getPropertyListener();
 
+	NodeConfigFactory getNodeConfigFactory();
+
 }

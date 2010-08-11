@@ -139,7 +139,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	{
 		// all properties which have to be processed (includes those which are itself nodes)
 		BidiNodeProcessingUnit processingUnit = (BidiNodeProcessingUnit) nodeCtx.getProcessingUnit();
-		Collection<BidiPropertyProcessingUnit> properties = processingUnit.getChildPropertyProcessingUnits();
+		Collection<BidiPropertyProcessingUnit> properties = (Collection) processingUnit.getChildProcessingUnits();
 
 		for (final BidiPropertyProcessingUnit property : properties)
 		{
@@ -210,7 +210,7 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 			// strategy 3: use configured node mapping
 			if (result == null)
 			{
-				NodeConfig targetNodeCfg = ((BidiNodeProcessingUnit) nodeCtx.getProcessingUnit()).getTargetNode();
+				NodeConfig targetNodeCfg = ((BidiNodeProcessingUnit) nodeCtx.getProcessingUnit()).getTargetNode().getNodeConfig();
 				final Class<?> nodeType = targetNodeCfg.getType();
 				result = this.createNode(nodeType);
 				this.notifyNodeCreatedListener(nodeCtx, result);

@@ -1,60 +1,98 @@
 package org.codehaus.graphprocessor.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.codehaus.graphprocessor.GraphConfig;
+import org.codehaus.graphprocessor.GraphException;
+import org.codehaus.graphprocessor.GraphNode;
 import org.codehaus.graphprocessor.GraphProcessor;
-import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeConfig;
 
 
 public class BidiGraphProcessingUnit extends GraphProcessingUnitImpl
 {
-	private final GraphConfig target;
-	private final List<BidiNodeProcessingUnit> childNodeProcessings;
+	private BidiGraphProcessingUnit targetUnit;
 
-	public BidiGraphProcessingUnit(GraphProcessor processor, GraphConfig config, GraphConfig target)
+	/**
+	 * Internal constructor.
+	 * 
+	 * @param processor
+	 * @param config
+	 */
+	private BidiGraphProcessingUnit(GraphProcessor processor, GraphConfig config)
 	{
 		super(processor, config);
-		this.target = target;
-		this.childNodeProcessings = new ArrayList<BidiNodeProcessingUnit>();
 	}
 
-	public GraphConfig getTargetGraph()
+	public BidiGraphProcessingUnit(GraphProcessor processor, GraphConfig source, GraphConfig target)
 	{
-		return target;
+		super(processor, source);
+		targetUnit = new BidiGraphProcessingUnit(processor, target);
 	}
 
-	public List<BidiNodeProcessingUnit> getChildNodeProcessingUnits()
+
+	public BidiGraphProcessingUnit getTargetGraph()
 	{
-		return this.childNodeProcessings;
+		return targetUnit;
 	}
 
 
 	@Override
 	public boolean initialize(int complianceLevel)
 	{
-		boolean isInitialized = true;
+		isInitialized = true;
 
-		Collection<NodeConfig> nodes = getGraph().getNodes().values();
-		for (final NodeConfig nodeCfg : nodes)
+		// all nodes of configured source graph
+		Collection<NodeConfig> nodeConfigs = getGraph().getNodes().values();
+
+		// create a NodeProcessingUnit for source and target graph and for each NodeConfig
+		for (final NodeConfig nodeCfg : nodeConfigs)
 		{
-			BidiNodeProcessingUnit unit = new BidiNodeProcessingUnit(null, nodeCfg sourceNode, targetNode);
-			if (nodeCfg instanceof Initializable)
-			{
-				// binary AND; no short-circuit
-				isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
-			}
+			// create a target NodeConfig
+			NodeConfig targetNodeCfg = findTargetNodeConfig(nodeCfg);
 
-			final NodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
-			if (targetNode instanceof Initializable)
+			if (targetNodeCfg != null)
 			{
-				// binary AND; no short-circuit
-				isInitialized = isInitialized & ((Initializable) targetNode).initialize(0);
+
+				// create/add a NodeProcessingUnit for this graph
+				BidiNodeProcessingUnit sourceUnit = new BidiNodeProcessingUnit(null, nodeCfg, targetNodeCfg);
+				addNodeProcessingUnit(sourceUnit);
+
+				// create/ add a NodeProcessingUnit for target graph
+				BidiNodeProcessingUnit targetUnit = new BidiNodeProcessingUnit(null, targetNodeCfg, nodeCfg);
+				getTargetGraph().addNodeProcessingUnit(targetUnit);
+			}
+			else
+			{
+				throw new GraphException("Can't find a target node for " + nodeCfg.getType());
 			}
 		}
+
+		// initialize NodeProcessingUnits for source ...
+		isInitialized = initializeChilds(complianceLevel);
+
+		// ... and target
+		isInitialized = isInitialized & targetUnit.initializeChilds(complianceLevel);
+
 		return isInitialized;
+	}
+
+	/**
+	 * Finds a node's target type for a given source type.
+	 * 
+	 * @param nodeConfig
+	 * @return target NodeConfig
+	 */
+	private NodeConfig findTargetNodeConfig(NodeConfig nodeConfig)
+	{
+		NodeConfig result = null;
+		Class<?> srcType = nodeConfig.getType();
+		if (srcType.isAnnotationPresent(GraphNode.class))
+		{
+			GraphNode node = srcType.getAnnotation(GraphNode.class);
+			Class<?> targetType = node.target();
+			result = getGraph().getNodeConfigFactory().getNodeConfig(targetType);
+		}
+		return result;
 	}
 }

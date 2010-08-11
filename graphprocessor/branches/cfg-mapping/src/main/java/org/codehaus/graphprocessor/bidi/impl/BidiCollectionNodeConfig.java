@@ -34,21 +34,12 @@ public class BidiCollectionNodeConfig extends DefaultNodeConfig
 		// setProcessor(DEFAULT_NODE_PROCESSOR);
 
 		setVirtual(true);
-		setInitialized(true);
 	}
 
 	@Override
 	public Map<String, PropertyConfig> getProperties()
 	{
 		return Collections.EMPTY_MAP;
-	}
-
-
-
-	@Override
-	public boolean initializeNode()
-	{
-		return true;
 	}
 
 }

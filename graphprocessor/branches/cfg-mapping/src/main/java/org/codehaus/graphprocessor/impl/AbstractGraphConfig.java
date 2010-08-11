@@ -16,8 +16,8 @@ import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.GraphListener;
 import org.codehaus.graphprocessor.GraphNode;
-import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.NodeConfigFactory;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeListener;
 import org.codehaus.graphprocessor.NodeProcessor;
@@ -25,22 +25,19 @@ import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyListener;
 import org.codehaus.graphprocessor.PropertyProcessor;
-import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.BidiPropertyProcessor;
-import org.codehaus.graphprocessor.bidi.impl.BidiCollectionNodeProcessor;
 
 
 
 
-public abstract class AbstractGraphConfig implements GraphConfig, Initializable
+public abstract class AbstractGraphConfig implements GraphConfig
 {
-	private static final PropertyProcessor DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessor();
-	private static final NodeProcessor DEFAULT_NODE_PROCESSOR = new BidiNodeProcessor();
-	private static final NodeProcessor DEFAULT_COLLECTIONNODE_PROCESSOR = new BidiCollectionNodeProcessor();
+	// private static final PropertyProcessor DEFAULT_PROPERTY_PROCESSOR = new BidiPropertyProcessor();
+	// private static final NodeProcessor DEFAULT_NODE_PROCESSOR = new BidiNodeProcessor();
+	// private static final NodeProcessor DEFAULT_COLLECTIONNODE_PROCESSOR = new BidiCollectionNodeProcessor();
 
 	private static final Logger log = Logger.getLogger(AbstractGraphConfig.class);
 
-	private boolean _isInitialized = false;
+	// private final boolean _isInitialized = false;
 	private GraphListener<GraphContext> graphListener = null;
 	private NodeListener<NodeContext> nodeListener = null;
 	private PropertyListener<PropertyContext> propertyListener = null;
@@ -77,6 +74,11 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable
 		this.nodeProcessorMap.put(nodeType, processor);
 	}
 
+	@Override
+	public NodeConfigFactory getNodeConfigFactory()
+	{
+		return null;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -88,68 +90,68 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable
 		return propertyProcessorMap.get(propertyType);
 	}
 
-	public boolean isInitialized()
-	{
-		return this._isInitialized;
-	}
+	// public boolean isInitialized()
+	// {
+	// return this._isInitialized;
+	// }
+	//
+	// protected void setInitialized(final boolean isInitialized)
+	// {
+	// this._isInitialized = isInitialized;
+	// }
 
-	protected void setInitialized(final boolean isInitialized)
-	{
-		this._isInitialized = isInitialized;
-	}
-
-	public boolean initialize(final int complianceLevel)
-	{
-		boolean success = this.initializeGraph();
-		success = success | ((AbstractGraphConfig) getTargetConfig()).initializeGraph();
-
-		if (success)
-		{
-			success = this.initializeNodes();
-		}
-		setInitialized(success);
-		((AbstractGraphConfig) getTargetConfig()).setInitialized(success);
-
-		return success;
-	}
-
-	protected boolean initializeGraph()
-	{
-		// add default processors
-		this.propertyProcessorMap.put(Object.class, DEFAULT_PROPERTY_PROCESSOR);
-
-		this.nodeProcessorMap.put(Object.class, DEFAULT_NODE_PROCESSOR);
-		this.nodeProcessorMap.put(Collection.class, DEFAULT_COLLECTIONNODE_PROCESSOR);
-
-		return true;
-	}
-
-	/**
-	 * Initializes all nodes of source and target graph.
-	 * 
-	 * @return true when successful
-	 */
-	protected boolean initializeNodes()
-	{
-		boolean isInitialized = true;
-
-		for (final NodeConfig nodeCfg : getNodes().values())
-		{
-			if (nodeCfg instanceof Initializable)
-			{
-				// binary AND; no short-circuit
-				isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
-			}
-
-			final NodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
-			if (targetNode instanceof Initializable)
-			{
-				// binary AND; no short-circuit
-				isInitialized = isInitialized & ((Initializable) targetNode).initialize(0);
-			}
-		}
-		return isInitialized;
-	}
+	// public boolean initialize(final int complianceLevel)
+	// {
+	// boolean success = this.initializeGraph();
+	// success = success | ((AbstractGraphConfig) getTargetConfig()).initializeGraph();
+	//
+	// if (success)
+	// {
+	// success = this.initializeNodes();
+	// }
+	// setInitialized(success);
+	// ((AbstractGraphConfig) getTargetConfig()).setInitialized(success);
+	//
+	// return success;
+	// }
+	//
+	// protected boolean initializeGraph()
+	// {
+	// // add default processors
+	// this.propertyProcessorMap.put(Object.class, DEFAULT_PROPERTY_PROCESSOR);
+	//
+	// this.nodeProcessorMap.put(Object.class, DEFAULT_NODE_PROCESSOR);
+	// this.nodeProcessorMap.put(Collection.class, DEFAULT_COLLECTIONNODE_PROCESSOR);
+	//
+	// return true;
+	// }
+	//
+	// /**
+	// * Initializes all nodes of source and target graph.
+	// *
+	// * @return true when successful
+	// */
+	// protected boolean initializeNodes()
+	// {
+	// boolean isInitialized = true;
+	//
+	// for (final NodeConfig nodeCfg : getNodes().values())
+	// {
+	// if (nodeCfg instanceof Initializable)
+	// {
+	// // binary AND; no short-circuit
+	// isInitialized = isInitialized & ((Initializable) nodeCfg).initialize(0);
+	// }
+	//
+	// final NodeConfig targetNode = (nodeCfg).getTargetNodeConfig();
+	// if (targetNode instanceof Initializable)
+	// {
+	// // binary AND; no short-circuit
+	// isInitialized = isInitialized & ((Initializable) targetNode).initialize(0);
+	// }
+	// }
+	// return isInitialized;
+	// }
 
 	public GraphListener<GraphContext> getGraphListener()
 	{
@@ -218,11 +220,10 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable
 
 	public NodeConfig addNode(final Class node)
 	{
-		final NodeConfig result = this.createNodeConfig(node);
+		final NodeConfig result = getNodeConfigFactory().getNodeConfig(node);
 		this.addNode(result);
 		return result;
 	}
-
 
 	@Override
 	public void addNodes(final Class nodeClass)
@@ -345,10 +346,5 @@ public abstract class AbstractGraphConfig implements GraphConfig, Initializable
 	{
 		return Collections.EMPTY_SET;
 	}
-
-
-
-	protected abstract NodeConfig createNodeConfig(Class node);
-
 
 }

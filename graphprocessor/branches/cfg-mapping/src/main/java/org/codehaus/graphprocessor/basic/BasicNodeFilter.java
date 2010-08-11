@@ -18,10 +18,10 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.PropertyConfig;
+import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyConfig;
-import org.codehaus.graphprocessor.bidi.BidiPropertyContext;
+import org.codehaus.graphprocessor.impl.BidiPropertyProcessingUnit;
 
 
 
@@ -69,7 +69,7 @@ public class BasicNodeFilter implements PropertyFilter
 
 
 	@Override
-	public boolean isFiltered(final BidiPropertyContext ctx, final Object value)
+	public boolean isFiltered(final PropertyContext ctx, final Object value)
 	{
 		boolean isFiltered = false;
 
@@ -77,18 +77,19 @@ public class BasicNodeFilter implements PropertyFilter
 		{
 			// threshold for max allowed distance reached?
 			isFiltered = ctx.getParentContext().getDistance() >= maxDistance;
+			PropertyConfig targetProp = ((BidiPropertyProcessingUnit) ctx.getProcessingUnit()).getTargetProperty();
 
-			BidiPropertyConfig targetProp = ((BidiPropertyConfig) ctx.getPropertyConfig()).getTargetProperty();
 			// special handling for node -> property conversions
-			// in case a write-property converter converts from node to flat property: distance based check is disabled 
+			// in case a write-property converter converts from node to flat property: distance based check is disabled
 			if (isFiltered && targetProp.getWriteInterceptor() != null)
 			{
 				// unconverted type
-				//final Class converterInputType = ctx.getPropertyMapping().getTargetPropertyConfig().getWriteType();
+				// final Class converterInputType = ctx.getPropertyMapping().getTargetPropertyConfig().getWriteType();
 				final Class setterInputType = targetProp.getWriteMethod().getParameterTypes()[0];
 
-				//isFiltered = ctx.getParentContext().getDistance() >= maxDistance;
-				isFiltered = ((BidiGraphConfig) ctx.getGraphContext().getGraphConfig()).getNodes().containsKey(setterInputType);
+				// isFiltered = ctx.getParentContext().getDistance() >= maxDistance;
+				isFiltered = ctx.getGraphContext().getGraphConfig().getNodes().containsKey(setterInputType);
+				// isFiltered = ((BidiGraphConfig) ctx.getGraphContext().getGraphConfig()).getNodes().containsKey(setterInputType);
 			}
 
 			if (isFiltered && !leafNodeProcessing.isEmpty())
