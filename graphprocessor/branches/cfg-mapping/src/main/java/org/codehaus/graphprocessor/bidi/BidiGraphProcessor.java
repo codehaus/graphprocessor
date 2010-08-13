@@ -4,41 +4,30 @@ import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.GraphProcessor;
+import org.codehaus.graphprocessor.GraphProcessingUnit;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.impl.AbstractNodeConfig;
+import org.codehaus.graphprocessor.impl.AbstractGraphProcessor;
 import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
 
 
-public class BidiGraphProcessor implements GraphProcessor
+public class BidiGraphProcessor extends AbstractGraphProcessor
 {
 
 	@Override
-	public <T> T process(final GraphContext graphCtx, final Object source, final T target)
-	{
-		if (!(graphCtx instanceof GraphContextImpl))
-		{
-			throw new UnsupportedOperationException(this.getClass().getSimpleName() + " needs an instance of "
-					+ GraphContextImpl.class.getName() + " to work properly");
-
-		}
-
-		final GraphContextImpl graphCtxImpl = (GraphContextImpl) graphCtx;
-
-		return this.process(graphCtxImpl, source, target);
-	}
-
 	public <T> T process(final GraphContextImpl graphCtx, final Object source, final T target)
 	{
 		// TODO: typecheck?
-		GraphConfig graphCfg = graphCtx.getGraphConfig();
-		if (graphCfg instanceof Initializable)
+		GraphConfig graphCfg = graphCtx.getProcessingUnit().getGraphConfig();
+
+		GraphProcessingUnit processingUnit = graphCtx.getProcessingUnit();
+		if (processingUnit instanceof Initializable)
 		{
-			Initializable init = (Initializable) graphCfg;
+			Initializable init = (Initializable) processingUnit;
 			if (!init.isInitialized())
 			{
 				init.initialize(0);
@@ -51,9 +40,9 @@ public class BidiGraphProcessor implements GraphProcessor
 		}
 
 		// create nodeLookup to lookup root node
-		final CachedClassLookupMap<NodeConfig> nodeLookup = ((GraphConfigurationImpl) graphCtx.getConfiguration())
+		final CachedClassLookupMap<NodeProcessingUnit> nodeLookup = ((GraphConfigurationImpl) graphCtx.getConfiguration())
 				.getAllNodeConfigs(0);
-		final NodeConfig nodeMapping = nodeLookup.get(source.getClass());
+		final NodeProcessingUnit nodeMapping = nodeLookup.get(source.getClass());
 
 		if (nodeMapping == null)
 		{
@@ -61,7 +50,7 @@ public class BidiGraphProcessor implements GraphProcessor
 		}
 
 		// create nodeLookup used for root nodes childs
-		final NodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractNodeConfig) nodeMapping, source);
+		final NodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, nodeMapping, source);
 		NodeProcessor processor = nodeCtx.getProcessingUnit().getProcessor();
 
 		final T result = processor.process(nodeCtx, source, target);
@@ -71,5 +60,4 @@ public class BidiGraphProcessor implements GraphProcessor
 
 
 	}
-
 }

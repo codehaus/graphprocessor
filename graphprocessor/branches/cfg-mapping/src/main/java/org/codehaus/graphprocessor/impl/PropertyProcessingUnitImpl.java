@@ -1,8 +1,8 @@
 package org.codehaus.graphprocessor.impl;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyProcessingUnit;
 import org.codehaus.graphprocessor.PropertyProcessor;
@@ -52,11 +52,20 @@ public class PropertyProcessingUnitImpl extends AbstractProcessingUnit implement
 	}
 
 
+	private List<NodeProcessingUnit> childProcUnits;
+
 	@Override
-	public Collection<? extends AbstractProcessingUnit> getChildProcessingUnits()
+	public List<NodeProcessingUnit> getChildProcessingUnits()
 	{
-		return Collections.EMPTY_LIST;
+		return childProcUnits;
 	}
+
+	public void setChildProcessingUnits(List<NodeProcessingUnit> nodeUnits)
+	{
+		this.childProcUnits = nodeUnits;
+	}
+
+
 
 	public String getId()
 	{

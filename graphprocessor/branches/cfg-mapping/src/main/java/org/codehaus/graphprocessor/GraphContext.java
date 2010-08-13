@@ -33,8 +33,8 @@ public interface GraphContext
 	 */
 	public int getMaxDistance();
 
-	public GraphConfig getGraphConfig();
 
+	public GraphProcessingUnit getProcessingUnit();
 
 	/**
 	 * Returns configuration options for this graph. Configuration settings are only valid for one transformation which this

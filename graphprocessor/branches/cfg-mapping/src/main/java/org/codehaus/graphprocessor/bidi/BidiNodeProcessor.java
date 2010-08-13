@@ -29,6 +29,8 @@ import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyProcessingUnit;
 import org.codehaus.graphprocessor.PropertyProcessor;
+import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
+import org.codehaus.graphprocessor.impl.AbstractProcessingUnit;
 import org.codehaus.graphprocessor.impl.BidiNodeProcessingUnit;
 import org.codehaus.graphprocessor.impl.BidiPropertyProcessingUnit;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
@@ -50,16 +52,12 @@ public class BidiNodeProcessor extends AbstractNodeProcessor
 	public <T> T process(final NodeContextImpl nodeCtx, final Object source, T target)
 	{
 		NodeProcessingUnit nodeProcUnit = nodeCtx.getProcessingUnit();
-
-		// lazy NodeMapping compilation if necessary
-		NodeConfig nodeCfg = nodeProcUnit.getNodeConfig();
-
-		if (nodeCfg instanceof Initializable)
+		if (nodeProcUnit instanceof Initializable)
 		{
-			Initializable init = (Initializable) nodeCfg;
+			Initializable init = (Initializable) nodeProcUnit;
 			if (!init.isInitialized())
 			{
-				init.initialize(0);
+				init.initialize(AbstractProcessingUnit.COMPLIANCE_LEVEL_HIGH);
 			}
 		}
 

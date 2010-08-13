@@ -40,10 +40,10 @@ public class BidiGraphProcessingUnit extends GraphProcessingUnitImpl
 	@Override
 	public boolean initialize(int complianceLevel)
 	{
-		isInitialized = true;
+		boolean isInitialized = true;
 
 		// all nodes of configured source graph
-		Collection<NodeConfig> nodeConfigs = getGraph().getNodes().values();
+		Collection<NodeConfig> nodeConfigs = getGraphConfig().getNodes().values();
 
 		// create a NodeProcessingUnit for source and target graph and for each NodeConfig
 		for (final NodeConfig nodeCfg : nodeConfigs)
@@ -74,6 +74,8 @@ public class BidiGraphProcessingUnit extends GraphProcessingUnitImpl
 		// ... and target
 		isInitialized = isInitialized & targetUnit.initializeChilds(complianceLevel);
 
+		setInitialized(isInitialized);
+
 		return isInitialized;
 	}
 
@@ -91,7 +93,7 @@ public class BidiGraphProcessingUnit extends GraphProcessingUnitImpl
 		{
 			GraphNode node = srcType.getAnnotation(GraphNode.class);
 			Class<?> targetType = node.target();
-			result = getGraph().getNodeConfigFactory().getNodeConfig(targetType);
+			result = getGraphConfig().getNodeConfigFactory().getNodeConfig(targetType);
 		}
 		return result;
 	}

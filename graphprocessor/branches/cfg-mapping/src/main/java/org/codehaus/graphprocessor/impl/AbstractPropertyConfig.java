@@ -52,7 +52,7 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
 
 	protected NodeConfig nodeConfig = null;
 	private List<PropertyFilter> propertyFilters = Collections.EMPTY_LIST;
-	private List<NodeConfig> nodeMappingList = Collections.EMPTY_LIST;
+	// private List<NodeConfig> nodeMappingList = Collections.EMPTY_LIST;
 
 
 	private String name = null;
@@ -122,19 +122,19 @@ public abstract class AbstractPropertyConfig implements PropertyConfig
 	}
 
 
-	public List<NodeConfig> getChildNodeConfig()
-	{
-		return nodeMappingList;
-	}
-
-	/**
-	 * @param nodeConfig
-	 *           the nodeConfig to set
-	 */
-	public void setChildNodeConfig(final List<NodeConfig> nodeConfig)
-	{
-		this.nodeMappingList = nodeConfig;
-	}
+	// public List<NodeConfig> getChildNodeConfig()
+	// {
+	// return nodeMappingList;
+	// }
+	//
+	// /**
+	// * @param nodeConfig
+	// * the nodeConfig to set
+	// */
+	// public void setChildNodeConfig(final List<NodeConfig> nodeConfig)
+	// {
+	// this.nodeMappingList = nodeConfig;
+	// }
 
 
 

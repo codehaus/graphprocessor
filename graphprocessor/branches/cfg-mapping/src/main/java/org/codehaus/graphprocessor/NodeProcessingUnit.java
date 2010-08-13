@@ -1,5 +1,8 @@
 package org.codehaus.graphprocessor;
 
+import java.util.Collection;
+
+
 public interface NodeProcessingUnit
 {
 
@@ -7,4 +10,5 @@ public interface NodeProcessingUnit
 
 	NodeProcessor getProcessor();
 
+	Collection<PropertyProcessingUnit> getChildProcessingUnits();
 }

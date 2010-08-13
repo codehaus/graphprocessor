@@ -20,7 +20,6 @@ import java.util.List;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.PropertyConfig;
@@ -33,7 +32,7 @@ import org.codehaus.graphprocessor.PropertyProcessingUnit;
 
 public class NodeContextImpl implements NodeContext
 {
-	private AbstractNodeConfig nodeMapping = null;
+	private final NodeProcessingUnit processingUnit;
 	private Object sourceNodeValue = null;
 	private Object targetNodeValue = null;
 
@@ -42,20 +41,20 @@ public class NodeContextImpl implements NodeContext
 
 	private int distance = 0;
 	private int virtualDistance = 0;
-	private CachedClassLookupMap<NodeConfig> childNodeLookup = null;
+	private CachedClassLookupMap<NodeProcessingUnit> childNodeLookup = null;
 
 
 	/**
 	 * @param graphCtx
 	 * @param propertyCtx
-	 * @param nodeMapping
+	 * @param processingUnit
 	 * @param nodeMappingsMap
 	 * @param distance
 	 * @param virtualDistance
 	 * @param source
 	 */
 	protected NodeContextImpl(final GraphContextImpl graphCtx, final PropertyContextImpl propertyCtx,
-			final AbstractNodeConfig nodeMapping, final CachedClassLookupMap<NodeConfig> nodeMappingsMap, final int distance,
+			NodeProcessingUnit processingUnit, final CachedClassLookupMap<NodeProcessingUnit> nodeMappingsMap, final int distance,
 			final int virtualDistance, final Object source)
 	{
 		super();
@@ -68,7 +67,7 @@ public class NodeContextImpl implements NodeContext
 				throw new GraphException(GraphContext.class.getSimpleName() + " of passed property is not same as of this node");
 			}
 		}
-		this.nodeMapping = nodeMapping;
+		this.processingUnit = processingUnit;
 
 		this.sourceNodeValue = source;
 		this.childNodeLookup = nodeMappingsMap;
@@ -98,9 +97,8 @@ public class NodeContextImpl implements NodeContext
 	@Override
 	public NodeProcessingUnit getProcessingUnit()
 	{
-		return null;
+		return processingUnit;
 	}
-
 
 	/**
 	 * @return the sourceNode
@@ -180,7 +178,7 @@ public class NodeContextImpl implements NodeContext
 		return path;
 	}
 
-	public CachedClassLookupMap<NodeConfig> getChildNodeLookup()
+	public CachedClassLookupMap<NodeProcessingUnit> getChildNodeLookup()
 	{
 		return this.childNodeLookup;
 	}
@@ -188,20 +186,20 @@ public class NodeContextImpl implements NodeContext
 
 	public PropertyContextImpl createChildPropertyContext(final PropertyProcessingUnit processingUnit)
 	{
-		CachedClassLookupMap<NodeConfig> nodeConfigMap = this.childNodeLookup;
+		CachedClassLookupMap<NodeProcessingUnit> nodeConfigMap = this.childNodeLookup;
 
 		if (processingUnit != null)
 		{
 			final PropertyConfig propertyConfig = processingUnit.getPropertyConfig();
 
 			// create node lookup for property childs based on:
-			final List<NodeConfig> merge = propertyConfig.getChildNodeConfig();
+			final List<NodeProcessingUnit> merge = processingUnit.getChildProcessingUnits();
 			nodeConfigMap = this.graphCtx.buildChildNodeLookup(nodeConfigMap, merge);
 		}
 
-		final PropertyContextImpl result = new PropertyContextImpl(this.graphCtx, this, processingUnit, nodeConfigMap);
+		final PropertyContextImpl result = new PropertyContextImpl(graphCtx, this, processingUnit, nodeConfigMap);
 
-		PropertyListener<PropertyContext> listener = graphCtx.getGraphConfig().getPropertyListener();
+		PropertyListener<PropertyContext> listener = graphCtx.getProcessingUnit().getGraphConfig().getPropertyListener();
 		if (listener != null)
 		{
 			listener.propertyContextCreated(result);

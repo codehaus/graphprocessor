@@ -2,26 +2,27 @@ package org.codehaus.graphprocessor.transform;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
+import org.codehaus.graphprocessor.GraphConfig;
+import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
-import org.codehaus.graphprocessor.bidi.BidiGraphConfig;
-import org.codehaus.graphprocessor.bidi.BidiNodeConfig;
-import org.codehaus.graphprocessor.bidi.BidiGraphContext;
-import org.codehaus.graphprocessor.bidi.BidiNodeContext;
 import org.codehaus.graphprocessor.bidi.BidiGraphProcessor;
 import org.codehaus.graphprocessor.bidi.BidiNodeProcessor;
-import org.codehaus.graphprocessor.bidi.impl.AbstractBidiNodeConfig;
 import org.codehaus.graphprocessor.bidi.impl.BidiCollectionNodeConfig;
-import org.codehaus.graphprocessor.bidi.impl.DefaultBidiGraphConfig;
+import org.codehaus.graphprocessor.impl.AbstractGraphConfig;
+import org.codehaus.graphprocessor.impl.BidiGraphProcessingUnit;
 import org.codehaus.graphprocessor.impl.GraphConfigurationImpl;
 import org.codehaus.graphprocessor.impl.GraphContextImpl;
 
 
 
-public class BidiGraphTransformer extends DefaultBidiGraphConfig implements BidiGraphProcessor, GraphTransformer
+public class BidiGraphTransformer extends AbstractGraphConfig implements GraphConfig, GraphTransformer
 {
 
 	private static final Logger LOG = Logger.getLogger(BidiGraphTransformer.class);
+
+	private final BidiGraphProcessor processor = new BidiGraphProcessor();
+	private BidiGraphProcessingUnit processingUnit;
 
 	public BidiGraphTransformer()
 	{
@@ -49,7 +50,7 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Bidi
 	}
 
 	@Override
-	public <T> T transform(final BidiGraphContext ctx, final Object source)
+	public <T> T transform(final GraphContext ctx, final Object source)
 	{
 		return (T) transform(ctx, source, null);
 	}
@@ -77,15 +78,16 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Bidi
 
 
 	@Override
-	public <T> T transform(BidiGraphContext ctx, final Object source, final T target)
+	public <T> T transform(GraphContext ctx, final Object source, final T target)
 	{
+		return this.processor.process(ctx, source, target);
 		// a source graph must be specified
 		if (source == null)
 		{
 			throw new GraphException("No source graph to transform [null]", new NullPointerException());
 		}
 
-		if (!this.isInitialized())
+		if (processingUnit instanceof Initial !this.isInitialized())
 		{
 			this.initialize(0);
 		}
@@ -107,58 +109,6 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Bidi
 	}
 
 
-	@Override
-	public <T> T process(final BidiGraphContext graphCtx, final Object source, final T target)
-	{
-		if (!(graphCtx instanceof GraphContextImpl))
-		{
-			throw new UnsupportedOperationException(this.getClass().getSimpleName() + " needs an instance of "
-					+ GraphContextImpl.class.getName() + " to work properly");
-
-		}
-
-		final GraphContextImpl graphCtxImpl = (GraphContextImpl) graphCtx;
-
-		return this.process(graphCtxImpl, source, target);
-	}
-
-	public <T> T process(final GraphContextImpl graphCtx, final Object source, final T target)
-	{
-		BidiGraphConfig graphConfig = graphCtx.getGraphConfig();
-		if (graphConfig instanceof Initializable)
-		{
-			Initializable init = (Initializable) graphConfig;
-			if (!init.isInitialized())
-			{
-				init.initialize(0);
-			}
-
-		}
-
-		if (graphCtx.isReleased())
-		{
-			throw new GraphException("Can't use an instance of " + BidiGraphContext.class.getSimpleName() + " twice");
-		}
-
-		// create nodeLookup to lookup root node
-		GraphConfigurationImpl graphConfigImpl = (GraphConfigurationImpl) graphCtx.getConfiguration();
-		final CachedClassLookupMap<BidiNodeConfig> nodeLookup = graphConfigImpl.getAllNodeConfigs(0);
-		final BidiNodeConfig nodeConfig = nodeLookup.get(source.getClass());
-
-		if (nodeConfig == null)
-		{
-			throw new GraphException("Can't find a " + BidiNodeConfig.class.getSimpleName() + " for " + source.getClass());
-		}
-
-		// create nodeLookup used for root nodes childs
-		final BidiNodeContext nodeCtx = graphCtx.createRootNodeContext(nodeLookup, (AbstractBidiNodeConfig) nodeConfig, source);
-
-		BidiNodeProcessor nodeProcessor = nodeConfig.getProcessor();
-		final T result = nodeProcessor.process(nodeCtx, source, target);
-		graphCtx.setReleased(true);
-
-		return result;
-	}
 
 	public BidiGraphContext createGraphContext()
 	{
@@ -203,12 +153,12 @@ public class BidiGraphTransformer extends DefaultBidiGraphConfig implements Bidi
 	}
 
 
-	public BidiGraphContext createSourceContext()
+	public GraphContext createSourceContext()
 	{
 		return new GraphContextImpl(this);
 	}
 
-	public BidiGraphContext createTargetContext()
+	public GraphContext createTargetContext()
 	{
 		return new GraphContextImpl(this.getTargetConfig());
 	}

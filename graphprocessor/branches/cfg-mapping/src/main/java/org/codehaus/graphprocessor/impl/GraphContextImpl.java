@@ -25,8 +25,9 @@ import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphConfiguration;
 import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.GraphProcessingUnit;
 import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.PropertyFilter;
 
 
@@ -45,7 +46,7 @@ public class GraphContextImpl implements GraphContext
 
 	protected GraphConfigurationImpl graphConfigImpl = null;
 
-	private GraphConfig graphConfig = null;
+	private final GraphProcessingUnit processingUnit;
 
 	// TODO; currently used as unsafe node cache in (ID->node)
 	protected Map attributes = null;
@@ -62,10 +63,10 @@ public class GraphContextImpl implements GraphContext
 	/**
 	 * Constructor.
 	 */
-	public GraphContextImpl(final GraphConfig objGraph)
+	public GraphContextImpl(final GraphProcessingUnit processingUnit)
 	{
 
-		this.graphConfig = objGraph;
+		this.processingUnit = processingUnit;
 		if (filterList != null)
 		{
 			this.filterList = new ArrayList<PropertyFilter>(filterList);
@@ -73,11 +74,15 @@ public class GraphContextImpl implements GraphContext
 		this.srcNodeValueMap = new HashMap();
 		this.srcNodeIdMap = new HashMap();
 		this.attributes = new HashMap();
-		// this.graphConfigImpl = new GraphConfigurationImpl(graphTransformer.getNodeMappingsMap());
-		this.graphConfigImpl = new GraphConfigurationImpl(graphConfig.getNodes());
+		this.graphConfigImpl = new GraphConfigurationImpl(processingUnit.getGraphConfig().getNodes());
 
 	}
 
+	@Override
+	public GraphProcessingUnit getProcessingUnit()
+	{
+		return this.processingUnit;
+	}
 
 
 
@@ -143,12 +148,6 @@ public class GraphContextImpl implements GraphContext
 	}
 
 
-	public GraphConfig getGraphConfig()
-	{
-		return this.graphConfig;
-	}
-
-
 
 	/**
 	 * Returns a Map of already processed nodes.
@@ -170,21 +169,21 @@ public class GraphContextImpl implements GraphContext
 	 * Creates an initial {@link NodeContext} (root node context)
 	 * 
 	 * @param rootNodeLookup
-	 * @param nodeMapping
+	 * @param nodeProcessingUnit
 	 * @param source
 	 * @return {@link NodeContext}
 	 */
-	public NodeContext createRootNodeContext(final CachedClassLookupMap<NodeConfig> rootNodeLookup,
-			final AbstractNodeConfig nodeMapping, final Object source)
+	public NodeContext createRootNodeContext(final CachedClassLookupMap<NodeProcessingUnit> rootNodeLookup,
+			final NodeProcessingUnit nodeProcessingUnit, final Object source)
 	{
 		NodeContext result = null;
 
 		// configured nodeLookup for distance 1
 		// final CachedClassLookupMap<NodeMapping> add = this.graphConfigImpl.getAllNodeMappings(1);
-		final CachedClassLookupMap<NodeConfig> add = this.graphConfigImpl.getAllNodeConfigs(1);
+		final CachedClassLookupMap<NodeProcessingUnit> add = this.graphConfigImpl.getAllNodeConfigs(1);
 
 		// child nodes lookup is a merged result of current used node lookup and configured node lookup for next processing distance
-		final CachedClassLookupMap<NodeConfig> childNodesLookup = this.buildChildNodeLookup(rootNodeLookup, add);
+		final CachedClassLookupMap<NodeProcessingUnit> childNodesLookup = this.buildChildNodeLookup(rootNodeLookup, add);
 
 		this.setRuntimeNodeMappings(0, rootNodeLookup);
 		this.setRuntimeNodeMappings(1, childNodesLookup);
@@ -195,13 +194,14 @@ public class GraphContextImpl implements GraphContext
 			log.debug("Added distance based runtime node lookup: " + 1 + ":" + childNodesLookup.hashCode());
 		}
 
-
 		// create result context
-		result = new NodeContextImpl(this, null, nodeMapping, childNodesLookup, 0, 0, source);
+		result = new NodeContextImpl(this, null, nodeProcessingUnit, childNodesLookup, 0, 0, source);
+
+		GraphConfig graphConfig = getProcessingUnit().getGraphConfig();
 
 		if (graphConfig.getNodeListener() != null)
 		{
-			this.graphConfig.getNodeListener().nodeContextCreated(result);
+			graphConfig.getNodeListener().nodeContextCreated(result);
 		}
 
 
@@ -211,7 +211,7 @@ public class GraphContextImpl implements GraphContext
 
 
 
-	private final Map<Integer, CachedClassLookupMap<NodeConfig>> runtimeNodeMappings = new HashMap<Integer, CachedClassLookupMap<NodeConfig>>();
+	private final Map<Integer, CachedClassLookupMap<NodeProcessingUnit>> runtimeNodeMappings = new HashMap<Integer, CachedClassLookupMap<NodeProcessingUnit>>();
 
 	/**
 	 * Returns an already calculated {@link CachedClassLookupMap}.
@@ -219,12 +219,12 @@ public class GraphContextImpl implements GraphContext
 	 * @param distance
 	 * @return {@link CachedClassLookupMap}
 	 */
-	protected CachedClassLookupMap<NodeConfig> getRuntimeNodeMappings(final int distance)
+	protected CachedClassLookupMap<NodeProcessingUnit> getRuntimeNodeMappings(final int distance)
 	{
 		return this.runtimeNodeMappings.get(Integer.valueOf(distance));
 	}
 
-	protected void setRuntimeNodeMappings(final int distance, final CachedClassLookupMap<NodeConfig> nodeLookup)
+	protected void setRuntimeNodeMappings(final int distance, final CachedClassLookupMap<NodeProcessingUnit> nodeLookup)
 	{
 		this.runtimeNodeMappings.put(Integer.valueOf(distance), nodeLookup);
 	}
@@ -232,17 +232,17 @@ public class GraphContextImpl implements GraphContext
 
 
 
-	protected CachedClassLookupMap<NodeConfig> buildChildNodeLookup(final CachedClassLookupMap<NodeConfig> base,
-			final CachedClassLookupMap<NodeConfig> add)
+	protected CachedClassLookupMap<NodeProcessingUnit> buildChildNodeLookup(final CachedClassLookupMap<NodeProcessingUnit> base,
+			final CachedClassLookupMap<NodeProcessingUnit> add)
 	{
 		// by default result is same instance as base
-		CachedClassLookupMap<NodeConfig> result = base;
+		CachedClassLookupMap<NodeProcessingUnit> result = base;
 
 		// merge only when 'add' is not same as 'base'
 		if (base != add)
 		{
 			// take static configuration
-			final Collection<NodeConfig> _add = add.getStaticMap().values();
+			final Collection<NodeProcessingUnit> _add = add.getStaticMap().values();
 			// and merge with 'base'
 			result = buildChildNodeLookup(base, _add);
 		}
@@ -251,23 +251,23 @@ public class GraphContextImpl implements GraphContext
 
 
 
-	protected CachedClassLookupMap<NodeConfig> buildChildNodeLookup(final CachedClassLookupMap<NodeConfig> base,
-			final Collection<NodeConfig> add)
+	protected CachedClassLookupMap<NodeProcessingUnit> buildChildNodeLookup(final CachedClassLookupMap<NodeProcessingUnit> base,
+			final Collection<NodeProcessingUnit> add)
 	{
 		// by default result is same instance as base
-		CachedClassLookupMap<NodeConfig> result = base;
+		CachedClassLookupMap<NodeProcessingUnit> result = base;
 
 		// merge only when collection is not empty...
 		if (add != null && !add.isEmpty())
 		{
 			// ... create a new result instance
-			result = new CachedClassLookupMap<NodeConfig>();
+			result = new CachedClassLookupMap<NodeProcessingUnit>();
 			// ... all static elements (no elements which were dynamically found) of base
 			result.putAll(base.getStaticMap());
 			// ... all passed NodeConfig elements
-			for (final NodeConfig nodeCfg : add)
+			for (final NodeProcessingUnit nodeCfg : add)
 			{
-				result.put(nodeCfg.getType(), nodeCfg);
+				result.put(nodeCfg.getNodeConfig().getType(), nodeCfg);
 			}
 		}
 		return result;

@@ -24,7 +24,7 @@ public class GraphProcessingUnitImpl extends AbstractProcessingUnit implements G
 	}
 
 	@Override
-	public GraphConfig getGraph()
+	public GraphConfig getGraphConfig()
 	{
 		return config;
 	}
@@ -45,7 +45,7 @@ public class GraphProcessingUnitImpl extends AbstractProcessingUnit implements G
 	}
 
 	@Override
-	public Collection<? extends AbstractProcessingUnit> getChildProcessingUnits()
+	public Collection<NodeProcessingUnit> getChildProcessingUnits()
 	{
 		return nodeProcessingUnits.values();
 	}

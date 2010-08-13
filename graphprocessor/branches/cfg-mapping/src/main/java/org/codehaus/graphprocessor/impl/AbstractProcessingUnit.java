@@ -9,7 +9,7 @@ public abstract class AbstractProcessingUnit implements Initializable
 {
 	private boolean isInitialized;
 
-	public abstract Collection<? extends AbstractProcessingUnit> getChildProcessingUnits();
+	public abstract Collection getChildProcessingUnits();
 
 	protected boolean initializeChilds(int complianceLevel)
 	{

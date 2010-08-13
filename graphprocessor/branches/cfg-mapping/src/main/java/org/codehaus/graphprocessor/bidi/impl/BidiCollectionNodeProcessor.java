@@ -22,10 +22,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.NodeProcessor;
 import org.codehaus.graphprocessor.PropertyConfig;
-import org.codehaus.graphprocessor.bidi.AbstractNodeProcessor;
-import org.codehaus.graphprocessor.impl.AbstractNodeConfig;
+import org.codehaus.graphprocessor.impl.AbstractNodeProcessor;
 import org.codehaus.graphprocessor.impl.BidiPropertyProcessingUnit;
 import org.codehaus.graphprocessor.impl.NodeContextImpl;
 import org.codehaus.graphprocessor.impl.PropertyContextImpl;
@@ -55,7 +55,7 @@ public class BidiCollectionNodeProcessor extends AbstractNodeProcessor
 		// process each element of source collection separately
 		for (Object sourceElement : (Collection<?>) source)
 		{
-			final AbstractNodeConfig nodeConfig = (AbstractNodeConfig) nodeCtx.getChildNodeLookup().get(sourceElement.getClass());
+			final NodeProcessingUnit nodeConfig = nodeCtx.getChildNodeLookup().get(sourceElement.getClass());
 
 			// if so, start node processing
 			if (nodeConfig != null)

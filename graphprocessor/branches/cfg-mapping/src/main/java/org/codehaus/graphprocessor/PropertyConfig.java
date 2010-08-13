@@ -18,7 +18,7 @@ public interface PropertyConfig
 {
 	NodeConfig getParentNode();
 
-	List<NodeConfig> getChildNodeConfig();
+	// List<NodeConfig> getChildNodeConfig();
 
 	List<PropertyFilter> getPropertyFilters();
 

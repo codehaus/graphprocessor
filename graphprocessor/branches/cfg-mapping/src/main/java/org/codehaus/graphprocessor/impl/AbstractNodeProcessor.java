@@ -11,7 +11,7 @@
  * 
  *  
  */
-package org.codehaus.graphprocessor.bidi;
+package org.codehaus.graphprocessor.impl;
 
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.GraphConfig;
@@ -19,7 +19,6 @@ import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeListener;
 import org.codehaus.graphprocessor.NodeProcessor;
-import org.codehaus.graphprocessor.impl.NodeContextImpl;
 
 
 
@@ -31,8 +30,6 @@ import org.codehaus.graphprocessor.impl.NodeContextImpl;
 public abstract class AbstractNodeProcessor implements NodeProcessor
 {
 	private static final Logger log = Logger.getLogger(AbstractNodeProcessor.class);
-
-
 
 	public <T extends Object> T process(final NodeContext nodeCtx, final Object source, final T target)
 	{
@@ -54,7 +51,7 @@ public abstract class AbstractNodeProcessor implements NodeProcessor
 
 	protected void notifyNodeCreatedListener(NodeContext nodeCtx, Object node)
 	{
-		GraphConfig graphCfg = nodeCtx.getGraphContext().getGraphConfig();
+		GraphConfig graphCfg = nodeCtx.getGraphContext().getProcessingUnit().getGraphConfig();
 		NodeListener<NodeContext> listener = graphCfg.getNodeListener();
 
 		if (listener != null)

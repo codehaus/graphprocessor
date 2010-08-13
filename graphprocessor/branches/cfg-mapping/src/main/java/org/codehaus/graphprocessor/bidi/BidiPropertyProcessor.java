@@ -27,45 +27,39 @@ import org.codehaus.graphprocessor.GraphContext;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.Initializable;
 import org.codehaus.graphprocessor.NodeContext;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.NodeProcessor;
 import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyFilter;
-import org.codehaus.graphprocessor.PropertyProcessor;
-import org.codehaus.graphprocessor.impl.AbstractNodeConfig;
-import org.codehaus.graphprocessor.impl.AbstractPropertyConfig;
+import org.codehaus.graphprocessor.PropertyProcessingUnit;
+import org.codehaus.graphprocessor.impl.AbstractProcessingUnit;
+import org.codehaus.graphprocessor.impl.AbstractPropertyProcessor;
 import org.codehaus.graphprocessor.impl.BidiPropertyProcessingUnit;
 import org.codehaus.graphprocessor.impl.PropertyContextImpl;
 
 
 
 // BidiPropertyProcessor
-public class BidiPropertyProcessor implements PropertyProcessor
+public class BidiPropertyProcessor extends AbstractPropertyProcessor
 {
 	private static final Logger log = Logger.getLogger(BidiPropertyProcessor.class);
 
 	@Override
-	public void process(final PropertyContext pCtx, final Object source, final Object target)
+	protected void process(final PropertyContextImpl pCtxImpl, final Object source, final Object target)
 	{
-		// TODO: type safety?
-		final PropertyContextImpl pCtxImpl = (PropertyContextImpl) pCtx;
-		final PropertyConfig propertyConfig = pCtx.getProcessingUnit().getPropertyConfig();
 
-
-		final GraphContext graphCtx = pCtx.getGraphContext();
-
-		if (propertyConfig instanceof Initializable)
+		PropertyProcessingUnit processingUnit = pCtxImpl.getProcessingUnit();
+		if (processingUnit instanceof Initializable)
 		{
-			Initializable init = (Initializable) propertyConfig;
+			Initializable init = (Initializable) processingUnit;
 
 			// lazy compile when necessary
 			if (!init.isInitialized())
 			{
-				init.initialize(AbstractPropertyConfig.COMPLIANCE_LEVEL_HIGH);
+				init.initialize(AbstractProcessingUnit.COMPLIANCE_LEVEL_HIGH);
 			}
-
 		}
-
 
 		// // DEBUG output
 		// // if (log.isDebugEnabled() && ((AbstractNodeMapping) pCtxImpl.getPropertyConfig().getParentMapping()).isDebugEnabled())
@@ -80,8 +74,11 @@ public class BidiPropertyProcessor implements PropertyProcessor
 		Object value = null;
 		boolean isFiltered = false;
 
+		final PropertyConfig propertyConfig = processingUnit.getPropertyConfig();
 		if (propertyConfig.getReadMethod() != null)
 		{
+			final GraphContext graphCtx = pCtxImpl.getGraphContext();
+
 			value = this.readValueFromSource(pCtxImpl, source);
 
 			// check filters
@@ -90,19 +87,19 @@ public class BidiPropertyProcessor implements PropertyProcessor
 			// ... and local configured ones from current PropertyMapping
 			final List<PropertyFilter> localFilters = propertyConfig.getPropertyFilters();
 			// ... and apply
-			isFiltered = this.isFilterd(pCtx, value, globalFilters, localFilters);
+			isFiltered = this.isFilterd(pCtxImpl, value, globalFilters, localFilters);
 
 			// node transformation when necessary
 			if (!isFiltered && value != null)
 			{
-				if (propertyConfig.isNode())
+				if (processingUnit.isNode())
 				{
-					final AbstractNodeConfig nodeMapping = (AbstractNodeConfig) pCtxImpl.getChildNodeLookup().get(value.getClass());
+					final NodeProcessingUnit nodeMapping = pCtxImpl.getChildNodeLookup().get(value.getClass());
 
 					if (nodeMapping != null)
 					{
 						// check node filters
-						isFiltered = this.isFilterd(pCtx, value, graphCtx.getNodeFilterList(), Collections.EMPTY_LIST);
+						isFiltered = this.isFilterd(pCtxImpl, value, graphCtx.getNodeFilterList(), Collections.EMPTY_LIST);
 						if (!isFiltered)
 						{
 							final NodeContext nodeCtx = pCtxImpl.createChildNodeContext(nodeMapping, value);
@@ -132,7 +129,8 @@ public class BidiPropertyProcessor implements PropertyProcessor
 		{
 			try
 			{
-				final String pre = "[" + pCtx.getParentContext().getRealDistance() + ":" + propertyConfig.getName() + "] actual: ";
+				final String pre = "[" + pCtxImpl.getParentContext().getRealDistance() + ":" + propertyConfig.getName()
+						+ "] actual: ";
 				String read = "[virtual]";
 				if (propertyConfig.getReadMethod() != null)
 				{

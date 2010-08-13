@@ -1,5 +1,8 @@
 package org.codehaus.graphprocessor;
 
+import java.util.List;
+
+
 public interface PropertyProcessingUnit
 {
 	PropertyConfig getPropertyConfig();
@@ -7,6 +10,8 @@ public interface PropertyProcessingUnit
 	PropertyProcessor getProcessor();
 
 	boolean isNode();
+
+	List<NodeProcessingUnit> getChildProcessingUnits();
 
 
 }

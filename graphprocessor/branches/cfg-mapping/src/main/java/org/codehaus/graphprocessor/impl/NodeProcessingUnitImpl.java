@@ -38,9 +38,9 @@ public class NodeProcessingUnitImpl extends AbstractProcessingUnit implements No
 	}
 
 	@Override
-	public Collection<? extends AbstractProcessingUnit> getChildProcessingUnits()
+	public Collection<PropertyProcessingUnit> getChildProcessingUnits()
 	{
-		return (Collection) this.childPropertyUnits.values();
+		return this.childPropertyUnits.values();
 	}
 
 	public PropertyProcessingUnit getPropertyProcessingUnit(String id)

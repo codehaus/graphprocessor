@@ -24,6 +24,7 @@ import org.codehaus.graphprocessor.GraphConfig;
 import org.codehaus.graphprocessor.GraphConfiguration;
 import org.codehaus.graphprocessor.GraphException;
 import org.codehaus.graphprocessor.NodeConfig;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 
 
 
@@ -38,11 +39,11 @@ public class GraphConfigurationImpl implements GraphConfiguration
 	private static final Logger log = Logger.getLogger(GraphConfigurationImpl.class);
 
 	// configures custom NodeConfig instances which are used dependently on graph processing depth
-	private List<CachedClassLookupMap<NodeConfig>> nodeConfigByDepth = null;
+	private List<CachedClassLookupMap<NodeProcessingUnit>> nodeConfigByDepth = null;
 
 	// base NodeConfig configuration
 	// private CachedClassLookupMap<NodeConfig> baseConfig = null;
-	private Map<Class<?>, NodeConfig> baseConfig = null;
+	private Map<Class<?>, NodeProcessingUnit> baseConfig = null;
 
 
 	/**
@@ -51,13 +52,13 @@ public class GraphConfigurationImpl implements GraphConfiguration
 	 * @param baseConfiguration
 	 */
 	// public GraphConfigurationImpl(final CachedClassLookupMap<NodeConfig> baseConfiguration)
-	public GraphConfigurationImpl(final Map<Class<?>, NodeConfig> baseConfiguration)
+	public GraphConfigurationImpl(final Map<Class<?>, NodeProcessingUnit> baseConfiguration)
 	{
 		this.baseConfig = baseConfiguration;
-		this.nodeConfigByDepth = new ArrayList<CachedClassLookupMap<NodeConfig>>();
+		this.nodeConfigByDepth = new ArrayList<CachedClassLookupMap<NodeProcessingUnit>>();
 	}
 
-	public CachedClassLookupMap<NodeConfig> getAllNodeConfigs(final int distance)
+	public CachedClassLookupMap<NodeProcessingUnit> getAllNodeConfigs(final int distance)
 	{
 		// only distances above zero are valid
 		if (distance < 0)
@@ -68,48 +69,48 @@ public class GraphConfigurationImpl implements GraphConfiguration
 		// initially create lookup for "NodeConfig by processing depth" when not done
 		if (this.nodeConfigByDepth.isEmpty())
 		{
-			this.nodeConfigByDepth.add(new CachedClassLookupMap<NodeConfig>(baseConfig));
+			this.nodeConfigByDepth.add(new CachedClassLookupMap<NodeProcessingUnit>(baseConfig));
 		}
 
 		// increase size of "NodeConfig by processing depth" stack when requested distance is greater
 		while (this.nodeConfigByDepth.size() < distance + 1)
 		{
-			this.nodeConfigByDepth.add(new CachedClassLookupMap<NodeConfig>());
+			this.nodeConfigByDepth.add(new CachedClassLookupMap<NodeProcessingUnit>());
 		}
 
 		// retrieve lookup Map for requested distance
-		final CachedClassLookupMap<NodeConfig> result = this.nodeConfigByDepth.get(distance);
+		final CachedClassLookupMap<NodeProcessingUnit> result = this.nodeConfigByDepth.get(distance);
 		return result;
 	}
 
 
 
 	@Override
-	public void addNodeConfig(final int distance, final NodeConfig nodeConfig)
+	public void addNodeConfig(final int distance, final NodeProcessingUnit nodeConfig)
 	{
-		this.getAllNodeConfigs(distance).put(nodeConfig.getType(), nodeConfig);
+		this.getAllNodeConfigs(distance).put(nodeConfig.getNodeConfig().getType(), nodeConfig);
 	}
 
 	@Override
-	public void addNodeConfig(final int distance, final Collection<NodeConfig> nodeMappingList)
+	public void addNodeConfig(final int distance, final Collection<NodeProcessingUnit> nodeMappingList)
 	{
-		final CachedClassLookupMap<NodeConfig> map = this.getAllNodeConfigs(distance);
-		for (final NodeConfig nodeConfig : nodeMappingList)
+		final CachedClassLookupMap<NodeProcessingUnit> map = this.getAllNodeConfigs(distance);
+		for (final NodeProcessingUnit nodeConfig : nodeMappingList)
 		{
-			map.put(nodeConfig.getType(), nodeConfig);
+			map.put(nodeConfig.getNodeConfig().getType(), nodeConfig);
 		}
 	}
 
 	@Override
-	public NodeConfig getNodeConfig(final Class<?> type)
+	public NodeProcessingUnit getNodeConfig(final Class<?> type)
 	{
 		return getNodeConfig(0, type);
 	}
 
 	@Override
-	public NodeConfig getNodeConfig(final int distance, final Class<?> type)
+	public NodeProcessingUnit getNodeConfig(final int distance, final Class<?> type)
 	{
-		final NodeConfig result = this.getAllNodeConfigs(distance).get(type);
+		final NodeProcessingUnit result = this.getAllNodeConfigs(distance).get(type);
 		return result;
 	}
 

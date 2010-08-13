@@ -88,7 +88,7 @@ public class BasicNodeFilter implements PropertyFilter
 				final Class setterInputType = targetProp.getWriteMethod().getParameterTypes()[0];
 
 				// isFiltered = ctx.getParentContext().getDistance() >= maxDistance;
-				isFiltered = ctx.getGraphContext().getGraphConfig().getNodes().containsKey(setterInputType);
+				isFiltered = ctx.getGraphContext().getProcessingUnit().getGraphConfig().getNodes().containsKey(setterInputType);
 				// isFiltered = ((BidiGraphConfig) ctx.getGraphContext().getGraphConfig()).getNodes().containsKey(setterInputType);
 			}
 

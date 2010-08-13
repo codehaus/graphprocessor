@@ -25,26 +25,26 @@ public interface GraphConfiguration
 {
 
 	/**
-	 * Adds a {@link NodeConfig} under a specific distance. Distance specifies the level of processing depth when this mapping
-	 * shall become active.
+	 * Adds a {@link NodeProcessingUnit} under a specific distance. Distance specifies the level of processing depth when this
+	 * mapping shall become active.
 	 * 
 	 * @param distance
-	 *           processing distance when {@link NodeConfig} shall become activated
+	 *           processing distance when {@link NodeProcessingUnit} shall become activated
 	 * @param nodeMapping
-	 *           {@link NodeConfig} to add
+	 *           {@link NodeProcessingUnit} to add
 	 */
-	public void addNodeConfig(int distance, NodeConfig nodeMapping);
+	public void addNodeConfig(int distance, NodeProcessingUnit nodeMapping);
 
 	/**
-	 * Adds a Collection of {@link NodeConfig} under a specific distance. Distance specifies the level of processing depth when
-	 * this mapping shall become active.
+	 * Adds a Collection of {@link NodeProcessingUnit} under a specific distance. Distance specifies the level of processing depth
+	 * when this mapping shall become active.
 	 * 
 	 * @param distance
-	 *           processing distance when {@link NodeConfig} shall become activated
+	 *           processing distance when {@link NodeProcessingUnit} shall become activated
 	 * @param nodeMapping
-	 *           {@link NodeConfig} to add
+	 *           {@link NodeProcessingUnit} to add
 	 */
-	public void addNodeConfig(int distance, Collection<NodeConfig> nodeMapping);
+	public void addNodeConfig(int distance, Collection<NodeProcessingUnit> nodeMapping);
 
 
 	/**
@@ -56,7 +56,7 @@ public interface GraphConfiguration
 	 *           type of node
 	 * @return {@link NodeConfig}
 	 */
-	public NodeConfig getNodeConfig(Class<?> type);
+	public NodeProcessingUnit getNodeConfig(Class<?> type);
 
 	/**
 	 * Returns the {@link NodeConfig} for a requested node type and requested distance when that mapping shall be used. A
@@ -67,7 +67,7 @@ public interface GraphConfiguration
 	 * @param type
 	 * @return NodeConfig
 	 */
-	public NodeConfig getNodeConfig(int distance, Class<?> type);
+	public NodeProcessingUnit getNodeConfig(int distance, Class<?> type);
 
 
 }

@@ -3,9 +3,9 @@ package org.codehaus.graphprocessor.impl;
 import org.apache.log4j.Logger;
 import org.codehaus.graphprocessor.CachedClassLookupMap;
 import org.codehaus.graphprocessor.GraphContext;
-import org.codehaus.graphprocessor.NodeConfig;
 import org.codehaus.graphprocessor.NodeContext;
 import org.codehaus.graphprocessor.NodeListener;
+import org.codehaus.graphprocessor.NodeProcessingUnit;
 import org.codehaus.graphprocessor.PropertyConfig;
 import org.codehaus.graphprocessor.PropertyContext;
 import org.codehaus.graphprocessor.PropertyProcessingUnit;
@@ -16,16 +16,16 @@ public class PropertyContextImpl implements PropertyContext
 {
 	private static final Logger log = Logger.getLogger(PropertyContextImpl.class);
 
-	private PropertyProcessingUnit processorUnit = null;
+	private final PropertyProcessingUnit processingUnit;
 	private GraphContextImpl graphCtx = null;
 	private NodeContextImpl parentNodeCtx = null;
-	private CachedClassLookupMap<NodeConfig> childNodeLookup = null;
+	private CachedClassLookupMap<NodeProcessingUnit> childNodeLookup = null;
 
 
 	protected PropertyContextImpl(final GraphContextImpl graphCtx, final NodeContextImpl nodeCtx,
-			final PropertyProcessingUnit proccessorUnit, final CachedClassLookupMap<NodeConfig> nodeLookup)
+			final PropertyProcessingUnit proccessingUnit, final CachedClassLookupMap<NodeProcessingUnit> nodeLookup)
 	{
-		this.processorUnit = proccessorUnit;
+		this.processingUnit = proccessingUnit;
 		this.graphCtx = graphCtx;
 		this.parentNodeCtx = nodeCtx;
 		this.childNodeLookup = nodeLookup;
@@ -41,7 +41,7 @@ public class PropertyContextImpl implements PropertyContext
 	@Override
 	public PropertyProcessingUnit getProcessingUnit()
 	{
-		return this.processorUnit;
+		return this.processingUnit;
 	}
 
 
@@ -57,16 +57,17 @@ public class PropertyContextImpl implements PropertyContext
 	 * (non-Javadoc)
 	 * @see de.hybris.platform.webservices.util.objectgraphtransformer.PropertyContext#getNodeMappingsMap()
 	 */
-	public CachedClassLookupMap<NodeConfig> getChildNodeLookup()
+	public CachedClassLookupMap<NodeProcessingUnit> getChildNodeLookup()
 	{
 		return this.childNodeLookup;
 	}
 
 
-	public NodeContextImpl createChildNodeContext(final AbstractNodeConfig nodeConfig, final Object source)
+	public NodeContextImpl createChildNodeContext(final NodeProcessingUnit nodeConfig, final Object source)
 	{
 		final int distance = this.parentNodeCtx.getRealDistance() + 1;
-		final int virtualDist = nodeConfig.isVirtual() ? this.parentNodeCtx.getDistance() : this.parentNodeCtx.getDistance() + 1;
+		final int virtualDist = nodeConfig.getNodeConfig().isVirtual() ? this.parentNodeCtx.getDistance() : this.parentNodeCtx
+				.getDistance() + 1;
 
 		// if needed: update highest found transformation distance
 		if (this.graphCtx.getMaxDistance() <= virtualDist)
@@ -75,13 +76,13 @@ public class PropertyContextImpl implements PropertyContext
 		}
 
 		// TODO: use childNode
-		CachedClassLookupMap<NodeConfig> nodeLookup = this.graphCtx.getRuntimeNodeMappings(distance);
+		CachedClassLookupMap<NodeProcessingUnit> nodeLookup = this.graphCtx.getRuntimeNodeMappings(distance);
 
 		if (nodeLookup == null)
 		{
 			// ...nodeLookup from this property
-			final CachedClassLookupMap<NodeConfig> base = this.getChildNodeLookup();
-			final CachedClassLookupMap<NodeConfig> merge = this.graphCtx.graphConfigImpl.getAllNodeConfigs(distance);
+			final CachedClassLookupMap<NodeProcessingUnit> base = this.getChildNodeLookup();
+			final CachedClassLookupMap<NodeProcessingUnit> merge = this.graphCtx.graphConfigImpl.getAllNodeConfigs(distance);
 
 			// ...build
 			nodeLookup = this.graphCtx.buildChildNodeLookup(base, merge);
@@ -93,10 +94,9 @@ public class PropertyContextImpl implements PropertyContext
 
 
 		// create result context
-		final NodeContextImpl result = new NodeContextImpl(this.graphCtx, this, nodeConfig, nodeLookup, distance, virtualDist,
-				source);
+		final NodeContextImpl result = new NodeContextImpl(graphCtx, this, nodeConfig, nodeLookup, distance, virtualDist, source);
 
-		NodeListener<NodeContext> listener = graphCtx.getGraphConfig().getNodeListener();
+		NodeListener<NodeContext> listener = graphCtx.getProcessingUnit().getGraphConfig().getNodeListener();
 		if (listener != null)
 		{
 			listener.nodeContextCreated(result);
